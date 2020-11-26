@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:title="首页"
+        android:icon="@drawable/home"
+        />
+
+    <item
+        android:id="@+id/community"
+        android:title="社区"
+        android:icon="@drawable/community"
+        />
+
+    <item
+        android:id="@+id/project"
+        android:title="项目"
+        android:icon="@drawable/project"
+        />
+
+    <item
+        android:id="@+id/mine"
+        android:title="我的"
+        android:icon="@drawable/mine"
+        />
+
+</menu>
