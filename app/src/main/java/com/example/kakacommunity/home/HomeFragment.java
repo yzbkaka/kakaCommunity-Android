@@ -13,10 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.youth.banner.adapter.BannerAdapter;
+import com.youth.banner.holder.BannerImageHolder;
+import com.youth.banner.indicator.CircleIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,11 +37,17 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 
 public class HomeFragment extends Fragment {
 
+    private com.youth.banner.Banner bannerView;
+
     private RecyclerView recyclerView;
 
     private HomeAdapter homeAdapter;
 
     private List<HomeArticle> homeArticleList = new ArrayList<>();
+
+    private List<Banner> bannerList = new ArrayList<>();
+
+    private int newPage = 0;
 
     private int curPage = 0;
 
@@ -44,8 +55,13 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
+        bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
         recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
-        getJSON();
+        getHomeArticleJSON();
+        getBannerJSON();
+        bannerView.addBannerLifecycleObserver(this)//添加生命周期观察者
+                .setAdapter(new ImageAdapter(bannerList))
+                .setIndicator(new CircleIndicator(MyApplication.getContext()));
         return view;
     }
 
@@ -56,9 +72,9 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * 获得json数据
+     * 获得首页文章json数据
      */
-    private void getJSON() {
+    private void getHomeArticleJSON() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -71,7 +87,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseData = response.body().string();
-                        parseJSON(responseData);
+                        parseHomeArticleJSON(responseData);
                     }
                 });
                 curPage++;
@@ -80,9 +96,33 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * 解析json字符串
+     * 获得banner的json数据
      */
-    private void parseJSON(String responseData) {
+    private void getBannerJSON() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/banner" + "/json", new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        parseBannerJSON(responseData);
+                    }
+                });
+                curPage++;
+            }
+        }).start();
+    }
+
+    /**
+     * 解析文章json字符串
+     */
+    private void parseHomeArticleJSON(String responseData) {
         try {
             JSONObject jsonData = new JSONObject(responseData);
             JSONObject data = jsonData.getJSONObject("data");
@@ -98,6 +138,27 @@ public class HomeFragment extends Fragment {
                 homeArticleList.add(homeArticle);
             }
             initView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 解析banner的json字符串
+     */
+    private void parseBannerJSON(String responseData) {
+        try {
+            JSONObject jsonData = new JSONObject(responseData);
+            JSONArray datas = jsonData.getJSONArray("data");
+            for(int i = 0;i < datas.length();i++) {
+                JSONObject jsonObject = datas.getJSONObject(i);
+                Banner banner = new Banner();
+                banner.setImagePath(jsonObject.getString("imagePath"));
+                banner.setTitle(jsonObject.getString("title"));
+                banner.setUrl(jsonObject.getString("url"));
+                bannerList.add(banner);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
