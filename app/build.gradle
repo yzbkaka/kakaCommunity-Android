@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -26,8 +30,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
     implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
     implementation 'com.youth.banner:banner:2.1.0'
     implementation 'com.just.agentweb:agentweb:4.1.4'
 

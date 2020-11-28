@@ -1,5 +1,6 @@
 package com.example.kakacommunity.home;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.R;
@@ -33,7 +33,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             cardView = (CardView) itemView.findViewById(R.id.home_item_layout);
             author = (TextView)itemView.findViewById(R.id.home_item_author);
             time = (TextView)itemView.findViewById(R.id.home_item_time);
-            title = (TextView)itemView.findViewById(R.id.home_item_time);
+            title = (TextView)itemView.findViewById(R.id.home_item_title);
             chapter = (TextView)itemView.findViewById(R.id.home_item_chapter);
         }
     }
@@ -51,8 +51,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        Log.e("onBind", "yzbkaka");
         HomeArticle homeArticle = homeArticleList.get(position);
-        holder.author.setText(homeArticle.getShareUser());
+        holder.author.setText(homeArticle.getAuthor());
         holder.time.setText(homeArticle.getNiceDate());
         holder.title.setText(homeArticle.getTitle());
         holder.chapter.setText(homeArticle.getChapterName());

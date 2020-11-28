@@ -9,7 +9,7 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:background="#000"
-        android:layout_height="140dp" />
+        android:layout_height="150dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/home_recycler_view"

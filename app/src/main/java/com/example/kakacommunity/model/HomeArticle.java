@@ -5,9 +5,9 @@ public class HomeArticle {
     private int id;
 
     /**
-     * 分享人
+     * 作者
      */
-    private String shareUser;
+    private String author;
 
     /**
      * 标题
@@ -42,12 +42,12 @@ public class HomeArticle {
         this.id = id;
     }
 
-    public String getShareUser() {
-        return shareUser;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setShareUser(String shareUser) {
-        this.shareUser = shareUser;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -88,5 +88,18 @@ public class HomeArticle {
 
     public void setChapterName(String chapterName) {
         this.chapterName = chapterName;
+    }
+
+    @Override
+    public String toString() {
+        return "HomeArticle{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", link='" + link + '\'' +
+                ", niceDate='" + niceDate + '\'' +
+                ", superChapterName='" + superChapterName + '\'' +
+                ", chapterName='" + chapterName + '\'' +
+                '}';
     }
 }

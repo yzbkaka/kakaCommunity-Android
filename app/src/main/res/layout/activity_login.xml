@@ -88,4 +88,5 @@
             android:text="kakaCommunity by 刘致远"
             android:textColor="@color/gray"/>
     </RelativeLayout>
+
 </LinearLayout>
