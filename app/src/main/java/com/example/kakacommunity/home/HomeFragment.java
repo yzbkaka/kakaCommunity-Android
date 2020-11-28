@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.MyApplication;
@@ -37,7 +38,11 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 
 public class HomeFragment extends Fragment {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private com.youth.banner.Banner bannerView;
+
+    private ImageAdapter imageAdapter;
 
     private RecyclerView recyclerView;
 
@@ -53,15 +58,16 @@ public class HomeFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
         bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
         recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
         getHomeArticleJSON();
         getBannerJSON();
-        bannerView.addBannerLifecycleObserver(this)//添加生命周期观察者
-                .setAdapter(new ImageAdapter(bannerList))
-                .setIndicator(new CircleIndicator(MyApplication.getContext()));
+        initBannerView();
+        initRefreshView();
         return view;
     }
 
@@ -137,7 +143,7 @@ public class HomeFragment extends Fragment {
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
                 homeArticleList.add(homeArticle);
             }
-            initView();
+            initListView();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,12 +170,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void initView() {
+    private void initListView() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.e("initView", "initView");
                 homeAdapter = new HomeAdapter(homeArticleList);
+                homeAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
                 LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(homeAdapter);
@@ -180,11 +187,61 @@ public class HomeFragment extends Fragment {
                         String title = homeArticleList.get(position).getTitle();
                         Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
                         intent.putExtra("title", title);
-                        intent.putExtra("link", link);
+                        intent.putExtra("url", link);
                         startActivity(intent);
                     }
                 });
             }
         });
+    }
+
+    private void initBannerView() {
+        imageAdapter = new ImageAdapter(bannerList);
+        bannerView.addBannerLifecycleObserver(this) //添加生命周期观察者
+                .setAdapter(imageAdapter)
+                .setIndicator(new CircleIndicator(MyApplication.getContext()));
+        imageAdapter.setOnItemCLickListener(new ImageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String url = bannerList.get(position).getUrl();
+                String title = bannerList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", url);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initRefreshView() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshHomeArticleJSON();
+                getBannerJSON();
+            }
+        });
+    }
+
+    private void refreshHomeArticleJSON() {
+        homeArticleList.clear();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + newPage  + "/json", new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        parseHomeArticleJSON(responseData);
+                    }
+                });
+            }
+        }).start();
     }
 }

@@ -21,6 +21,8 @@ public class ImageAdapter extends BannerAdapter<Banner, ImageAdapter.ViewHolder>
 
     private List<Banner> bannerList;
 
+    private OnItemClickListener onItemClickListener;
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
@@ -51,5 +53,19 @@ public class ImageAdapter extends BannerAdapter<Banner, ImageAdapter.ViewHolder>
         Banner banner = bannerList.get(position);
         Glide.with(MyApplication.getContext()).load(banner.getImagePath()).into(holder.imageView);
         holder.textView.setText(banner.getTitle());
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener){
+        this.onItemClickListener = onItemCLickListener;
     }
 }

@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 利用反射，改变 item 中 mShiftingMode 的值 ,从而改变 BottomNavigationView 默认的效果
      */
-/*    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("RestrictedApi")
     public void disableShiftMode(BottomNavigationView navigationView) {
 
@@ -150,5 +150,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }
