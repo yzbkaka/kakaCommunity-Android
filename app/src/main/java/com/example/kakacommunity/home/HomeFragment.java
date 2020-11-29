@@ -1,8 +1,8 @@
 package com.example.kakacommunity.home;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +12,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
-import com.youth.banner.adapter.BannerAdapter;
-import com.youth.banner.holder.BannerImageHolder;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.header.BezierRadarHeader;
+import com.scwang.smart.refresh.header.ClassicsHeader;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.youth.banner.indicator.CircleIndicator;
 
 import org.json.JSONArray;
@@ -38,7 +42,7 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 
 public class HomeFragment extends Fragment {
 
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private RefreshLayout refreshLayout;
 
     private com.youth.banner.Banner bannerView;
 
@@ -61,7 +65,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
-        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
         recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
         getHomeArticleJSON();
@@ -176,7 +180,7 @@ public class HomeFragment extends Fragment {
             public void run() {
                 homeAdapter = new HomeAdapter(homeArticleList);
                 homeAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
+                //refreshLayout.setRefreshing(false);
                 LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(homeAdapter);
@@ -214,12 +218,25 @@ public class HomeFragment extends Fragment {
     }
 
     private void initRefreshView() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(MyApplication.getContext()).setEnableHorizontalDrag(true));
+        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(RefreshLayout refreshlayout) {
                 refreshHomeArticleJSON();
                 getBannerJSON();
+                refreshlayout.finishRefresh();
+
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                getHomeArticleJSON();
+                refreshlayout.finishLoadMore();
+
             }
         });
     }

@@ -51,7 +51,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Log.e("onBind", "yzbkaka");
         HomeArticle homeArticle = homeArticleList.get(position);
         holder.author.setText(homeArticle.getAuthor());
         holder.time.setText(homeArticle.getNiceDate());
