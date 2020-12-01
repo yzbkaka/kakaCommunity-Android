@@ -2,6 +2,7 @@ package com.example.kakacommunity.project;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
+import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.model.ProjectTree;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -30,6 +34,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -50,21 +55,47 @@ public class ProjectFragment extends Fragment {
 
     private List<Project> projectList = new ArrayList<>();
 
+    private ProjectAdapter projectAdapter;
+
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_project, container, false);
         dataBaseHelper = MyDataBaseHelper.getInstance();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
+        initRefreshLayout();
         recyclerView = (RecyclerView) view.findViewById(R.id.project_recycler_view);
-        queryProjectTreeList();
+        initRecyclerView();
         return view;
+    }
+
+    private void initRefreshLayout() {
+
+    }
+
+    private void initRecyclerView() {
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        projectAdapter = new ProjectAdapter(projectList);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(projectAdapter);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        queryProjectTreeList();
+        getProjectJSON();
+        projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String link = projectList.get(position).getLink();
+                String title = projectList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", link);
+                startActivity(intent);
+            }
+        });
     }
 
     private void queryProjectTreeList() {
@@ -86,13 +117,36 @@ public class ProjectFragment extends Fragment {
         }
     }
 
-    private void getProjectTreeJson() {
+    private void getProjectJSON() {
         showProgressDialog();
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/tree" + "/json", new okhttp3.Callback() {
+        int random = new Random().nextInt(projectTreeList.size());
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/1" + "/json?cid=" + projectTreeList.get(random).getId(), new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 closeProgressDialog();
                 Toast.makeText(MyApplication.getContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseProjectJSON(responseData);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        projectAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    private void getProjectTreeJson() {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/tree" + "/json", new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
             }
 
@@ -108,6 +162,28 @@ public class ProjectFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void parseProjectJSON(String responseData) {
+        try {
+            JSONObject jsonData = new JSONObject(responseData);
+            JSONObject data = jsonData.getJSONObject("data");
+            JSONArray datas = data.getJSONArray("datas");
+            for(int i = 0;i < datas.length();i++) {
+                JSONObject jsonObject = datas.getJSONObject(i);
+                Project project = new Project();
+                project.setAuthor(jsonObject.getString("author"));
+                project.setTitle(jsonObject.getString("title"));
+                project.setImageLink(jsonObject.getString("envelopePic"));
+                project.setChapterName(jsonObject.getString("chapterName"));
+                project.setLink(jsonObject.getString("link"));
+                project.setDate(jsonObject.getString("niceDate"));
+                projectList.add(project);
+            }
+            Log.e("size", String.valueOf(projectList.size()));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void parseProjectTreeJSON(String responseData) {
