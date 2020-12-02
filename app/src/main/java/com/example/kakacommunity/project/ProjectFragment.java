@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -26,7 +25,11 @@ import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.model.ProjectTree;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,11 +37,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static com.example.kakacommunity.MainActivity.bottomNavigationView;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 
 public class ProjectFragment extends Fragment {
@@ -57,34 +60,59 @@ public class ProjectFragment extends Fragment {
 
     private ProjectAdapter projectAdapter;
 
+    private volatile int tabNum = 0;
+
+    private volatile int pageNum = 1;
+
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_project, container, false);
         dataBaseHelper = MyDataBaseHelper.getInstance();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
-        initRefreshLayout();
+        initRefreshView();
         recyclerView = (RecyclerView) view.findViewById(R.id.project_recycler_view);
         initRecyclerView();
         return view;
     }
 
-    private void initRefreshLayout() {
+    private void initRefreshView() {
+        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                projectList.clear();
+                getProjectJSON(1, 0);
+                refreshlayout.finishRefresh();
 
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                getProjectJSON(pageNum, tabNum);
+                refreshlayout.finishLoadMore();
+
+            }
+        });
     }
 
     private void initRecyclerView() {
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         projectAdapter = new ProjectAdapter(projectList);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(projectAdapter);
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //showProgressDialog();
         queryProjectTreeList();
-        getProjectJSON();
+        getProjectJSON(pageNum, tabNum);
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -96,6 +124,16 @@ public class ProjectFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {  //设置上滑下滑监听
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {  //下滑
+                    bottomNavigationView.setVisibility(View.GONE);
+                } else {  //上滑
+                    bottomNavigationView.setVisibility(View.VISIBLE);
+                }
+            }
+        });*/
     }
 
     private void queryProjectTreeList() {
@@ -117,30 +155,35 @@ public class ProjectFragment extends Fragment {
         }
     }
 
-    private void getProjectJSON() {
-        showProgressDialog();
-        int random = new Random().nextInt(projectTreeList.size());
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/1" + "/json?cid=" + projectTreeList.get(random).getId(), new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                closeProgressDialog();
-                Toast.makeText(MyApplication.getContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
-                parseProjectJSON(responseData);
-                getActivity().runOnUiThread(new Runnable() {
+    private void getProjectJSON(int page, int tab) {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/" + page + "/json?cid=" + projectTreeList.get(tab).getId(),
+                new okhttp3.Callback() {
                     @Override
-                    public void run() {
+                    public void onFailure(Call call, IOException e) {
                         closeProgressDialog();
-                        projectAdapter.notifyDataSetChanged();
+                        Toast.makeText(MyApplication.getContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        parseProjectJSON(responseData);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                projectAdapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                 });
-            }
-        });
+        if (tabNum == projectList.size()) {
+            tabNum = 0;
+            page++;
+        }
+        if (tab == tabNum) {
+            tabNum++;
+        }
     }
 
     private void getProjectTreeJson() {
@@ -169,7 +212,7 @@ public class ProjectFragment extends Fragment {
             JSONObject jsonData = new JSONObject(responseData);
             JSONObject data = jsonData.getJSONObject("data");
             JSONArray datas = data.getJSONArray("datas");
-            for(int i = 0;i < datas.length();i++) {
+            for (int i = 0; i < datas.length(); i++) {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 Project project = new Project();
                 project.setAuthor(jsonObject.getString("author"));
@@ -180,8 +223,7 @@ public class ProjectFragment extends Fragment {
                 project.setDate(jsonObject.getString("niceDate"));
                 projectList.add(project);
             }
-            Log.e("size", String.valueOf(projectList.size()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -212,7 +254,7 @@ public class ProjectFragment extends Fragment {
     }
 
     private void showProgressDialog() {
-        if(progressDialog == null) {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("正在加载...");
             progressDialog.setCanceledOnTouchOutside(false);
@@ -221,7 +263,7 @@ public class ProjectFragment extends Fragment {
     }
 
     private void closeProgressDialog() {
-        if(progressDialog != null) {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }

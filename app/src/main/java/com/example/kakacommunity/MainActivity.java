@@ -28,9 +28,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static boolean isShow = true;
+
     private ImageView search;
 
-    private BottomNavigationView bottomNavigationView;
+    public static BottomNavigationView bottomNavigationView;
 
     private ViewPager viewPager;
 
@@ -47,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         search = (ImageView)findViewById(R.id.search);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
         bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
         viewPager = (ViewPager)findViewById(R.id.view_pager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -90,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(new MineFragment());
     }
 
+
+
     /**
      * 底部设置监听
      */
@@ -117,13 +128,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
 

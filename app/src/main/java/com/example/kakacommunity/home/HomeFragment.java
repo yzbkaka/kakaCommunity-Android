@@ -1,14 +1,17 @@
 package com.example.kakacommunity.home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,14 +21,13 @@ import com.example.kakacommunity.R;
 import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
-import com.scwang.smart.refresh.footer.BallPulseFooter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.header.BezierRadarHeader;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
+import com.wingsofts.byeburgernavigationview.ByeBurgerBehavior;
 import com.youth.banner.indicator.CircleIndicator;
 
 import org.json.JSONArray;
@@ -38,6 +40,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static com.example.kakacommunity.MainActivity.bottomNavigationView;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 
 public class HomeFragment extends Fragment {
@@ -46,7 +49,9 @@ public class HomeFragment extends Fragment {
 
     private com.youth.banner.Banner bannerView;
 
-    private ImageAdapter imageAdapter;
+    private ImageAdapter bannerAdapter;
+
+    private NestedScrollView nestedScrollView;
 
     private RecyclerView recyclerView;
 
@@ -66,67 +71,145 @@ public class HomeFragment extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
         refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
-        recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
-        getHomeArticleJSON();
-        getBannerJSON();
-        initBannerView();
+        nestedScrollView = (NestedScrollView)view.findViewById(R.id.nest_scroll_view);
         initRefreshView();
+        bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
+        initBannerView();
+        recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
+        initRecyclerView();
         return view;
     }
 
+    private void initRefreshView() {
+        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        //refreshLayout.setRefreshHeader(new BezierRadarHeader(MyApplication.getContext()).setEnableHorizontalDrag(true));
+        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                homeArticleList.clear();
+                refreshHomeArticleJSON();
+                bannerList.clear();
+                getBannerJSON();
+                refreshlayout.finishRefresh();
+
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                getHomeArticleJSON();
+                refreshlayout.finishLoadMore();
+
+            }
+        });
+    }
+
+    private void initBannerView() {
+        bannerAdapter = new ImageAdapter(bannerList);
+        bannerView.addBannerLifecycleObserver(this) //添加生命周期观察者
+                .setAdapter(bannerAdapter)
+                .setIndicator(new CircleIndicator(MyApplication.getContext()));
+        bannerAdapter.setOnItemCLickListener(new ImageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String url = bannerList.get(position).getUrl();
+                String title = bannerList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", url);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
+        homeAdapter = new HomeAdapter(homeArticleList);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(homeAdapter);
+    }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getHomeArticleJSON();
+        getBannerJSON();
+        homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String link = homeArticleList.get(position).getLink();
+                String title = homeArticleList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", link);
+                startActivity(intent);
+            }
+        });
+        /*nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if(scrollY - oldScrollY > 0) {
+                    bottomNavigationView.startAnimation(hideAnimation);
+                    bottomNavigationView.setVisibility(View.INVISIBLE);
+
+                } else {
+                    bottomNavigationView.setVisibility(View.VISIBLE);
+                    bottomNavigationView.startAnimation(showAnimation);
+                }
+            }
+        });*/
+
     }
 
     /**
      * 获得首页文章json数据
      */
     private void getHomeArticleJSON() {
-        new Thread(new Runnable() {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage  + "/json", new okhttp3.Callback() {
             @Override
-            public void run() {
-                HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage  + "/json", new okhttp3.Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        e.printStackTrace();
-                    }
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseHomeArticleJSON(responseData);
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String responseData = response.body().string();
-                        parseHomeArticleJSON(responseData);
+                    public void run() {
+                        homeAdapter.notifyDataSetChanged();
                     }
                 });
-                curPage++;
             }
-        }).start();
+        });
+        curPage++;
     }
 
     /**
      * 获得banner的json数据
      */
     private void getBannerJSON() {
-        new Thread(new Runnable() {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/banner" + "/json", new okhttp3.Callback() {
             @Override
-            public void run() {
-                HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/banner" + "/json", new okhttp3.Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        e.printStackTrace();
-                    }
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseBannerJSON(responseData);
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String responseData = response.body().string();
-                        parseBannerJSON(responseData);
+                    public void run() {
+                        bannerAdapter.notifyDataSetChanged();
                     }
                 });
-                curPage++;
             }
-        }).start();
+        });
     }
 
     /**
@@ -147,7 +230,6 @@ public class HomeFragment extends Fragment {
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
                 homeArticleList.add(homeArticle);
             }
-            initListView();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -168,97 +250,29 @@ public class HomeFragment extends Fragment {
                 banner.setUrl(jsonObject.getString("url"));
                 bannerList.add(banner);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void initListView() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                homeAdapter = new HomeAdapter(homeArticleList);
-                homeAdapter.notifyDataSetChanged();
-                //refreshLayout.setRefreshing(false);
-                LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(homeAdapter);
-                homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        String link = homeArticleList.get(position).getLink();
-                        String title = homeArticleList.get(position).getTitle();
-                        Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
-                        intent.putExtra("title", title);
-                        intent.putExtra("url", link);
-                        startActivity(intent);
-                    }
-                });
-            }
-        });
-    }
-
-    private void initBannerView() {
-        imageAdapter = new ImageAdapter(bannerList);
-        bannerView.addBannerLifecycleObserver(this) //添加生命周期观察者
-                .setAdapter(imageAdapter)
-                .setIndicator(new CircleIndicator(MyApplication.getContext()));
-        imageAdapter.setOnItemCLickListener(new ImageAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                String url = bannerList.get(position).getUrl();
-                String title = bannerList.get(position).getTitle();
-                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
-                intent.putExtra("title", title);
-                intent.putExtra("url", url);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void initRefreshView() {
-        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
-        //refreshLayout.setRefreshHeader(new BezierRadarHeader(MyApplication.getContext()).setEnableHorizontalDrag(true));
-        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
-        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                refreshHomeArticleJSON();
-                getBannerJSON();
-                refreshlayout.finishRefresh();
-
-            }
-        });
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(RefreshLayout refreshlayout) {
-                getHomeArticleJSON();
-                refreshlayout.finishLoadMore();
-
-            }
-        });
-    }
-
     private void refreshHomeArticleJSON() {
-        homeArticleList.clear();
-        new Thread(new Runnable() {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + newPage + "/json", new okhttp3.Callback() {
             @Override
-            public void run() {
-                HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + newPage  + "/json", new okhttp3.Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        e.printStackTrace();
-                    }
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseHomeArticleJSON(responseData);
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String responseData = response.body().string();
-                        parseHomeArticleJSON(responseData);
+                    public void run() {
+                        homeAdapter.notifyDataSetChanged();
                     }
                 });
             }
-        }).start();
+        });
     }
 }

@@ -1,6 +1,5 @@
 package com.example.kakacommunity.project;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.model.Project;
-import com.example.kakacommunity.utils.StringUtil;
 
 import java.util.List;
 
@@ -68,7 +66,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                 .load(project.getImageLink())
                 .apply(options)
                 .into(holder.imageView);
-        Log.e("link", project.getImageLink());
         holder.time.setText(project.getDate());
         holder.title.setText(project.getTitle());
         holder.chapter.setText(project.getChapterName());
