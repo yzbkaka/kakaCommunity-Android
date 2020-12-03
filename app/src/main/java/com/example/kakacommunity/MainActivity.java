@@ -3,6 +3,7 @@ package com.example.kakacommunity;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -13,22 +14,27 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.kakacommunity.community.CommunityFragment;
 import com.example.kakacommunity.home.HomeFragment;
 import com.example.kakacommunity.mine.MineFragment;
+import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_TOP;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 
-    public static boolean isShow = true;
+public class MainActivity extends AppCompatActivity {
 
     private ImageView search;
 
@@ -40,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentPagerAdapter pagerAdapter;
 
+    private FloatingActionButton floatingActionButton;
+
+    private FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +58,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        fragmentManager = getSupportFragmentManager();
         search = (ImageView)findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
+            }
+        });
+        floatingActionButton = (FloatingActionButton)findViewById(R.id.floating_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = getFragment();
+                Intent intent;
+                if(fragment != null) {
+                    if (fragment instanceof HomeFragment) {
+                        intent = new Intent(HOME_TOP);
+                        sendBroadcast(intent);
+                    }
+                    if(fragment instanceof CommunityFragment) {
+                        intent = new Intent(COMMUNITY_TOP);
+                        sendBroadcast(intent);
+                    }
+                    if(fragment instanceof ProjectFragment) {
+                        intent = new Intent(PROJECT_TOP);
+                        sendBroadcast(intent);
+                    }
+                }
             }
         });
         bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
@@ -82,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
                 return fragmentList.size();
             }
         };
-
         addFragment();
         bottomNavigationView.setOnNavigationItemSelectedListener(selectedListener);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(4);
     }
+
 
     /**
      * 添加内容fragment
@@ -99,6 +132,19 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(new MineFragment());
     }
 
+    /**
+     * 获取当前展示的fragment
+     */
+    public Fragment getFragment() {
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for(int i = 0; i < fragments.size(); i++) {
+            Fragment fragment = fragments.get(i);
+            if(fragment!=null && fragment.isAdded()&&fragment.isMenuVisible()) {
+                return fragment;
+            }
+        }
+        return null;
+    }
 
 
     /**
@@ -110,15 +156,19 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()){
                 case R.id.home:
                     viewPager.setCurrentItem(0);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.community:
                     viewPager.setCurrentItem(1);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.project:
                     viewPager.setCurrentItem(2);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.mine:
                     viewPager.setCurrentItem(3);
+                    floatingActionButton.setVisibility(View.GONE);
                     return true;
             }
             return false;

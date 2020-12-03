@@ -1,6 +1,9 @@
 package com.example.kakacommunity.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,8 +46,11 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.MainActivity.bottomNavigationView;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 
 public class HomeFragment extends Fragment {
+
+    private HomeBroadcastReceiver homeBroadcastReceiver;
 
     private RefreshLayout refreshLayout;
 
@@ -70,6 +77,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
+        homeBroadcastReceiver = new HomeBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         nestedScrollView = (NestedScrollView)view.findViewById(R.id.nest_scroll_view);
         initRefreshView();
@@ -274,5 +282,17 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    class HomeBroadcastReceiver extends BroadcastReceiver {
+        public HomeBroadcastReceiver() {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(HOME_TOP);
+            getActivity().registerReceiver(this, intentFilter);
+        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            nestedScrollView.smoothScrollTo(0, 0);
+        }
     }
 }

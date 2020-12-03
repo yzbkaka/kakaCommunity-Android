@@ -8,4 +8,5 @@
     <color name="title">#2e3135</color>
     <color name="author">#484848</color>
     <color name="time">#999999</color>
+    <color name="red">#f44336</color>
 </resources>

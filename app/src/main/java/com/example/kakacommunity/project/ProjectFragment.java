@@ -1,8 +1,11 @@
 package com.example.kakacommunity.project;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -43,8 +46,11 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.MainActivity.bottomNavigationView;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 
 public class ProjectFragment extends Fragment {
+
+    private ProjectBroadcastReceiver projectBroadcastReceiver;
 
     private ProgressDialog progressDialog;
 
@@ -68,6 +74,7 @@ public class ProjectFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_project, container, false);
+        projectBroadcastReceiver = new ProjectBroadcastReceiver();
         dataBaseHelper = MyDataBaseHelper.getInstance();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
         initRefreshView();
@@ -110,9 +117,7 @@ public class ProjectFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //showProgressDialog();
         queryProjectTreeList();
-        getProjectJSON(pageNum, tabNum);
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -124,16 +129,6 @@ public class ProjectFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {  //设置上滑下滑监听
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {  //下滑
-                    bottomNavigationView.setVisibility(View.GONE);
-                } else {  //上滑
-                    bottomNavigationView.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
     }
 
     private void queryProjectTreeList() {
@@ -152,6 +147,8 @@ public class ProjectFragment extends Fragment {
         cursor.close();
         if (projectTreeList.size() == 0) {
             getProjectTreeJson();
+        }else {
+            getProjectJSON(pageNum, tabNum);
         }
     }
 
@@ -164,7 +161,6 @@ public class ProjectFragment extends Fragment {
                         Toast.makeText(MyApplication.getContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseData = response.body().string();
@@ -187,6 +183,7 @@ public class ProjectFragment extends Fragment {
     }
 
     private void getProjectTreeJson() {
+        showProgressDialog();
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/tree" + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -201,6 +198,7 @@ public class ProjectFragment extends Fragment {
                     @Override
                     public void run() {
                         closeProgressDialog();
+                        getProjectJSON(pageNum, tabNum);
                     }
                 });
             }
@@ -265,6 +263,18 @@ public class ProjectFragment extends Fragment {
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    class ProjectBroadcastReceiver extends BroadcastReceiver {
+        public ProjectBroadcastReceiver() {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(PROJECT_TOP);
+            getActivity().registerReceiver(this, intentFilter);
+        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            recyclerView.smoothScrollToPosition(0);
         }
     }
 }
