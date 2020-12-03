@@ -236,6 +236,8 @@ public class HomeFragment extends Fragment {
                 homeArticle.setLink(jsonObject.getString("link"));
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
+                JSONArray tags = jsonObject.getJSONArray("tags");
+                if(tags.length() != 0) homeArticle.setTag(tags.getJSONObject(0).getString("name"));
                 homeArticleList.add(homeArticle);
             }
         } catch (Exception e) {

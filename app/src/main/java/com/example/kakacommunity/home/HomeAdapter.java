@@ -27,6 +27,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView time;
         TextView title;
         TextView chapter;
+        TextView tag;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -35,6 +36,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             time = (TextView)itemView.findViewById(R.id.home_item_time);
             title = (TextView)itemView.findViewById(R.id.home_item_title);
             chapter = (TextView)itemView.findViewById(R.id.home_item_chapter);
+            tag = (TextView)itemView.findViewById(R.id.home_item_tag);
         }
     }
 
@@ -56,6 +58,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.time.setText(homeArticle.getNiceDate());
         holder.title.setText(homeArticle.getTitle());
         holder.chapter.setText(homeArticle.getChapterName());
+        String tag = homeArticle.getTag();
+        if(tag != null) {
+            holder.tag.setVisibility(View.VISIBLE);
+            holder.tag.setText(tag);
+        }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

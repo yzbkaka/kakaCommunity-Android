@@ -1,5 +1,7 @@
 package com.example.kakacommunity.model;
 
+import com.example.kakacommunity.utils.StringUtil;
+
 public class HomeArticle {
 
     private int id;
@@ -33,6 +35,19 @@ public class HomeArticle {
      * 子分类
      */
     private String chapterName;
+
+    /**
+     * 标签
+     */
+    private String tag;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public int getId() {
         return id;

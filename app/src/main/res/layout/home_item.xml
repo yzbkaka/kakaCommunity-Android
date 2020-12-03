@@ -75,21 +75,24 @@
             android:id="@+id/home_item_chapter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textColor="@color/author"
-            android:layout_alignTop="@+id/img_collect"
+            android:layout_alignTop="@+id/home_item_tag"
             android:gravity="center"
             tools:text="混淆"/>
 
-        <ImageView
+        <TextView
+            android:id="@+id/home_item_tag"
             android:visibility="invisible"
-            android:id="@+id/img_collect"
-            android:layout_width="25dp"
-            android:layout_height="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="公众号"
+            android:textColor="@color/green"
+            android:padding="3dp"
             android:layout_below="@+id/home_item_title"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/bg_tag"
             android:layout_alignParentRight="true" />
-
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
