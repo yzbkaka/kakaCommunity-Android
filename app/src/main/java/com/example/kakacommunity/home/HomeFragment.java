@@ -22,13 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.wingsofts.byeburgernavigationview.ByeBurgerBehavior;
@@ -90,9 +93,10 @@ public class HomeFragment extends Fragment {
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
-        //refreshLayout.setRefreshHeader(new BezierRadarHeader(MyApplication.getContext()).setEnableHorizontalDrag(true));
-        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
-        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        //refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
+        //refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
+        refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
@@ -155,20 +159,6 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        /*nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY - oldScrollY > 0) {
-                    bottomNavigationView.startAnimation(hideAnimation);
-                    bottomNavigationView.setVisibility(View.INVISIBLE);
-
-                } else {
-                    bottomNavigationView.setVisibility(View.VISIBLE);
-                    bottomNavigationView.startAnimation(showAnimation);
-                }
-            }
-        });*/
-
     }
 
     /**

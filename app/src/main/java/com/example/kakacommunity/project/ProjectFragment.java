@@ -24,13 +24,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
+import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.model.ProjectTree;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
@@ -85,8 +88,10 @@ public class ProjectFragment extends Fragment {
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
-        refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
-        refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        //refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
+        //refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
+        refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
+        refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
