@@ -17,6 +17,14 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
             + "id text primary key,"
             + "name text)";
 
+    public static final String CREATE_TAG = "create table Tag("
+            + "id Integer primary key autoincrement,"
+            + "name text)";
+
+    public static final String CREATE_HISTORY = "create table History("
+            + "id Integer primary key autoincrement,"
+            + "name text)";
+
     private Context context;
 
     public MyDataBaseHelper(@Nullable Context context, @Nullable String name,
@@ -35,11 +43,16 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREEATE_PROJECT_TREE);
+        db.execSQL(CREATE_TAG);
+        db.execSQL(CREATE_HISTORY);
         Toast.makeText(context, "create succeeded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("drop table if exists ProjectTree");
+        db.execSQL("drop table if exists Tag");
+        db.execSQL("drop table if exists History");
+        onCreate(db);
     }
 }

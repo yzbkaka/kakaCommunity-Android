@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ezy.ui.view.RoundButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tag_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="13sp"
+    android:layout_margin="5dp"
+    android:padding="6dp"
+    android:text="Text"
+    app:btnCornerRadius="10dp"
+    app:btnSolidColor="#F5F5F5"
+    android:textColor="#999999">
+</ezy.ui.view.RoundButton>

@@ -6,14 +6,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +40,8 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDR
 
 public class ShowSearchActivity extends AppCompatActivity {
 
+    private SmartRefreshLayout refreshLayout;
+
     private ImageView back;
 
     private TextView title;
@@ -43,6 +53,8 @@ public class ShowSearchActivity extends AppCompatActivity {
     private List<HomeArticle> articleList = new ArrayList<>();
 
     private HomeAdapter homeAdapter;
+
+    private int curPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +81,23 @@ public class ShowSearchActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        refreshLayout = (SmartRefreshLayout)findViewById(R.id.query_refresh_layout);
+        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
+        refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                getQueryJSON();
+                refreshlayout.finishLoadMore();
+
+            }
+        });
         back = (ImageView)findViewById(R.id.query_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +124,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         RequestBody requestBody = new FormBody.Builder()
                 .add("k", keyWord)
                 .build();
-        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/0" + "/json", requestBody, new okhttp3.Callback() {
+        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + curPage + "/json", requestBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -113,6 +142,7 @@ public class ShowSearchActivity extends AppCompatActivity {
                 });
             }
         });
+        curPage++;
     }
 
     private void parseQueryJSON(String responseData) {
@@ -124,7 +154,7 @@ public class ShowSearchActivity extends AppCompatActivity {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 HomeArticle homeArticle = new HomeArticle();
                 homeArticle.setAuthor(jsonObject.getString("author"));
-                homeArticle.setTitle(jsonObject.getString("title"));
+                homeArticle.setTitle(String.valueOf(Html.fromHtml(jsonObject.getString("title"))));
                 homeArticle.setLink(jsonObject.getString("link"));
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
@@ -135,5 +165,11 @@ public class ShowSearchActivity extends AppCompatActivity {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        curPage = 0;
     }
 }

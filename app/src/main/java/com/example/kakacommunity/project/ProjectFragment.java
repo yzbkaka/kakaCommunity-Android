@@ -106,7 +106,6 @@ public class ProjectFragment extends Fragment {
             public void onLoadMore(RefreshLayout refreshlayout) {
                 getProjectJSON(pageNum, tabNum);
                 refreshlayout.finishLoadMore();
-
             }
         });
     }
