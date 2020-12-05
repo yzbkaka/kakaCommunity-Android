@@ -6,11 +6,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -53,6 +55,8 @@ public class SearchActivity extends AppCompatActivity {
     private List<String> tagList = new ArrayList<>();
 
     private List<String> historyList = new ArrayList<>();
+
+    private TextView clear;
 
     private String keyWord = "";
 
@@ -140,6 +144,7 @@ public class SearchActivity extends AppCompatActivity {
         searchText = (TextInputEditText) findViewById(R.id.search_text);
         search = (ImageView) findViewById(R.id.search_search);
         tagFlowLayout = (TagFlowLayout) findViewById(R.id.tag_flow_layout);
+        clear = (TextView)findViewById(R.id.clear_history);
         historyFlowLayout = (TagFlowLayout) findViewById(R.id.history_flow_layout);
         inflater = LayoutInflater.from(SearchActivity.this);
         tagFlowLayout.setAdapter(new TagAdapter<String>(tagList) {
@@ -155,14 +160,15 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("resume","resume");
         queryHistory();
-        historyFlowLayout.setAdapter(new TagAdapter<String>(historyList) {
+        updateHistory();
+        clear.setOnClickListener(new View.OnClickListener() {
             @Override
-            public View getView(FlowLayout parent, int position, String s) {
-                RoundButton roundButton = (RoundButton) inflater.inflate(R.layout.tag, historyFlowLayout, false);
-                roundButton.setText(historyList.get(position));
-                return roundButton;
+            public void onClick(View v) {
+                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                db.delete("History",null,null);
+                historyList.clear();
+                updateHistory();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -212,5 +218,16 @@ public class SearchActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         db.insert("History", null, contentValues);
+    }
+
+    private void updateHistory() {
+        historyFlowLayout.setAdapter(new TagAdapter<String>(historyList) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                RoundButton roundButton = (RoundButton) inflater.inflate(R.layout.tag, historyFlowLayout, false);
+                roundButton.setText(historyList.get(position));
+                return roundButton;
+            }
+        });
     }
 }
