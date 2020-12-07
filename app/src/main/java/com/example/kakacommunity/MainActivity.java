@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
 
     private FragmentManager fragmentManager;
+
+    private MineFragment mineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.mine:
                     viewPager.setCurrentItem(3);
+                    Log.e("float","消失");
                     floatingActionButton.setVisibility(View.GONE);
                     return true;
             }

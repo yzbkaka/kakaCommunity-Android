@@ -51,7 +51,7 @@
         app:layout_behavior="@string/bye_burger_bottom_behavior"
         app:labelVisibilityMode="labeled"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:background="@color/white"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_menu">
