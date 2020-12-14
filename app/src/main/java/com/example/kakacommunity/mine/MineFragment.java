@@ -62,11 +62,17 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.my_article:
-                Intent intent = new Intent(MyApplication.getContext(),MyArticleActivity.class);
-                startActivity(intent);
+                Intent intent1 = new Intent(MyApplication.getContext(),MyArticleActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.web:
+                Intent intent2 = new Intent(MyApplication.getContext(),UseWebActivity.class);
+                startActivity(intent2);
+                break;
             case R.id.tree:
+                Intent intent3 = new Intent(MyApplication.getContext(), TreeActivity.class);
+                startActivity(intent3);
+                break;
             case R.id.collect:
             case R.id.setting:
             case R.id.about:
