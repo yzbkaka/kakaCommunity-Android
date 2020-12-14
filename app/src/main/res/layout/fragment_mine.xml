@@ -4,66 +4,26 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="250dp">
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                <ImageView
-                    android:id="@+id/back_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/test"
-                    app:layout_collapseMode="parallax"/>
-
-                &lt;!&ndash;<androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"/>&ndash;&gt;
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <ImageView
                 android:id="@+id/back_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@color/colorPrimary"/>
-
             <RelativeLayout
-                android:layout_marginLeft="30dp"
                 android:layout_width="wrap_content"
-                android:layout_height="200dp">
-
+                android:layout_height="180dp">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/head_image"
-                    android:layout_width="70dp"
+                    android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_launcher_background"/>
-
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
@@ -72,16 +32,213 @@
                     android:layout_below="@+id/head_image"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:layout_gravity="center_vertical"
-                    android:text="yzbkaka"/>
+                    android:text="未登录，点击登录"/>
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mine_recycler_view"
+            <LinearLayout
                 android:layout_marginTop="200dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <!--my_article-->
+                <LinearLayout
+                    android:id="@+id/my_article"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="我的帖子"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--web-->
+                <LinearLayout
+                    android:id="@+id/web"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="常用网站"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--tree-->
+                <LinearLayout
+                    android:id="@+id/tree"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="知识体系"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--collect-->
+                <LinearLayout
+                    android:id="@+id/collect"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="我的收藏"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--setting-->
+                <LinearLayout
+                    android:id="@+id/setting"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="项目设置"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--about-->
+                <LinearLayout
+                    android:id="@+id/about"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="关于项目"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+                <!--exit-->
+                <LinearLayout
+                    android:id="@+id/exit"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="退出登录"
+                        android:textSize="16sp"
+                        android:textColor="@color/red"
+                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/to"/>
+                </LinearLayout>
+            </LinearLayout>
         </FrameLayout>
     </androidx.core.widget.NestedScrollView>
 
