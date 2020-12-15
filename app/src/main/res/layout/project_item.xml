@@ -36,9 +36,9 @@
 
         <ImageView
             android:id="@+id/project_item_image"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="215dp"
+            android:layout_height="220dp"
             android:src="@drawable/default_project_img"
             android:scaleType="centerCrop"/>
 
@@ -58,6 +58,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/project_item_chapter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
