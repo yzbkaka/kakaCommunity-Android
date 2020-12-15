@@ -9,7 +9,7 @@ public class kakaCommunityConstant {
 
     public static final String HOME_TOP = "com.example.kakacommunity.home_top_broadcast";
 
-    public static final String COMMUNITY_TOP = "com.example.kakacommunity.community_top_broadcast";
+    public static final String COMMUNITY_ADD = "com.example.kakacommunity.community_add_broadcast";
 
     public static final String PROJECT_TOP = "com.example.kakacommunity.project_top_broadcast";
 }

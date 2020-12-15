@@ -1,5 +1,7 @@
 package com.example.kakacommunity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,10 +11,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,7 +26,6 @@ import android.widget.Toast;
 import com.example.kakacommunity.community.CommunityFragment;
 import com.example.kakacommunity.home.HomeFragment;
 import com.example.kakacommunity.mine.MineFragment;
-import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -31,7 +36,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_TOP;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 
@@ -49,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton floatingActionButton;
 
+    private FloatingActionButton addButton;
+
     private FragmentManager fragmentManager;
 
     private MineFragment mineFragment;
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         fragmentManager = getSupportFragmentManager();
-        search = (ImageView)findViewById(R.id.search);
+        search = (ImageView) findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,33 +77,42 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        floatingActionButton = (FloatingActionButton)findViewById(R.id.floating_button);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = getFragment();
                 Intent intent;
-                if(fragment != null) {
+                if (fragment != null) {
                     if (fragment instanceof HomeFragment) {
                         intent = new Intent(HOME_TOP);
                         sendBroadcast(intent);
                     }
-                    if(fragment instanceof CommunityFragment) {
-                        intent = new Intent(COMMUNITY_TOP);
-                        sendBroadcast(intent);
-                    }
-                    if(fragment instanceof ProjectFragment) {
+                    if (fragment instanceof ProjectFragment) {
                         intent = new Intent(PROJECT_TOP);
                         sendBroadcast(intent);
                     }
                 }
             }
         });
-        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
-        viewPager = (ViewPager)findViewById(R.id.view_pager);
+        addButton = (FloatingActionButton)findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = getFragment();
+                Intent intent;
+                if (fragment instanceof CommunityFragment) {
+                    intent = new Intent(COMMUNITY_ADD);
+                    sendBroadcast(intent);
+                }
+            }
+        });
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -104,9 +120,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
-
+        viewPager.setOnTouchListener(new View.OnTouchListener() {  //禁止ViewPager滑动
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         pagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -140,9 +162,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public Fragment getFragment() {
         List<Fragment> fragments = fragmentManager.getFragments();
-        for(int i = 0; i < fragments.size(); i++) {
+        for (int i = 0; i < fragments.size(); i++) {
             Fragment fragment = fragments.get(i);
-            if(fragment!=null && fragment.isAdded()&&fragment.isMenuVisible()) {
+            if (fragment != null && fragment.isAdded() && fragment.isMenuVisible()) {
                 return fragment;
             }
         }
@@ -156,22 +178,25 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.home:
                     viewPager.setCurrentItem(0);
+                    addButton.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.community:
                     viewPager.setCurrentItem(1);
-                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.setVisibility(View.GONE);
+                    addButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.project:
                     viewPager.setCurrentItem(2);
+                    addButton.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.mine:
                     viewPager.setCurrentItem(3);
-                    Log.e("float","消失");
+                    addButton.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.GONE);
                     return true;
             }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -141,7 +142,10 @@ public class TreeActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(TreeActivity.this, treeList.get(position).getId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(TreeActivity.this,TreeArticleActivity.class);
+                intent.putExtra("id",treeList.get(position).getId());
+                intent.putExtra("name",treeList.get(position).getName());
+                startActivity(intent);
             }
         });
     }
