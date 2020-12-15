@@ -118,6 +118,7 @@ public class TreeArticleActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                homeAdapter.notifyDataSetChanged();
                             }
                         });
                     }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -89,6 +90,7 @@ public class TreeActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                     }
                 });
             }
@@ -103,17 +105,21 @@ public class TreeActivity extends AppCompatActivity {
             for (int i = 0; i < datas.length(); i++) {
                 ContentValues contentValues = new ContentValues();
                 JSONObject jsonObject = datas.getJSONObject(i);
-                String id = jsonObject.getString("id");
-                String name = jsonObject.getString("name");
-                contentValues.put("id",id);
-                contentValues.put("name", name);
-                db.insert("Tree", null, contentValues);
-                trees.add(name);
-                Tree tree = new Tree();
-                tree.setId(id);
-                tree.setName(name);
-                treeList.add(tree);
+                JSONArray children = jsonObject.getJSONArray("children");
+                for(int j = 0;j < children.length();j++) {
+                    JSONObject object = children.getJSONObject(j);
+                    String id = object.getString("id");
+                    String name = object.getString("name");
+                    contentValues.put("id", id);
+                    contentValues.put("name", name);
+                    Tree tree = new Tree();
+                    tree.setId(id);
+                    tree.setName(name);
+                    db.insert("Tree", null, contentValues);
+                    treeList.add(tree);
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
