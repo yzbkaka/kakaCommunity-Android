@@ -22,7 +22,7 @@
                 android:text="kakaCommunity"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="15dp"
                 android:layout_gravity="center_vertical"/>
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:src="@drawable/search"
                     android:layout_centerInParent="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginRight="20dp"/>
+                    android:layout_marginRight="15dp"/>
             </RelativeLayout>
         </LinearLayout>
 

@@ -13,11 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.kakacommunity.R;
@@ -42,6 +47,8 @@ public class ProjectFragment extends Fragment {
 
     private TabLayout tabLayout;
 
+    private ImageView imageView;
+
     private ViewPager viewPager;
 
     private ProgressDialog progressDialog;
@@ -59,6 +66,7 @@ public class ProjectFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_project, container, false);
         dataBaseHelper = MyDataBaseHelper.getInstance();
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        imageView = (ImageView) view.findViewById(R.id.classify);
         viewPager = (ViewPager) view.findViewById(R.id.tab_view_pager);
         return view;
     }
@@ -68,6 +76,30 @@ public class ProjectFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         queryProjectTreeList();
         initViewPager();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPopWindows(v);
+            }
+        });
+    }
+
+    private void startPopWindows(View v) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_pop_windows, null);
+        PopupWindow popupWindow = new PopupWindow(view,ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.classify_recycler_view);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        RecycleViewGridAdapter adapter = new RecycleViewGridAdapter(popupWindow);
+        recyclerView.setAdapter(adapter);
+        popupWindow.showAsDropDown(v);
+
     }
 
     private void queryProjectTreeList() {
@@ -146,6 +178,8 @@ public class ProjectFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+
+
     private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
@@ -158,6 +192,49 @@ public class ProjectFragment extends Fragment {
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    class RecycleViewGridAdapter extends RecyclerView.Adapter<RecycleViewGridAdapter.ViewHolder> {
+
+        private PopupWindow popupWindow;
+
+        public RecycleViewGridAdapter(PopupWindow popupWindow) {
+            this.popupWindow = popupWindow;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView textView;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                textView = (TextView) itemView.findViewById(R.id.item_classify);
+            }
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_item, parent, false);
+            ViewHolder viewHolder = new ViewHolder(view);
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            holder.textView.setText(projectTreeList.get(position).getName());
+            holder.textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(position);
+                    popupWindow.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return projectTreeList.size();
         }
     }
 

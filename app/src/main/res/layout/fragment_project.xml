@@ -8,18 +8,29 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/colorPrimary">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/classify"
             android:background="@color/colorPrimary"
             app:tabIndicatorColor="@color/white"
             app:tabSelectedTextColor="@color/white"
             app:tabTextColor="@color/white"
             app:tabIndicatorHeight="3dp"
             app:tabMode="scrollable" />
+
+        <ImageView
+            android:id="@+id/classify"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/classify"/>
     </RelativeLayout>
 
     <androidx.viewpager.widget.ViewPager
