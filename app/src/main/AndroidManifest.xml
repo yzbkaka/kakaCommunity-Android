@@ -21,11 +21,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mine.TreeArticleActivity"></activity>
-        <activity android:name=".mine.TreeActivity"
-            android:label="知识体系"/>
-        <activity android:name=".mine.UseWebActivity"
-            android:label="常用网站"/>
+        <activity android:name=".mine.CollectActivity"
+            android:label="我的收藏"></activity>
+        <activity android:name=".mine.TreeArticleActivity" />
+        <activity
+            android:name=".mine.TreeActivity"
+            android:label="知识体系" />
+        <activity
+            android:name=".mine.UseWebActivity"
+            android:label="常用网站" />
         <activity
             android:name=".mine.MyArticleActivity"
             android:label="我的帖子" />

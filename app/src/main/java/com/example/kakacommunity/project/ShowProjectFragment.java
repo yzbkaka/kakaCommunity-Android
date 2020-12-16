@@ -144,7 +144,6 @@ public class ShowProjectFragment extends Fragment {
                 });
     }
 
-
     private void parseProjectJSON(String responseData) {
         try {
             JSONObject jsonData = new JSONObject(responseData);
@@ -165,7 +164,6 @@ public class ShowProjectFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
 
     class ProjectBroadcastReceiver extends BroadcastReceiver {
         public ProjectBroadcastReceiver() {
