@@ -138,7 +138,12 @@ public class ShowSearchActivity extends AppCompatActivity {
             for(int i = 0;i < datas.length();i++) {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 HomeArticle homeArticle = new HomeArticle();
-                homeArticle.setAuthor(jsonObject.getString("author"));
+                homeArticle.setFresh(jsonObject.getBoolean("fresh"));
+                String author = jsonObject.getString("author");
+                if (author.length() == 0) {
+                    author = jsonObject.getString("shareUser");
+                }
+                homeArticle.setAuthor(author);
                 homeArticle.setTitle(String.valueOf(Html.fromHtml(jsonObject.getString("title"))));
                 homeArticle.setLink(jsonObject.getString("link"));
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));

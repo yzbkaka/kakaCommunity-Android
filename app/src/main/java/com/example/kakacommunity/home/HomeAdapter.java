@@ -23,6 +23,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
+        TextView fresh;
         TextView author;
         TextView time;
         TextView title;
@@ -32,11 +33,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.home_item_layout);
-            author = (TextView)itemView.findViewById(R.id.home_item_author);
-            time = (TextView)itemView.findViewById(R.id.home_item_time);
-            title = (TextView)itemView.findViewById(R.id.home_item_title);
-            chapter = (TextView)itemView.findViewById(R.id.home_item_chapter);
-            tag = (TextView)itemView.findViewById(R.id.home_item_tag);
+            fresh = (TextView) itemView.findViewById(R.id.home_item_fresh);
+            author = (TextView) itemView.findViewById(R.id.home_item_author);
+            time = (TextView) itemView.findViewById(R.id.home_item_time);
+            title = (TextView) itemView.findViewById(R.id.home_item_title);
+            chapter = (TextView) itemView.findViewById(R.id.home_item_chapter);
+            tag = (TextView) itemView.findViewById(R.id.home_item_tag);
         }
     }
 
@@ -58,8 +60,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.time.setText(homeArticle.getNiceDate());
         holder.title.setText(homeArticle.getTitle());
         holder.chapter.setText(homeArticle.getChapterName());
+        boolean fresh = homeArticle.isFresh();
+        if (fresh) {
+            holder.fresh.setVisibility(View.VISIBLE);
+        }
         String tag = homeArticle.getTag();
-        if(tag != null) {
+        if (tag != null) {
             holder.tag.setVisibility(View.VISIBLE);
             holder.tag.setText(tag);
         }
@@ -76,11 +82,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return homeArticleList.size();
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
-    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener){
+    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {
         this.onItemClickListener = onItemCLickListener;
     }
 }

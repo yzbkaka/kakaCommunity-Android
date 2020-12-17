@@ -7,6 +7,11 @@ public class HomeArticle {
     private int id;
 
     /**
+     * 是否是“新”
+     */
+    private boolean fresh;
+
+    /**
      * 作者
      */
     private String author;
@@ -40,6 +45,14 @@ public class HomeArticle {
      * 标签
      */
     private String tag;
+
+    public boolean isFresh() {
+        return fresh;
+    }
+
+    public void setFresh(boolean fresh) {
+        this.fresh = fresh;
+    }
 
     public String getTag() {
         return tag;

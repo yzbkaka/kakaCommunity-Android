@@ -47,7 +47,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
-import static com.example.kakacommunity.MainActivity.bottomNavigationView;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 
@@ -79,14 +78,14 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home,container,false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeBroadcastReceiver = new HomeBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        nestedScrollView = (NestedScrollView)view.findViewById(R.id.nest_scroll_view);
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.nest_scroll_view);
         initRefreshView();
-        bannerView = (com.youth.banner.Banner)view.findViewById(R.id.banner_view);
+        bannerView = (com.youth.banner.Banner) view.findViewById(R.id.banner_view);
         initBannerView();
-        recyclerView = (RecyclerView)view.findViewById(R.id.home_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recycler_view);
         initRecyclerView();
         return view;
     }
@@ -165,7 +164,7 @@ public class HomeFragment extends Fragment {
      * 获得首页文章json数据
      */
     private void getHomeArticleJSON() {
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage  + "/json", new okhttp3.Callback() {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -218,16 +217,21 @@ public class HomeFragment extends Fragment {
             JSONObject jsonData = new JSONObject(responseData);
             JSONObject data = jsonData.getJSONObject("data");
             JSONArray datas = data.getJSONArray("datas");
-            for(int i = 0;i < datas.length();i++) {
+            for (int i = 0; i < datas.length(); i++) {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 HomeArticle homeArticle = new HomeArticle();
-                homeArticle.setAuthor(jsonObject.getString("author"));
+                homeArticle.setFresh(jsonObject.getBoolean("fresh"));
+                String author = jsonObject.getString("author");
+                if (author.length() == 0) {
+                    author = jsonObject.getString("shareUser");
+                }
+                homeArticle.setAuthor(author);
                 homeArticle.setTitle(jsonObject.getString("title"));
                 homeArticle.setLink(jsonObject.getString("link"));
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
                 JSONArray tags = jsonObject.getJSONArray("tags");
-                if(tags.length() != 0) homeArticle.setTag(tags.getJSONObject(0).getString("name"));
+                if (tags.length() != 0) homeArticle.setTag(tags.getJSONObject(0).getString("name"));
                 homeArticleList.add(homeArticle);
             }
         } catch (Exception e) {
@@ -242,7 +246,7 @@ public class HomeFragment extends Fragment {
         try {
             JSONObject jsonData = new JSONObject(responseData);
             JSONArray datas = jsonData.getJSONArray("data");
-            for(int i = 0;i < datas.length();i++) {
+            for (int i = 0; i < datas.length(); i++) {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 Banner banner = new Banner();
                 banner.setImagePath(jsonObject.getString("imagePath"));
@@ -282,6 +286,7 @@ public class HomeFragment extends Fragment {
             intentFilter.addAction(HOME_TOP);
             getActivity().registerReceiver(this, intentFilter);
         }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             nestedScrollView.smoothScrollTo(0, 0);
