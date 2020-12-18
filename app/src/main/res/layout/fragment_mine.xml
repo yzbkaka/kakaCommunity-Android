@@ -174,22 +174,22 @@
         </LinearLayout>
         <!--setting-->
         <LinearLayout
-            android:id="@+id/setting"
+            android:id="@+id/history"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
             <ImageView
-                android:src="@drawable/setting"
+                android:src="@drawable/history"
                 android:layout_marginLeft="10dp"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center"/>
             <TextView
                 android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="项目设置"
+                android:text="阅读历史"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center"/>

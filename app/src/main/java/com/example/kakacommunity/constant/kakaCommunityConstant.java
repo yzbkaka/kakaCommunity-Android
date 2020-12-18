@@ -12,4 +12,9 @@ public class kakaCommunityConstant {
     public static final String COMMUNITY_ADD = "com.example.kakacommunity.community_add_broadcast";
 
     public static final String PROJECT_TOP = "com.example.kakacommunity.project_top_broadcast";
+
+    public static final String TYPE_ARTICLE = "10";
+
+    public static final String TYPE_PROJECT = "20";
+
 }

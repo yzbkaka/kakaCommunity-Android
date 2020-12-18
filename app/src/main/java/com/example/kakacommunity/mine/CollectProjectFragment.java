@@ -1,6 +1,5 @@
 package com.example.kakacommunity.mine;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
-import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.project.ProjectAdapter;
 
@@ -29,7 +26,6 @@ public class CollectProjectFragment extends Fragment {
 
     private List<Project> collectProjectList = new ArrayList<>();
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collect_project, container, false);

@@ -86,7 +86,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void queryHistory() {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-        Cursor cursor = db.query("History", null, null, null, null, null, null);
+        Cursor cursor = db.query("SearchHistory", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 String name = cursor.getString(cursor.getColumnIndex("name"));
@@ -166,7 +166,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-                db.delete("History",null,null);
+                db.delete("SearchHistory",null,null);
                 historyList.clear();
                 updateHistory();
             }
@@ -217,7 +217,7 @@ public class SearchActivity extends AppCompatActivity {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
-        db.insert("History", null, contentValues);
+        db.insert("SearchHistory", null, contentValues);
     }
 
     private void updateHistory() {

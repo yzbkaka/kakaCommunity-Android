@@ -178,8 +178,6 @@ public class ProjectFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-
-
     private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());

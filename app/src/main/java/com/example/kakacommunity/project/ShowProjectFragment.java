@@ -1,9 +1,11 @@
 package com.example.kakacommunity.project;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
@@ -32,7 +35,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -40,8 +45,12 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 
 public class ShowProjectFragment extends Fragment {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private ProjectBroadcastReceiver projectBroadcastReceiver;
 
@@ -65,6 +74,7 @@ public class ShowProjectFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_project,container,false);
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         projectBroadcastReceiver = new ProjectBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
         initRefreshView();
@@ -80,6 +90,7 @@ public class ShowProjectFragment extends Fragment {
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(projectList.get(position));
                 String link = projectList.get(position).getLink();
                 String title = projectList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
@@ -163,6 +174,21 @@ public class ShowProjectFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveReadHistory(Project project) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type",TYPE_PROJECT);
+        contentValues.put("author", project.getAuthor());
+        contentValues.put("image_link",project.getImageLink());
+        contentValues.put("title", project.getTitle());
+        contentValues.put("link", project.getLink());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", project.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     class ProjectBroadcastReceiver extends BroadcastReceiver {

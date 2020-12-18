@@ -1,17 +1,16 @@
 package com.example.kakacommunity.home;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,26 +21,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.HttpUtil;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
-import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
-import com.wingsofts.byeburgernavigationview.ByeBurgerBehavior;
 import com.youth.banner.indicator.CircleIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -49,8 +47,11 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
 public class HomeFragment extends Fragment {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private HomeBroadcastReceiver homeBroadcastReceiver;
 
@@ -79,6 +80,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         homeBroadcastReceiver = new HomeBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.nest_scroll_view);
@@ -150,6 +152,7 @@ public class HomeFragment extends Fragment {
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(homeArticleList.get(position));
                 String link = homeArticleList.get(position).getLink();
                 String title = homeArticleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
@@ -278,6 +281,20 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type",TYPE_ARTICLE);
+        contentValues.put("author", homeArticle.getAuthor());
+        contentValues.put("title", homeArticle.getTitle());
+        contentValues.put("link", homeArticle.getLink());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", homeArticle.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     class HomeBroadcastReceiver extends BroadcastReceiver {

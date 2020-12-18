@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.example.kakacommunity.MyApplication;
 
+
+
 public class MyDataBaseHelper extends SQLiteOpenHelper {
 
     private static MyDataBaseHelper dataBaseHelper;
@@ -21,7 +23,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
             + "id Integer primary key autoincrement,"
             + "name text)";
 
-    public static final String CREATE_HISTORY = "create table History("
+    public static final String CREATE_SEARCH_HISTORY = "create table SearchHistory("
             + "id Integer primary key autoincrement,"
             + "name text)";
 
@@ -33,6 +35,16 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TREE = "create table Tree("
             + "id text primary key,"
             + "name text)";
+
+    public static final String CREATE_HISTORY = "create table History("
+            + "id Integer primary key autoincrement,"
+            + "type text,"
+            + "author text,"
+            + "title text,"
+            + "link text,"
+            + "read_date text,"
+            + "image_link text,"
+            + "chapter_name text)";
 
     private Context context;
 
@@ -53,9 +65,10 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREEATE_PROJECT_TREE);
         db.execSQL(CREATE_TAG);
-        db.execSQL(CREATE_HISTORY);
+        db.execSQL(CREATE_SEARCH_HISTORY);
         db.execSQL(CREATE_USEWEB);
         db.execSQL(CREATE_TREE);
+        db.execSQL(CREATE_HISTORY);
         Toast.makeText(context, "create succeeded", Toast.LENGTH_SHORT).show();
     }
 
@@ -64,8 +77,9 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists ProjectTree");
         db.execSQL("drop table if exists Tag");
         db.execSQL("drop table if exists History");
-        db.execSQL("drop table if exists CREATE_USEWEB");
-        db.execSQL("drop table if exists CREATE_TREE");
+        db.execSQL("drop table if exists UseWeb");
+        db.execSQL("drop table if exists Tree");
+        db.execSQL("drop table if exists History");
         onCreate(db);
     }
 }

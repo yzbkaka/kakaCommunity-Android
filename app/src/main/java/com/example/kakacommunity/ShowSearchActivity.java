@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.home.WebActivity;
@@ -27,7 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -37,8 +42,11 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
 public class ShowSearchActivity extends AppCompatActivity {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private SmartRefreshLayout refreshLayout;
 
@@ -66,6 +74,7 @@ public class ShowSearchActivity extends AppCompatActivity {
 
 
     private void initView() {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         refreshLayout = (SmartRefreshLayout)findViewById(R.id.query_refresh_layout);
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
@@ -163,6 +172,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(articleList.get(position));
                 String link = articleList.get(position).getLink();
                 String title = articleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
@@ -171,6 +181,20 @@ public class ShowSearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type",TYPE_ARTICLE);
+        contentValues.put("author", homeArticle.getAuthor());
+        contentValues.put("title", homeArticle.getTitle());
+        contentValues.put("link", homeArticle.getLink());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", homeArticle.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     @Override
