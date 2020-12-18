@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".mine.HistoryActivity"
             android:label="历史阅读"></activity>
-        <activity android:name=".mine.AboutActivity" />
+        <activity android:name=".mine.AboutActivity"
+            android:label="关于项目"/>
         <activity
             android:name=".mine.CollectActivity"
             android:label="我的收藏" />
