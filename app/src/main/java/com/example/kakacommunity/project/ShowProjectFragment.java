@@ -135,7 +135,6 @@ public class ShowProjectFragment extends Fragment {
     }
 
     private void getProjectJSON(int page) {
-        Log.e("yzbkaka", String.valueOf(page));
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/" + page + "/json?cid=" + id,
                 new okhttp3.Callback() {
                     @Override

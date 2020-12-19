@@ -63,11 +63,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         boolean fresh = homeArticle.isFresh();
         if (fresh) {
             holder.fresh.setVisibility(View.VISIBLE);
+        }else {
+            holder.fresh.setVisibility(View.GONE);
         }
         String tag = homeArticle.getTag();
-        if (tag != null) {
-            holder.tag.setVisibility(View.VISIBLE);
+        if (!(tag == null || tag.length() == 0)) {
             holder.tag.setText(tag);
+            holder.tag.setVisibility(View.VISIBLE);
+        }else{
+            holder.tag.setVisibility(View.GONE);
         }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

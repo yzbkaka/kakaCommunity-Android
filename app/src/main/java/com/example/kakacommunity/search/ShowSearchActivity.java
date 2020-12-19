@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -124,7 +125,8 @@ public class ShowSearchActivity extends AppCompatActivity {
         RequestBody requestBody = new FormBody.Builder()
                 .add("k", keyWord)
                 .build();
-        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + page + "/json", requestBody, new okhttp3.Callback() {
+        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + page + "/json",
+                requestBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -165,7 +167,9 @@ public class ShowSearchActivity extends AppCompatActivity {
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
                 JSONArray tags = jsonObject.getJSONArray("tags");
-                if(tags.length() != 0) homeArticle.setTag(tags.getJSONObject(0).getString("name"));
+                if(tags.length() != 0) {
+                    homeArticle.setTag(tags.getJSONObject(0).getString("name"));
+                }
                 articleList.add(homeArticle);
             }
         }catch (Exception e) {
