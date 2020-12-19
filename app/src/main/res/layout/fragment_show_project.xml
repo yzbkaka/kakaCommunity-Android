@@ -5,9 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/project_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/project_error"
+            android:layout_marginTop="180dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/error"
+            android:gravity="center"/>
+
+    </LinearLayout>
 
 </com.scwang.smart.refresh.layout.SmartRefreshLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,8 @@ public class ShowProjectFragment extends Fragment {
 
     private String id;
 
+    private ImageView errorImage;
+
     public ShowProjectFragment(String id) {
         this.id = id;
     }
@@ -76,6 +79,7 @@ public class ShowProjectFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_project,container,false);
+        errorImage = (ImageView)view.findViewById(R.id.project_error);
         dataBaseHelper = MyDataBaseHelper.getInstance();
         projectBroadcastReceiver = new ProjectBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
@@ -99,6 +103,12 @@ public class ShowProjectFragment extends Fragment {
                 intent.putExtra("title", title);
                 intent.putExtra("url", link);
                 startActivity(intent);
+            }
+        });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProjectJSON(1);
             }
         });
     }
@@ -139,8 +149,16 @@ public class ShowProjectFragment extends Fragment {
                 new okhttp3.Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Toast.makeText(MyApplication.getContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
+                        if(!ActivityUtil.isDestroy(getActivity())){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    errorImage.setVisibility(View.VISIBLE);
+                                    Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -151,6 +169,7 @@ public class ShowProjectFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    errorImage.setVisibility(View.GONE);
                                     projectAdapter.notifyDataSetChanged();
                                 }
                             });

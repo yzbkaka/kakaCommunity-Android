@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.hyman:flowlayout-lib:1.1.2'
     implementation 'com.github.czy1121:roundbutton:1.1.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.billy.android:gloading:1.0.0'
 
     implementation 'com.scwang.smart:refresh-header-classics:2.0.1'    //经典刷新头
     implementation 'com.scwang.smart:refresh-header-radar:2.0.1'       //雷达刷新头

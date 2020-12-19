@@ -7,10 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,11 +75,13 @@ public class HomeFragment extends Fragment {
 
     private int curPage = 0;
 
+    private ImageView errorImage;
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        errorImage = (ImageView) view.findViewById(R.id.home_error);
         dataBaseHelper = MyDataBaseHelper.getInstance();
         homeBroadcastReceiver = new HomeBroadcastReceiver();
         refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
@@ -160,6 +163,13 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getHomeArticleJSON(0);
+                getBannerJSON();
+            }
+        });
     }
 
     /**
@@ -170,6 +180,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        errorImage.setVisibility(View.VISIBLE);
+                        Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -180,6 +197,7 @@ public class HomeFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            errorImage.setVisibility(View.GONE);
                             homeAdapter.notifyDataSetChanged();
                         }
                     });

@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.ProjectTree;
@@ -58,6 +59,7 @@ public class ProjectFragment extends Fragment {
     private List<ProjectTree> projectTreeList = new ArrayList<>();
 
     private List<Fragment> fragmentList = new ArrayList<>();
+
 
 
     @Override
@@ -122,7 +124,7 @@ public class ProjectFragment extends Fragment {
     }
 
     private void getProjectTreeJson() {
-        showProgressDialog();
+        //showProgressDialog();
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/tree" + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -136,7 +138,7 @@ public class ProjectFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        closeProgressDialog();
+                        //closeProgressDialog();
                     }
                 });
             }

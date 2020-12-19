@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
@@ -67,6 +68,8 @@ public class ShowSearchActivity extends AppCompatActivity {
 
     private int curPage = 0;
 
+    private ImageView errorImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,8 +79,9 @@ public class ShowSearchActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        errorImage = (ImageView) findViewById(R.id.search_error);
         dataBaseHelper = MyDataBaseHelper.getInstance();
-        refreshLayout = (SmartRefreshLayout)findViewById(R.id.query_refresh_layout);
+        refreshLayout = (SmartRefreshLayout) findViewById(R.id.query_refresh_layout);
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
         refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
@@ -99,15 +103,15 @@ public class ShowSearchActivity extends AppCompatActivity {
 
             }
         });
-        back = (ImageView)findViewById(R.id.query_back);
+        back = (ImageView) findViewById(R.id.query_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        title = (TextView)findViewById(R.id.query_title);
-        recyclerView = (RecyclerView)findViewById(R.id.query_recycler_view);
+        title = (TextView) findViewById(R.id.query_title);
+        recyclerView = (RecyclerView) findViewById(R.id.query_recycler_view);
         initRecyclerView();
     }
 
@@ -125,27 +129,37 @@ public class ShowSearchActivity extends AppCompatActivity {
         RequestBody requestBody = new FormBody.Builder()
                 .add("k", keyWord)
                 .build();
-        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + page + "/json",
+        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query" + "/" + page + "/json",
                 requestBody, new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
-                parseSearchJSON(responseData);
-                if(!ActivityUtil.isDestroy(ShowSearchActivity.this)) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            homeAdapter.notifyDataSetChanged();
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                        if (!ActivityUtil.isDestroy(ShowSearchActivity.this)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    errorImage.setVisibility(View.VISIBLE);
+                                    Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                    });
-                }
-            }
-        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseData = response.body().string();
+                        parseSearchJSON(responseData);
+                        if (!ActivityUtil.isDestroy(ShowSearchActivity.this)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    errorImage.setVisibility(View.GONE);
+                                    homeAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     private void parseSearchJSON(String responseData) {
@@ -153,7 +167,7 @@ public class ShowSearchActivity extends AppCompatActivity {
             JSONObject jsonData = new JSONObject(responseData);
             JSONObject data = jsonData.getJSONObject("data");
             JSONArray datas = data.getJSONArray("datas");
-            for(int i = 0;i < datas.length();i++) {
+            for (int i = 0; i < datas.length(); i++) {
                 JSONObject jsonObject = datas.getJSONObject(i);
                 HomeArticle homeArticle = new HomeArticle();
                 homeArticle.setFresh(jsonObject.getBoolean("fresh"));
@@ -167,12 +181,12 @@ public class ShowSearchActivity extends AppCompatActivity {
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));
                 JSONArray tags = jsonObject.getJSONArray("tags");
-                if(tags.length() != 0) {
+                if (tags.length() != 0) {
                     homeArticle.setTag(tags.getJSONObject(0).getString("name"));
                 }
                 articleList.add(homeArticle);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -192,12 +206,18 @@ public class ShowSearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSearchJSON(0);
+            }
+        });
     }
 
     private void saveReadHistory(HomeArticle homeArticle) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("type",TYPE_ARTICLE);
+        contentValues.put("type", TYPE_ARTICLE);
         contentValues.put("author", homeArticle.getAuthor());
         contentValues.put("title", homeArticle.getTitle());
         contentValues.put("link", homeArticle.getLink());
