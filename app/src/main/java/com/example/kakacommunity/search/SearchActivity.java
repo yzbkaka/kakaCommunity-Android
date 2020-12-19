@@ -1,4 +1,4 @@
-package com.example.kakacommunity;
+package com.example.kakacommunity.search;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,16 +6,14 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
-import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;

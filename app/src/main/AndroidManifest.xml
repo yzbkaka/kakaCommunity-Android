@@ -38,9 +38,9 @@
         <activity
             android:name=".mine.MyArticleActivity"
             android:label="我的帖子" />
-        <activity android:name=".ShowSearchActivity" />
+        <activity android:name=".search.ShowSearchActivity" />
         <activity android:name=".home.WebActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".search.SearchActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.example.kakacommunity;
+package com.example.kakacommunity.search;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
@@ -42,7 +44,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
-import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
 public class ShowSearchActivity extends AppCompatActivity {
@@ -70,9 +71,8 @@ public class ShowSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_search);
         initView();
-        getQueryJSON();
+        getSearchJSON(0);
     }
-
 
     private void initView() {
         dataBaseHelper = MyDataBaseHelper.getInstance();
@@ -83,12 +83,17 @@ public class ShowSearchActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                articleList.clear();
+                getSearchJSON(0);
+                curPage = 0;
+                refreshlayout.finishRefresh();
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                getQueryJSON();
+                curPage++;
+                getSearchJSON(curPage);
                 refreshlayout.finishLoadMore();
 
             }
@@ -112,14 +117,14 @@ public class ShowSearchActivity extends AppCompatActivity {
         recyclerView.setAdapter(homeAdapter);
     }
 
-    private void getQueryJSON() {
+    private void getSearchJSON(int page) {
         Intent intent = getIntent();
         keyWord = intent.getStringExtra("keyword");
         title.setText(keyWord);
         RequestBody requestBody = new FormBody.Builder()
                 .add("k", keyWord)
                 .build();
-        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + curPage + "/json", requestBody, new okhttp3.Callback() {
+        HttpUtil.OkHttpPOST(ANDROID_ADDRESS + "/article" + "/query"  + "/" + page + "/json", requestBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -128,7 +133,7 @@ public class ShowSearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                parseQueryJSON(responseData);
+                parseSearchJSON(responseData);
                 if(!ActivityUtil.isDestroy(ShowSearchActivity.this)) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -139,10 +144,9 @@ public class ShowSearchActivity extends AppCompatActivity {
                 }
             }
         });
-        curPage++;
     }
 
-    private void parseQueryJSON(String responseData) {
+    private void parseSearchJSON(String responseData) {
         try {
             JSONObject jsonData = new JSONObject(responseData);
             JSONObject data = jsonData.getJSONObject("data");
@@ -200,9 +204,4 @@ public class ShowSearchActivity extends AppCompatActivity {
         db.insert("History", null, contentValues);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        curPage = 0;
-    }
 }

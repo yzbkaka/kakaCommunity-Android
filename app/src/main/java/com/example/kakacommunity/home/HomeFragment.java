@@ -93,8 +93,6 @@ public class HomeFragment extends Fragment {
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
-        //refreshLayout.setRefreshHeader(new ClassicsHeader(MyApplication.getContext()).setAccentColorId(R.color.white));
-        //refreshLayout.setRefreshFooter(new ClassicsFooter(MyApplication.getContext()));
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
         refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -266,7 +264,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
+    /**
+     * 存储阅读历史
+     */
     private void saveReadHistory(HomeArticle homeArticle) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
