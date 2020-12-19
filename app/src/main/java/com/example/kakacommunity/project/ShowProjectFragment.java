@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,7 @@ public class ShowProjectFragment extends Fragment {
 
     private ProjectAdapter projectAdapter;
 
-    private volatile int curPage = 0;
+    private volatile int curPage = 1;
 
     private String id;
 
@@ -87,7 +88,7 @@ public class ShowProjectFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getProjectJSON(0);
+        getProjectJSON(1);
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -110,8 +111,8 @@ public class ShowProjectFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 projectList.clear();
-                getProjectJSON(0);
-                curPage = 0;
+                getProjectJSON(1);
+                curPage = 1;
                 refreshlayout.finishRefresh();
 
             }
@@ -119,8 +120,8 @@ public class ShowProjectFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                getProjectJSON(curPage);
                 curPage++;
+                getProjectJSON(curPage);
                 refreshlayout.finishLoadMore();
             }
         });
@@ -134,7 +135,7 @@ public class ShowProjectFragment extends Fragment {
     }
 
     private void getProjectJSON(int page) {
-
+        Log.e("yzbkaka", String.valueOf(page));
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/" + page + "/json?cid=" + id,
                 new okhttp3.Callback() {
                     @Override

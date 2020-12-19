@@ -72,8 +72,6 @@ public class HomeFragment extends Fragment {
 
     private List<Banner> bannerList = new ArrayList<>();
 
-    private int newPage = 0;
-
     private int curPage = 0;
 
 
@@ -103,7 +101,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 homeArticleList.clear();
-                refreshHomeArticleJSON();
+                getHomeArticleJSON(0);
+                curPage = 0;
                 bannerList.clear();
                 getBannerJSON();
                 refreshlayout.finishRefresh();
@@ -113,7 +112,8 @@ public class HomeFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                getHomeArticleJSON();
+                curPage++;
+                getHomeArticleJSON(curPage);
                 refreshlayout.finishLoadMore();
 
             }
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getHomeArticleJSON();
+        getHomeArticleJSON(0);
         getBannerJSON();
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
@@ -167,8 +167,8 @@ public class HomeFragment extends Fragment {
     /**
      * 获得首页文章json数据
      */
-    private void getHomeArticleJSON() {
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage + "/json", new okhttp3.Callback() {
+    private void getHomeArticleJSON(int page) {
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + page + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -188,7 +188,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        curPage++;
     }
 
     /**
@@ -267,32 +266,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /**
-     * 刷新首页文章数据
-     */
-    private void refreshHomeArticleJSON() {
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + newPage + "/json", new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
-                parseHomeArticleJSON(responseData);
-                if(!ActivityUtil.isDestroy(getActivity())) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            homeAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-
-            }
-        });
-    }
 
     private void saveReadHistory(HomeArticle homeArticle) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
