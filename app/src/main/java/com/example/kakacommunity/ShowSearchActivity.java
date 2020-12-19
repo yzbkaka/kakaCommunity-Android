@@ -18,6 +18,7 @@ import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -128,12 +129,14 @@ public class ShowSearchActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseQueryJSON(responseData);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        homeAdapter.notifyDataSetChanged();
-                    }
-                });
+                if(!ActivityUtil.isDestroy(ShowSearchActivity.this)) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            homeAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         });
         curPage++;

@@ -24,6 +24,7 @@ import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -133,6 +134,7 @@ public class ShowProjectFragment extends Fragment {
     }
 
     private void getProjectJSON(int page) {
+
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/list" + "/" + page + "/json?cid=" + id,
                 new okhttp3.Callback() {
                     @Override
@@ -145,12 +147,14 @@ public class ShowProjectFragment extends Fragment {
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseData = response.body().string();
                         parseProjectJSON(responseData);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                projectAdapter.notifyDataSetChanged();
-                            }
-                        });
+                        if(!ActivityUtil.isDestroy(getActivity())) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    projectAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
                     }
                 });
     }

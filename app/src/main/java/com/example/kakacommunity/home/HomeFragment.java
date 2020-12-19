@@ -25,6 +25,7 @@ import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -177,12 +178,14 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseHomeArticleJSON(responseData);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        homeAdapter.notifyDataSetChanged();
-                    }
-                });
+                if(!ActivityUtil.isDestroy(getActivity())) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            homeAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         });
         curPage++;
@@ -202,12 +205,14 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseBannerJSON(responseData);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        bannerAdapter.notifyDataSetChanged();
-                    }
-                });
+                if(!ActivityUtil.isDestroy(getActivity())) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            bannerAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         });
     }
@@ -262,6 +267,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * 刷新首页文章数据
+     */
     private void refreshHomeArticleJSON() {
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + newPage + "/json", new okhttp3.Callback() {
             @Override
@@ -273,12 +281,15 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseHomeArticleJSON(responseData);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        homeAdapter.notifyDataSetChanged();
-                    }
-                });
+                if(!ActivityUtil.isDestroy(getActivity())) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            homeAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
             }
         });
     }

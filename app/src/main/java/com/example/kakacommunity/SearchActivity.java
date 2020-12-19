@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kakacommunity.db.MyDataBaseHelper;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
@@ -115,6 +116,7 @@ public class SearchActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        updateTag();
                     }
                 });
             }
@@ -218,6 +220,17 @@ public class SearchActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         db.insert("SearchHistory", null, contentValues);
+    }
+
+    private void updateTag() {
+        tagFlowLayout.setAdapter(new TagAdapter<String>(tagList) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                RoundButton roundButton = (RoundButton) inflater.inflate(R.layout.tag, tagFlowLayout, false);
+                roundButton.setText(tagList.get(position));
+                return roundButton;
+            }
+        });
     }
 
     private void updateHistory() {
