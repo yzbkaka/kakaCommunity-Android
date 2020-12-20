@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -89,11 +90,11 @@ public class SearchActivity extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 String name = cursor.getString(cursor.getColumnIndex("name"));
-                if(!historyList.contains(name)) {
+                if (!historyList.contains(name)) {
                     historyList.add(0, name);
-                }else {
+                } else {
                     historyList.remove(name);
-                    historyList.add(0,name);
+                    historyList.add(0, name);
                 }
             } while (cursor.moveToNext());
         }
@@ -144,7 +145,7 @@ public class SearchActivity extends AppCompatActivity {
         searchText = (TextInputEditText) findViewById(R.id.search_text);
         search = (ImageView) findViewById(R.id.search_search);
         tagFlowLayout = (TagFlowLayout) findViewById(R.id.tag_flow_layout);
-        clear = (TextView)findViewById(R.id.clear_history);
+        clear = (TextView) findViewById(R.id.clear_history);
         historyFlowLayout = (TagFlowLayout) findViewById(R.id.history_flow_layout);
         inflater = LayoutInflater.from(SearchActivity.this);
         tagFlowLayout.setAdapter(new TagAdapter<String>(tagList) {
@@ -166,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-                db.delete("SearchHistory",null,null);
+                db.delete("SearchHistory", null, null);
                 historyList.clear();
                 updateHistory();
             }
@@ -187,6 +188,22 @@ public class SearchActivity extends AppCompatActivity {
                     saveHistory(keyWord);
                     startActivity(intent);
                 }
+            }
+        });
+        searchText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    keyWord = searchText.getText().toString();
+                    if (!StringUtil.isBlank(keyWord)) {
+                        Intent intent = new Intent(SearchActivity.this, ShowSearchActivity.class);
+                        intent.putExtra("keyword", keyWord);
+                        saveHistory(keyWord);
+                        startActivity(intent);
+                        return true;
+                    }
+                }
+                return false;
             }
         });
         tagFlowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
@@ -212,6 +229,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void saveHistory(String name) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
