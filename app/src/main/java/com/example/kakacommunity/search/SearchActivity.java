@@ -230,7 +230,6 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-
     private void saveHistory(String name) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

@@ -7,13 +7,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardBackgroundColor="@color/white"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_marginTop="10dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="6dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="5dp"
     android:layout_marginBottom="1dp"
     android:clickable="true"
     android:focusable="true"
-    app:contentPadding="8dp"
+    app:contentPadding="4dp"
     app:cardElevation="1dp"
     app:cardCornerRadius="3dp">
 
@@ -23,18 +23,20 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/project_item_author"
+            android:visibility="gone"
+            android:id="@+id/project_item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
             android:textSize="12sp"
-            android:textColor="@color/colorPrimary"
-            tools:text="yzbkaka"/>
+            android:textColor="@color/time"
+            android:text="2020-10-22" />
 
         <ImageView
             android:id="@+id/project_item_image"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="match_parent"
             android:src="@drawable/default_project_img"
             android:scaleType="centerCrop"/>
 
@@ -42,9 +44,11 @@
             android:id="@+id/project_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:textSize="14sp"
-            android:paddingTop="16dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="18dp"
             android:textColor="@color/title"
             android:text="Android App安全策略"/>
 
@@ -65,13 +69,23 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <TextView
-                    android:id="@+id/project_item_date"
+                    android:id="@+id/project_item_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/time"
-                    android:text="2020-10-22"
+                    android:textColor="@color/author"
+                    android:layout_marginBottom="2dp"
+                    tools:text="yzbkaka"/>
+
+                <ImageView
+                    android:id="@+id/project_item_collect"
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="2dp"
+                    android:src="@drawable/item_collect"
                     android:layout_alignParentEnd="true"/>
             </RelativeLayout>
         </LinearLayout>

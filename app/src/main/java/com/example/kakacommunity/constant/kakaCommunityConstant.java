@@ -17,4 +17,6 @@ public class kakaCommunityConstant {
 
     public static final String TYPE_PROJECT = "20";
 
+    public static boolean isReadHistory = false;
+
 }

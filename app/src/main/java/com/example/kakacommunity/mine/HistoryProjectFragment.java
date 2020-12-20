@@ -27,6 +27,7 @@ import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
 
 public class HistoryProjectFragment extends Fragment {
 
@@ -41,6 +42,7 @@ public class HistoryProjectFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history_project, container, false);
+        isReadHistory = true;
         dataBaseHelper = MyDataBaseHelper.getInstance();
         recyclerView = (RecyclerView)view.findViewById(R.id.history_project_recycler_view);
         queryHistoryProject();
@@ -93,5 +95,11 @@ public class HistoryProjectFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isReadHistory = false;
     }
 }

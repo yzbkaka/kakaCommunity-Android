@@ -18,6 +18,8 @@ import com.example.kakacommunity.model.Project;
 
 import java.util.List;
 
+import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
+
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
 
     private List<Project> projectList;
@@ -60,13 +62,18 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         holder.author.setText(project.getAuthor());
         RequestOptions options = new RequestOptions()
                 .placeholder(R.drawable.default_project_img)  //图片加载出来前，显示的图片
-                .fallback( R.drawable.default_project_img)  //url为空的时候,显示的图片
+                .fallback(R.drawable.default_project_img)  //url为空的时候,显示的图片
                 .error(R.drawable.default_project_img);  //图片加载失败后，显示的图片
         Glide.with(MyApplication.getContext())
                 .load(project.getImageLink())
                 .apply(options)
                 .into(holder.imageView);
         holder.time.setText(project.getDate());
+        if (isReadHistory) {
+            holder.time.setVisibility(View.VISIBLE);
+        } else {
+            holder.time.setVisibility(View.GONE);
+        }
         holder.title.setText(project.getTitle());
         holder.chapter.setText(project.getChapterName());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
