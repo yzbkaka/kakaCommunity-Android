@@ -52,14 +52,11 @@ public class ProjectFragment extends Fragment {
 
     private ViewPager viewPager;
 
-    private ProgressDialog progressDialog;
-
     private MyDataBaseHelper dataBaseHelper;
 
     private List<ProjectTree> projectTreeList = new ArrayList<>();
 
     private List<Fragment> fragmentList = new ArrayList<>();
-
 
 
     @Override
@@ -178,21 +175,6 @@ public class ProjectFragment extends Fragment {
         }
         viewPager.setAdapter(new TabFragmentAdapter(getFragmentManager(), fragmentList, projectTreeList));
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    private void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-
-    private void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     class RecycleViewGridAdapter extends RecyclerView.Adapter<RecycleViewGridAdapter.ViewHolder> {

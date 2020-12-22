@@ -1,5 +1,6 @@
 package com.example.kakacommunity.project;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -70,6 +71,8 @@ public class ShowProjectFragment extends Fragment {
     private String id;
 
     private ImageView errorImage;
+
+    private ProgressDialog progressDialog;
 
     public ShowProjectFragment(String id) {
         this.id = id;
@@ -212,6 +215,21 @@ public class ShowProjectFragment extends Fragment {
         contentValues.put("read_date", dateFormat.format(date));
         contentValues.put("chapter_name", project.getChapterName());
         db.insert("History", null, contentValues);
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("正在加载...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     class ProjectBroadcastReceiver extends BroadcastReceiver {

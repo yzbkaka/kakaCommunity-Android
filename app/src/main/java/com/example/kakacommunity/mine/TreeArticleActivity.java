@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -53,11 +54,14 @@ public class TreeArticleActivity extends AppCompatActivity {
 
     private int curPage = 0;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tree_article);
         initView();
+        showProgressDialog();
         getTreeArticleJSON();
     }
 
@@ -108,6 +112,12 @@ public class TreeArticleActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         e.printStackTrace();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                closeProgressDialog();
+                            }
+                        }).start();
                     }
 
                     @Override
@@ -118,6 +128,7 @@ public class TreeArticleActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                closeProgressDialog();
                                 homeAdapter.notifyDataSetChanged();
                             }
                         });
@@ -177,5 +188,20 @@ public class TreeArticleActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         curPage = 0;
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在加载...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }

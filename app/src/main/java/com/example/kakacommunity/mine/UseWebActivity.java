@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,6 +50,8 @@ public class UseWebActivity extends AppCompatActivity {
 
     private List<UseWeb> useWebList = new ArrayList<>();
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +76,7 @@ public class UseWebActivity extends AppCompatActivity {
         }
         cursor.close();
         if (tagList.size() == 0) {
+            showProgressDialog();
             getUseWebJSON();
         }
     }
@@ -82,6 +86,12 @@ public class UseWebActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                    }
+                });
             }
 
             @Override
@@ -91,6 +101,7 @@ public class UseWebActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        closeProgressDialog();
                     }
                 });
             }
@@ -168,5 +179,20 @@ public class UseWebActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在加载...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }

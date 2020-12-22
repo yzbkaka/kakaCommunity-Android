@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -70,11 +71,14 @@ public class ShowSearchActivity extends AppCompatActivity {
 
     private ImageView errorImage;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_search);
         initView();
+        showProgressDialog();
         getSearchJSON(0);
     }
 
@@ -138,6 +142,7 @@ public class ShowSearchActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    closeProgressDialog();
                                     errorImage.setVisibility(View.VISIBLE);
                                     Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                                 }
@@ -153,6 +158,7 @@ public class ShowSearchActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    closeProgressDialog();
                                     errorImage.setVisibility(View.GONE);
                                     homeAdapter.notifyDataSetChanged();
                                 }
@@ -226,6 +232,21 @@ public class ShowSearchActivity extends AppCompatActivity {
         contentValues.put("read_date", dateFormat.format(date));
         contentValues.put("chapter_name", homeArticle.getChapterName());
         db.insert("History", null, contentValues);
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在加载...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
 }

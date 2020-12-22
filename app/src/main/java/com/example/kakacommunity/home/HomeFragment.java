@@ -1,5 +1,6 @@
 package com.example.kakacommunity.home;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -77,6 +78,9 @@ public class HomeFragment extends Fragment {
 
     private ImageView errorImage;
 
+    private ProgressDialog progressDialog;
+
+
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -149,6 +153,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        showProgressDialog();
         getHomeArticleJSON(0);
         getBannerJSON();
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
@@ -172,6 +177,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
     /**
      * 获得首页文章json数据
      */
@@ -183,6 +189,7 @@ public class HomeFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        closeProgressDialog();
                         errorImage.setVisibility(View.VISIBLE);
                         Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
@@ -197,6 +204,7 @@ public class HomeFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            closeProgressDialog();
                             errorImage.setVisibility(View.GONE);
                             homeAdapter.notifyDataSetChanged();
                         }
@@ -297,6 +305,21 @@ public class HomeFragment extends Fragment {
         contentValues.put("read_date", dateFormat.format(date));
         contentValues.put("chapter_name", homeArticle.getChapterName());
         db.insert("History", null, contentValues);
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("正在加载...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     class HomeBroadcastReceiver extends BroadcastReceiver {
