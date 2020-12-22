@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +13,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.mine.about.AboutActivity;
+import com.example.kakacommunity.mine.collect.CollectActivity;
+import com.example.kakacommunity.mine.history.HistoryActivity;
+import com.example.kakacommunity.mine.marticle.MyArticleActivity;
+import com.example.kakacommunity.mine.tree.TreeActivity;
+import com.example.kakacommunity.mine.web.UseWebActivity;
 
 
 public class MineFragment extends Fragment implements View.OnClickListener {

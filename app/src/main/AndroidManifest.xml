@@ -21,32 +21,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mine.HistoryActivity"
+        <activity android:name=".mine.history.HistoryActivity"
             android:label="历史阅读"></activity>
-        <activity android:name=".mine.AboutActivity"
+        <activity android:name=".mine.about.AboutActivity"
             android:label="关于项目"/>
         <activity
-            android:name=".mine.CollectActivity"
+            android:name=".mine.collect.CollectActivity"
             android:label="我的收藏" />
-        <activity android:name=".mine.TreeArticleActivity" />
+        <activity android:name=".mine.tree.TreeArticleActivity" />
         <activity
-            android:name=".mine.TreeActivity"
+            android:name=".mine.tree.TreeActivity"
             android:label="知识体系" />
         <activity
-            android:name=".mine.UseWebActivity"
+            android:name=".mine.web.UseWebActivity"
             android:label="常用网站" />
         <activity
-            android:name=".mine.MyArticleActivity"
+            android:name=".mine.marticle.MyArticleActivity"
             android:label="我的帖子" />
         <activity android:name=".search.ShowSearchActivity" />
         <activity android:name=".home.WebActivity" />
         <activity android:name=".search.SearchActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -54,14 +53,11 @@
         <activity
             android:name=".LoginActivity"
             android:label="登录">
-
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
     </application>
 

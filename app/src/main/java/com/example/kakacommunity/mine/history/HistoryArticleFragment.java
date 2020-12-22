@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.history;
 
 import android.content.Intent;
 import android.database.Cursor;

@@ -1,10 +1,12 @@
 package com.example.kakacommunity;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -45,8 +47,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void initView() {
         toolbar = (Toolbar)findViewById(R.id.register_toolbar);
-        toolbar.setTitleTextColor(Color.parseColor("#00A8E1"));
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         registerName = (TextInputLayout)findViewById(R.id.register_name);
         registerPassword = (TextInputLayout)findViewById(R.id.register_password);
         registerEmail = (TextInputLayout)findViewById(R.id.register_email);
@@ -103,5 +108,16 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+        return true;
     }
 }

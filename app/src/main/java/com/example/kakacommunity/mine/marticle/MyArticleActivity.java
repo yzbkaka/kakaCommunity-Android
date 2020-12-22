@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.marticle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;

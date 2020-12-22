@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.collect;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

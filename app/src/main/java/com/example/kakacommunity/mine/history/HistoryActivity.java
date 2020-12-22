@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.history;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.mine.collect.CollectTabFragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

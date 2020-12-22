@@ -8,16 +8,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kakacommunity.utils.HttpUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputLayout;
-import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -38,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
 
-    private TextView loginText;
+    private TextView loginRegisterText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +45,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initView() {
         toolbar = (Toolbar) findViewById(R.id.login_toolbar);
-        toolbar.setTitleTextColor(Color.parseColor("#00A8E1"));
         setSupportActionBar(toolbar);
         loginName = (TextInputLayout) findViewById(R.id.login_name);
         loginPassword = (TextInputLayout) findViewById(R.id.login_password);
         loginButton = (Button) findViewById(R.id.login_button);
-        loginText = (TextView) findViewById(R.id.login_text);
+        loginRegisterText = (TextView) findViewById(R.id.login_text);
     }
 
     @Override
@@ -67,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginText.setOnClickListener(new View.OnClickListener() {
+        loginRegisterText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -87,7 +82,9 @@ public class LoginActivity extends AppCompatActivity {
             loginPassword.setErrorEnabled(true);
             loginPassword.setError("密码不能为空");
         }
-        RequestBody requestBody = new FormBody.Builder()
+
+
+        /*RequestBody requestBody = new FormBody.Builder()
                 .add("username", name)
                 .add("password", password)
                 .build();
@@ -107,6 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
     }
 }

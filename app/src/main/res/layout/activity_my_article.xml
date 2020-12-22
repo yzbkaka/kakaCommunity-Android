@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".mine.MyArticleActivity">
+    tools:context=".mine.marticle.MyArticleActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_article_toolbar"

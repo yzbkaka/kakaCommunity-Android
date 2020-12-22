@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.collect;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

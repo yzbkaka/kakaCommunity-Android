@@ -1,4 +1,4 @@
-package com.example.kakacommunity.mine;
+package com.example.kakacommunity.mine.collect;
 
 import android.content.Intent;
 import android.os.Bundle;
