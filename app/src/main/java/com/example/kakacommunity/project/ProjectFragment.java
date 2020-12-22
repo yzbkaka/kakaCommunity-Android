@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.kakacommunity.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.ProjectTree;
@@ -90,7 +89,7 @@ public class ProjectFragment extends Fragment {
 
     private void startPopWindows(View v) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_pop_windows, null);
-        PopupWindow popupWindow = new PopupWindow(view,ViewGroup.LayoutParams.MATCH_PARENT,
+        PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 true);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.classify_recycler_view);
@@ -135,7 +134,7 @@ public class ProjectFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //closeProgressDialog();
+                        initViewPager();
                     }
                 });
             }
@@ -158,10 +157,8 @@ public class ProjectFragment extends Fragment {
                 projectTree.setId(id);
                 projectTree.setName(name);
                 db.insert("ProjectTree", null, contentValues);
-                Log.e("projectTree", "id:" + id + "||" + "name:" + name);
                 projectTreeList.add(projectTree);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

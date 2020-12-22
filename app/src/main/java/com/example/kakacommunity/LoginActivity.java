@@ -82,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
             loginPassword.setErrorEnabled(true);
             loginPassword.setError("密码不能为空");
         }
-
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
 
         /*RequestBody requestBody = new FormBody.Builder()
                 .add("username", name)

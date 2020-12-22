@@ -69,6 +69,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:hint="邮箱"
+            android:inputType="textEmailAddress"
             android:maxLength="25"
             android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
