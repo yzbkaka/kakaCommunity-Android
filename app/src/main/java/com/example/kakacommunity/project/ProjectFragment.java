@@ -216,5 +216,4 @@ public class ProjectFragment extends Fragment {
             return projectTreeList.size();
         }
     }
-
 }

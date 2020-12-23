@@ -22,6 +22,7 @@ import com.example.kakacommunity.home.HomeFragment;
 import com.example.kakacommunity.mine.MineFragment;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.example.kakacommunity.search.SearchActivity;
+import com.example.kakacommunity.view.NoScrollViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static BottomNavigationView bottomNavigationView;
 
-    private ViewPager viewPager;
+    private NoScrollViewPager viewPager;
 
     private List<Fragment> fragmentList = new ArrayList<>();
 
@@ -107,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = (NoScrollViewPager) findViewById(R.id.view_pager);
+        viewPager.setNoScroll(true);  //设置不滑动
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -208,9 +210,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    /**
+   /* *//**
      * 利用反射，改变 item 中 mShiftingMode 的值 ,从而改变 BottomNavigationView 默认的效果
-     */
+     *//*
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("RestrictedApi")
     public void disableShiftMode(BottomNavigationView navigationView) {
@@ -231,5 +233,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
