@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 
 
 

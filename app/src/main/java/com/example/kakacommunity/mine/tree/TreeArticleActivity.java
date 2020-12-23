@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,7 +13,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;

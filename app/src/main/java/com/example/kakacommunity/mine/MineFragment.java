@@ -11,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.LoginActivity;
+import com.example.kakacommunity.base.BaseFragment;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.mine.about.AboutActivity;
 import com.example.kakacommunity.mine.collect.CollectActivity;
@@ -21,7 +23,7 @@ import com.example.kakacommunity.mine.tree.TreeActivity;
 import com.example.kakacommunity.mine.web.UseWebActivity;
 
 
-public class MineFragment extends Fragment implements View.OnClickListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     private LinearLayout myArticle;
 
@@ -37,7 +39,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout exit;
 
-    @Override
+/*    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine, container, false);
         myArticle = (LinearLayout) view.findViewById(R.id.my_article);
@@ -55,12 +57,30 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         exit = (LinearLayout) view.findViewById(R.id.exit);
         exit.setOnClickListener(this);
         return view;
-    }
-
+    }*/
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    protected int setContentView() {
+        return R.layout.fragment_mine;
+    }
+
+    @Override
+    protected void lazyLoad() {
+        View view = getContentView();
+        myArticle = (LinearLayout) view.findViewById(R.id.my_article);
+        myArticle.setOnClickListener(this);
+        web = (LinearLayout) view.findViewById(R.id.web);
+        web.setOnClickListener(this);
+        tree = (LinearLayout) view.findViewById(R.id.tree);
+        tree.setOnClickListener(this);
+        collect = (LinearLayout) view.findViewById(R.id.collect);
+        collect.setOnClickListener(this);
+        setting = (LinearLayout) view.findViewById(R.id.history);
+        setting.setOnClickListener(this);
+        about = (LinearLayout) view.findViewById(R.id.about);
+        about.setOnClickListener(this);
+        exit = (LinearLayout) view.findViewById(R.id.exit);
+        exit.setOnClickListener(this);
     }
 
     @Override
@@ -90,6 +110,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 Intent intent6 = new Intent(MyApplication.getContext(), AboutActivity.class);
                 startActivity(intent6);
             case R.id.exit:
+                Intent intent7 = new Intent(MyApplication.getContext(), LoginActivity.class);
+                startActivity(intent7);
                 getActivity().finish();
                 break;
         }

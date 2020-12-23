@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.model.Project;
 

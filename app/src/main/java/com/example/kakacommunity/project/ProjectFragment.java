@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.ProjectTree;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -57,7 +58,6 @@ public class ProjectFragment extends Fragment {
 
     private List<Fragment> fragmentList = new ArrayList<>();
 
-
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,12 +69,14 @@ public class ProjectFragment extends Fragment {
         return view;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         queryProjectTreeList();
         initViewPager();
     }
+
 
     @Override
     public void onResume() {

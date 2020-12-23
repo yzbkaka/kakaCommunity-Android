@@ -10,13 +10,12 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;

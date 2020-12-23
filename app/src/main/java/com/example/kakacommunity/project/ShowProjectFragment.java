@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
@@ -49,7 +48,6 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
-import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 
 public class ShowProjectFragment extends Fragment {

@@ -14,18 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.home.WebActivity;
-import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.project.ProjectAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
 

@@ -21,7 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.kakacommunity.MyApplication;
+import com.example.kakacommunity.base.BaseFragment;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
@@ -52,7 +53,7 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     private MyDataBaseHelper dataBaseHelper;
 
@@ -81,7 +82,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog progressDialog;
 
 
-    @Override
+    /*@Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -96,6 +97,54 @@ public class HomeFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycler_view);
         initRecyclerView();
         return view;
+    }*/
+
+
+    @Override
+    protected void lazyLoad() {
+        View view = getContentView();
+        errorImage = (ImageView) view.findViewById(R.id.home_error);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.nest_scroll_view);
+        bannerView = (com.youth.banner.Banner) view.findViewById(R.id.banner_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recycler_view);
+        dataBaseHelper = MyDataBaseHelper.getInstance();
+        homeBroadcastReceiver = new HomeBroadcastReceiver();
+        initRefreshView();
+        initBannerView();
+        initRecyclerView();
+    }
+
+    @Override
+    protected int setContentView() {
+        return R.layout.fragment_home;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        showProgressDialog();
+        getHomeArticleJSON(0);
+        getBannerJSON();
+        homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                saveReadHistory(homeArticleList.get(position));
+                String link = homeArticleList.get(position).getLink();
+                String title = homeArticleList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", link);
+                startActivity(intent);
+            }
+        });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getHomeArticleJSON(0);
+                getBannerJSON();
+            }
+        });
     }
 
     private void initRefreshView() {
@@ -150,34 +199,6 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(homeAdapter);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        showProgressDialog();
-        getHomeArticleJSON(0);
-        getBannerJSON();
-        homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                saveReadHistory(homeArticleList.get(position));
-                String link = homeArticleList.get(position).getLink();
-                String title = homeArticleList.get(position).getTitle();
-                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
-                intent.putExtra("title", title);
-                intent.putExtra("url", link);
-                startActivity(intent);
-            }
-        });
-        errorImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getHomeArticleJSON(0);
-                getBannerJSON();
-            }
-        });
-    }
-
-
     /**
      * 获得首页文章json数据
      */
@@ -200,7 +221,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseHomeArticleJSON(responseData);
-                if(!ActivityUtil.isDestroy(getActivity())) {
+                if (!ActivityUtil.isDestroy(getActivity())) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -228,7 +249,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseBannerJSON(responseData);
-                if(!ActivityUtil.isDestroy(getActivity())) {
+                if (!ActivityUtil.isDestroy(getActivity())) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -296,7 +317,7 @@ public class HomeFragment extends Fragment {
     private void saveReadHistory(HomeArticle homeArticle) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("type",TYPE_ARTICLE);
+        contentValues.put("type", TYPE_ARTICLE);
         contentValues.put("author", homeArticle.getAuthor());
         contentValues.put("title", homeArticle.getTitle());
         contentValues.put("link", homeArticle.getLink());
