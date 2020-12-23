@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.db.MyDataBaseHelper;
@@ -50,7 +51,7 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 
-public class ShowProjectFragment extends Fragment {
+public class ShowProjectFragment extends BaseFragment {
 
     private MyDataBaseHelper dataBaseHelper;
 
@@ -76,7 +77,7 @@ public class ShowProjectFragment extends Fragment {
         this.id = id;
     }
 
-    @Override
+/*    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_project,container,false);
@@ -88,9 +89,46 @@ public class ShowProjectFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.project_recycler_view);
         initRecyclerView();
         return view;
+    }*/
+
+    @Override
+    protected int setContentView() {
+        return R.layout.fragment_show_project;
     }
 
     @Override
+    protected void lazyLoad() {
+        View view = getContentView();
+        errorImage = (ImageView)view.findViewById(R.id.project_error);
+        dataBaseHelper = MyDataBaseHelper.getInstance();
+        projectBroadcastReceiver = new ProjectBroadcastReceiver();
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.project_swipe_refresh_layout);
+        initRefreshView();
+        recyclerView = (RecyclerView) view.findViewById(R.id.project_recycler_view);
+        initRecyclerView();
+        //showProgressDialog();
+        getProjectJSON(1);
+        projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                saveReadHistory(projectList.get(position));
+                String link = projectList.get(position).getLink();
+                String title = projectList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", link);
+                startActivity(intent);
+            }
+        });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProjectJSON(1);
+            }
+        });
+    }
+
+/*    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getProjectJSON(1);
@@ -112,7 +150,7 @@ public class ShowProjectFragment extends Fragment {
                 getProjectJSON(1);
             }
         });
-    }
+    }*/
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
@@ -155,6 +193,7 @@ public class ShowProjectFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //closeProgressDialog();
                                     errorImage.setVisibility(View.VISIBLE);
                                     Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                                 }
@@ -171,6 +210,7 @@ public class ShowProjectFragment extends Fragment {
                                 @Override
                                 public void run() {
                                     errorImage.setVisibility(View.GONE);
+                                    //closeProgressDialog();
                                     projectAdapter.notifyDataSetChanged();
                                 }
                             });
