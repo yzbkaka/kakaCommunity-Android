@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/community_swipe_refresh_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/community_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/community_error"
+            android:visibility="gone"
+            android:layout_marginTop="180dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/error"
+            android:gravity="center"/>
+    </LinearLayout>
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

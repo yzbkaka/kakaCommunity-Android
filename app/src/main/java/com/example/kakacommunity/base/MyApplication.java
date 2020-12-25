@@ -5,6 +5,10 @@ import android.content.Context;
 
 import com.example.kakacommunity.db.MyDataBaseHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 public class MyApplication extends Application {
 
     private static Context context;

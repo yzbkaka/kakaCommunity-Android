@@ -8,7 +8,14 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import com.example.kakacommunity.base.KakaCommunityEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 public class StartActivity extends AppCompatActivity {
+
+    private AlphaAnimation alphaAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,14 +23,11 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0.3F, 1.0F);
-        alphaAnimation.setDuration(1500);
-
+        alphaAnimation = new AlphaAnimation(0.3F, 1.0F);
+        alphaAnimation.setDuration(1000);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {  //设置动画监听
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -34,12 +38,11 @@ public class StartActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
-
         View splashView = (View) findViewById(R.id.layout_start);
         splashView.startAnimation(alphaAnimation);  //开始动画
+
     }
+
 }

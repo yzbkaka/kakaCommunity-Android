@@ -21,6 +21,9 @@ public class HomeArticle {
      */
     private String title;
 
+
+    private String content;
+
     /**
      * 文章链接
      */
@@ -45,6 +48,14 @@ public class HomeArticle {
      * 标签
      */
     private String tag;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public boolean isFresh() {
         return fresh;
