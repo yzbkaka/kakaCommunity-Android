@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class ShowProjectFragment extends BaseFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.project_recycler_view);
         initRecyclerView();
         //showProgressDialog();
+
         getProjectJSON(1);
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override

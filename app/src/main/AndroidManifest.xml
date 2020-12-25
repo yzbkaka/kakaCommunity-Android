@@ -21,10 +21,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mine.history.HistoryActivity"
-            android:label="历史阅读"></activity>
-        <activity android:name=".mine.about.AboutActivity"
-            android:label="关于项目"/>
+        <activity android:name=".StartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".mine.history.HistoryActivity"
+            android:label="历史阅读" />
+        <activity
+            android:name=".mine.about.AboutActivity"
+            android:label="关于项目" />
         <activity
             android:name=".mine.collect.CollectActivity"
             android:label="我的收藏" />
@@ -42,10 +50,12 @@
         <activity android:name=".home.WebActivity" />
         <activity android:name=".search.SearchActivity" />
         <activity android:name=".MainActivity">
-            <!--<intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -53,10 +63,10 @@
         <activity
             android:name=".LoginActivity"
             android:label="登录">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
     </application>
 

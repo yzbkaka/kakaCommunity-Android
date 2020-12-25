@@ -51,14 +51,14 @@ public abstract class BaseFragment extends Fragment {
         if (!isInit) {
             return;
         }
-        if (getUserVisibleHint()) {
+        if (getUserVisibleHint() && isLoad == false) {
             lazyLoad();
             isLoad = true;
         }
     }
 
     /**
-     * 视图销毁的时候讲Fragment是否初始化的状态变为false
+     * 视图销毁的时候将Fragment是否初始化的状态变为false
      */
     @Override
     public void onDestroyView() {

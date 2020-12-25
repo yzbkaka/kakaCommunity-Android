@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
         viewPager = (NoScrollViewPager) findViewById(R.id.view_pager);
         viewPager.setNoScroll(true);  //设置不滑动
+        viewPager.setOffscreenPageLimit(1);  //设置预加载1个
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

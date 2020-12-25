@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,7 @@ public class HomeFragment extends BaseFragment {
     private ProgressDialog progressDialog;
 
 
-    /*@Override
+/*    @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -99,28 +100,51 @@ public class HomeFragment extends BaseFragment {
         return view;
     }*/
 
-
-    @Override
-    protected void lazyLoad() {
-        View view = getContentView();
-        errorImage = (ImageView) view.findViewById(R.id.home_error);
-        refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        nestedScrollView = (NestedScrollView) view.findViewById(R.id.nest_scroll_view);
-        bannerView = (com.youth.banner.Banner) view.findViewById(R.id.banner_view);
-        recyclerView = (RecyclerView) view.findViewById(R.id.home_recycler_view);
-        dataBaseHelper = MyDataBaseHelper.getInstance();
-        homeBroadcastReceiver = new HomeBroadcastReceiver();
-        initRefreshView();
-        initBannerView();
-        initRecyclerView();
-    }
-
     @Override
     protected int setContentView() {
         return R.layout.fragment_home;
     }
 
     @Override
+    protected void lazyLoad() {
+        View view = getContentView();
+        errorImage = (ImageView) view.findViewById(R.id.home_error);
+        dataBaseHelper = MyDataBaseHelper.getInstance();
+        homeBroadcastReceiver = new HomeBroadcastReceiver();
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.nest_scroll_view);
+        initRefreshView();
+        bannerView = (com.youth.banner.Banner) view.findViewById(R.id.banner_view);
+        initBannerView();
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recycler_view);
+        initRecyclerView();
+
+        showProgressDialog();
+        getHomeArticleJSON(0);
+        getBannerJSON();
+        homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                saveReadHistory(homeArticleList.get(position));
+                String link = homeArticleList.get(position).getLink();
+                String title = homeArticleList.get(position).getTitle();
+                Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", link);
+                startActivity(intent);
+            }
+        });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getHomeArticleJSON(0);
+                getBannerJSON();
+            }
+        });
+    }
+
+
+    /*@Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         showProgressDialog();
@@ -145,7 +169,7 @@ public class HomeFragment extends BaseFragment {
                 getBannerJSON();
             }
         });
-    }
+    }*/
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);

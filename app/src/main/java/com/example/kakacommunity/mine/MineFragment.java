@@ -2,6 +2,7 @@ package com.example.kakacommunity.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         exit.setOnClickListener(this);
         return view;
     }*/
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e("mine", "create");
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
     protected int setContentView() {
@@ -116,4 +124,5 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
         }
     }
+
 }

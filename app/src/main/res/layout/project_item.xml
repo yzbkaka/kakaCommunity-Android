@@ -19,7 +19,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -37,7 +37,7 @@
             android:id="@+id/project_item_image"
             android:layout_marginTop="4dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:src="@drawable/default_project_img"
             android:scaleType="centerCrop"/>
 
