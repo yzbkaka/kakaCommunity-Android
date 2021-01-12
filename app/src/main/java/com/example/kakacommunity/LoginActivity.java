@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -82,13 +83,11 @@ public class LoginActivity extends AppCompatActivity {
             loginPassword.setErrorEnabled(true);
             loginPassword.setError("密码不能为空");
         }
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
 
-        /*RequestBody requestBody = new FormBody.Builder()
+        RequestBody requestBody = new FormBody.Builder()
                 .add("username", name)
                 .add("password", password)
+                .add("rememberMe","true")
                 .build();
         HttpUtil.OkHttpPOST(BASE_ADDRESS + "/login", requestBody, new okhttp3.Callback() {
             @Override
@@ -98,14 +97,29 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().toString();
+                String responseData = response.body().string();
+                Log.e("login",responseData);
                 if (responseData.contains("ticket")) {
+                    Log.e("login","请求登录成功");
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, "请求登录成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }));
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
+                    Log.e("login","请求登录失败");
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, "请求登录失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }));
                 }
             }
-        });*/
+        });
     }
 }

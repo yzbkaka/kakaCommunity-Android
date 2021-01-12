@@ -47,15 +47,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        toolbar = (Toolbar)findViewById(R.id.register_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.register_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        registerName = (TextInputLayout)findViewById(R.id.register_name);
-        registerPassword = (TextInputLayout)findViewById(R.id.register_password);
-        registerEmail = (TextInputLayout)findViewById(R.id.register_email);
+        registerName = (TextInputLayout) findViewById(R.id.register_name);
+        registerPassword = (TextInputLayout) findViewById(R.id.register_password);
+        registerEmail = (TextInputLayout) findViewById(R.id.register_email);
         registerButton = (Button) findViewById(R.id.register_button);
     }
 
@@ -75,15 +75,15 @@ public class RegisterActivity extends AppCompatActivity {
         String name = registerName.getEditText().getText().toString();
         String password = registerPassword.getEditText().getText().toString();
         String email = registerEmail.getEditText().getText().toString();
-        if(StringUtil.isBlank(name)) {
+        if (StringUtil.isBlank(name)) {
             registerName.setErrorEnabled(true);
             registerName.setError("用户名不能为空");
         }
-        if(StringUtil.isBlank(password)) {
+        if (StringUtil.isBlank(password)) {
             registerPassword.setErrorEnabled(true);
             registerPassword.setError("密码不能为空");
         }
-        if(!StringUtil.isEmail(email)) {
+        if (!StringUtil.isEmail(email)) {
             registerEmail.setErrorEnabled(true);
             registerEmail.setError("邮箱错误");
         }
@@ -101,31 +101,31 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("register",responseData);
-                if(responseData.contains("成功")) {
+                Log.e("register", responseData);
+                if (responseData.contains("成功")) {
+                    Log.e("register", "请求注册成功");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                         }
                     }));
-                    Log.e("register","请求注册成功");
                     finish();
                 } else {
+                    Log.e("register", "请求注册失败");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            if(responseData.contains("该账号已存在")) {
+                            if (responseData.contains("该账号已存在")) {
                                 registerName.setErrorEnabled(true);
                                 registerName.setError("该账号已存在");
                             }
-                            if(responseData.contains("该邮箱已经注册")) {
+                            if (responseData.contains("该邮箱已经注册")) {
                                 registerEmail.setErrorEnabled(true);
                                 registerEmail.setError("该邮箱已经注册");
                             }
                         }
                     }));
-                    Log.e("register","请求注册失败");
                 }
             }
         });
