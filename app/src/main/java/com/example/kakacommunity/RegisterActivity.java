@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -82,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
             registerPassword.setErrorEnabled(true);
             registerPassword.setError("密码不能为空");
         }
-        if(StringUtil.isEmail(email)) {
+        if(!StringUtil.isEmail(email)) {
             registerEmail.setErrorEnabled(true);
             registerEmail.setError("邮箱错误");
         }
@@ -91,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .add("password", password)
                 .add("email", email)
                 .build();
-        HttpUtil.OkHttpPOST(BASE_ADDRESS, requestBody, new okhttp3.Callback() {
+        HttpUtil.OkHttpPOST(BASE_ADDRESS + "/register", requestBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -99,12 +100,32 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().toString();
+                String responseData = response.body().string();
+                Log.e("register",responseData);
                 if(responseData.contains("成功")) {
-                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }));
+                    Log.e("register","请求注册成功");
                     finish();
-                }else {
-                    Toast.makeText(RegisterActivity.this, "", Toast.LENGTH_SHORT).show();
+                } else {
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.contains("该账号已存在")) {
+                                registerName.setErrorEnabled(true);
+                                registerName.setError("该账号已存在");
+                            }
+                            if(responseData.contains("该邮箱已经注册")) {
+                                registerEmail.setErrorEnabled(true);
+                                registerEmail.setError("该邮箱已经注册");
+                            }
+                        }
+                    }));
+                    Log.e("register","请求注册失败");
                 }
             }
         });
