@@ -85,7 +85,7 @@
             android:paddingBottom="10dp"
             android:layout_below="@+id/community_item_title"
             android:textSize="12.5sp"
-            android:maxLines="2"
+            android:maxLines="3"
             android:ellipsize="end"
             android:gravity="center_vertical|left"
             android:textColor="@color/title"

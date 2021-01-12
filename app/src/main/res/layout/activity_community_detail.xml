@@ -74,13 +74,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:textSize="16sp"
-                    android:lineSpacingMultiplier="1.1"
+                    android:lineSpacingMultiplier="1.2"
                     android:text="在未对抖音内存进行专项治理之前我们梳理了一下整体内存指标的绝对值和相对崩溃，发现占比都很高。另外，内存相关指标在去年春节活动时又再次激增达到历史新高，所以整体来看内存问题相当严峻，必须要对其进行专项治理。抖音这边通过前期归因、工具建设以及投入一个双月的内存专项治理将整体 Java OOM 优化了百分之 80。"/>
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="6dp"
+                    android:layout_height="5dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="3dp"
                     android:background="@color/time"
                     android:gravity="center_vertical" />
 
