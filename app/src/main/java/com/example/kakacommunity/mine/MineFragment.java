@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.kakacommunity.LoginActivity;
 import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.base.MyApplication;
@@ -22,9 +24,30 @@ import com.example.kakacommunity.mine.history.HistoryActivity;
 import com.example.kakacommunity.mine.marticle.MyArticleActivity;
 import com.example.kakacommunity.mine.tree.TreeActivity;
 import com.example.kakacommunity.mine.web.UseWebActivity;
+import com.example.kakacommunity.utils.HttpUtil;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.PrimitiveIterator;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Response;
+
+import static com.example.kakacommunity.LoginActivity.ticket;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
+
+    private CircleImageView userImage;
+
+    private TextView userName;
+
+    private String headerUrl;
+
+    private String username;
 
     private LinearLayout myArticle;
 
@@ -75,6 +98,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
+        userImage = (CircleImageView)view.findViewById(R.id.user_image);
+        userName = (TextView)view.findViewById(R.id.user_name);
         myArticle = (LinearLayout) view.findViewById(R.id.my_article);
         myArticle.setOnClickListener(this);
         web = (LinearLayout) view.findViewById(R.id.web);
@@ -89,6 +114,43 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         about.setOnClickListener(this);
         exit = (LinearLayout) view.findViewById(R.id.exit);
         exit.setOnClickListener(this);
+        getUserMessageJSON();
+    }
+
+    private void getUserMessageJSON() {
+        HttpUtil.OkHttpGET(BASE_ADDRESS + "/user"  + "/" + ticket, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseUserMessageJSON(responseData);
+            }
+        });
+    }
+
+    private void parseUserMessageJSON(String responseData) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseData);
+            JSONObject jsonUser = jsonObject.getJSONObject("user");
+            Log.e("mine",jsonUser.getString("headerUrl"));
+            headerUrl = jsonUser.getString("headerUrl");
+            username = jsonUser.getString("username");
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        getActivity().runOnUiThread(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(MyApplication.getContext())
+                        .load(headerUrl)
+                        .into(userImage);
+                userName.setText(username);
+            }
+        }));
     }
 
     @Override

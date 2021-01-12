@@ -16,6 +16,9 @@ import com.example.kakacommunity.utils.HttpUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -36,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
 
     private TextView loginRegisterText;
+
+    public static String ticket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestBody requestBody = new FormBody.Builder()
                 .add("username", name)
                 .add("password", password)
-                .add("rememberMe","true")
+                .add("rememberMe", "true")
                 .build();
         HttpUtil.OkHttpPOST(BASE_ADDRESS + "/login", requestBody, new okhttp3.Callback() {
             @Override
@@ -98,20 +103,21 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("login",responseData);
+                Log.e("login", responseData);
                 if (responseData.contains("ticket")) {
-                    Log.e("login","请求登录成功");
+                    Log.e("login", "请求登录成功");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(LoginActivity.this, "请求登录成功", Toast.LENGTH_SHORT).show();
                         }
                     }));
+                    saveTicket(responseData);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    Log.e("login","请求登录失败");
+                    Log.e("login", "请求登录失败");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -121,5 +127,18 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 存储用户凭证
+     */
+    private void saveTicket(String responseData) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseData);
+            ticket = jsonObject.getString("ticket");
+            Log.e("login",ticket);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

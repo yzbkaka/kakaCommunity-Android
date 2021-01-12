@@ -14,11 +14,11 @@
             android:layout_height="200dp"
             android:background="@color/colorPrimary"/>
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="180dp">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/head_image"
-                android:layout_width="match_parent"
+                android:id="@+id/user_image"
+                android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_launcher_background"/>
@@ -27,10 +27,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_below="@+id/head_image"
+                android:layout_below="@+id/user_image"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:layout_gravity="center_vertical"
                 android:text="未登录，点击登录"/>
         </RelativeLayout>
