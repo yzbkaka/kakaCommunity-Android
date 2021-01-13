@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.model.CommuityReply;
 
@@ -54,6 +56,9 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
         holder.replyName.setText(commuityReply.getName());
         holder.replyTime.setText(commuityReply.getTime());
         holder.replyContent.setText(commuityReply.getContent());
+        Glide.with(MyApplication.getContext())
+                .load(commuityReply.getImageUrl())
+                .into(holder.imageView);
     }
 
     @Override

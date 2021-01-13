@@ -51,7 +51,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     private String username;
 
-    public static String userId;
+    public String userId;
 
     private LinearLayout myArticle;
 
@@ -146,6 +146,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             headerUrl = jsonUser.getString("headerUrl");
             username = jsonUser.getString("username");
             userId = jsonUser.getString("id");
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message",MODE_PRIVATE).edit();
+            editor.putString("userId",userId);
+            editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
         }

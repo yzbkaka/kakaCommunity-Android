@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -26,7 +27,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
-import static com.example.kakacommunity.mine.MineFragment.userId;
 
 public class AddCommunityActivity extends AppCompatActivity {
 
@@ -71,16 +71,18 @@ public class AddCommunityActivity extends AppCompatActivity {
     private void addCommunity() {
         String title = addTitle.getText().toString();
         String content = addContent.getText().toString();
+        SharedPreferences preferences = getSharedPreferences("user_message", MODE_PRIVATE);
+        String userId = preferences.getString("userId", "");
         if (StringUtil.isBlank(title)) {
             Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT).show();
         } else if (StringUtil.isBlank(content)) {
             Toast.makeText(this, "内容不能为空", Toast.LENGTH_SHORT).show();
         } else {
-            Log.e("add","发送");
+
             RequestBody requestBody = new FormBody.Builder()
                     .add("title", title)
                     .add("content", content)
-                    .add("userId",userId)
+                    .add("userId", userId)
                     .build();
             HttpUtil.OkHttpPOST(BASE_ADDRESS + "/discuss" + "/add", requestBody, new okhttp3.Callback() {
                 @Override
@@ -91,7 +93,7 @@ public class AddCommunityActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseData = response.body().string();
-                    Log.e("add",responseData);
+                    Log.e("add", responseData);
                     if (responseData.contains("成功")) {
                         runOnUiThread(new Thread(new Runnable() {
                             @Override
@@ -100,8 +102,8 @@ public class AddCommunityActivity extends AppCompatActivity {
                             }
                         }));
                         Intent intent = new Intent();
-                        intent.putExtra("add","refresh");
-                        setResult(RESULT_OK,intent);
+                        intent.putExtra("add", "refresh");
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 }

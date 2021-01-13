@@ -18,9 +18,11 @@ import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.model.CommuityReply;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private CommunityDetailAdapter adapter;
 
-    private List<CommuityReply> communityCommentList = new ArrayList<>();
+    private List<CommuityReply> communityReplyList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,45 +100,60 @@ public class CommunityDetailActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
         initRecyclerView();
         getDetailJSON(discussPostId);
-        getReplyJSON();
     }
 
     private void initRecyclerView() {
         LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
-        adapter = new CommunityDetailAdapter(communityCommentList);
+        adapter = new CommunityDetailAdapter(communityReplyList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
     }
 
     private void getDetailJSON(String discussPostId) {
-        try {
-            HttpUtil.OkHttpGET(BASE_ADDRESS + "/discuss" + "/detail" + "/" + discussPostId, new okhttp3.Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                }
+        HttpUtil.OkHttpGET(BASE_ADDRESS + "/discuss" + "/detail" + "/" + discussPostId, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseData = response.body().string();
-                    parseDetailJSON(responseData);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseDetailJSON(responseData);
+                if(!ActivityUtil.isDestroy(CommunityDetailActivity.this)) {
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }));
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
     private void parseDetailJSON(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject discussPost = jsonObject.getJSONObject("discussPost");
+            JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析帖子标题&内容
             title = discussPost.getString("title");
             content = discussPost.getString("content");
             createTime = discussPost.getString("createTime");
-            JSONObject user = jsonObject.getJSONObject("user");
+            JSONObject user = jsonObject.getJSONObject("user");  //解析帖子作者
             username = user.getString("username");
             headerUrl = user.getString("headerUrl");
+            JSONArray comments = jsonObject.getJSONArray("comments");  //解析帖子回复
+            for(int i = 0;i < comments.length();i++) {
+                CommuityReply commuityReply = new CommuityReply();
+                JSONObject item = comments.getJSONObject(i);
+                JSONObject comment = item.getJSONObject("comment");
+                commuityReply.setContent(comment.getString("content"));
+                commuityReply.setTime(comment.getString("createTime"));
+                JSONObject replyUser = item.getJSONObject("user");
+                commuityReply.setName(replyUser.getString("username"));
+                commuityReply.setImageUrl(replyUser.getString("headerUrl"));
+                communityReplyList.add(commuityReply);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,15 +171,6 @@ public class CommunityDetailActivity extends AppCompatActivity {
         }));
     }
 
-    private void getReplyJSON() {
-        for (int i = 0; i < 15; i++) {
-            CommuityReply commuityReply = new CommuityReply();
-            commuityReply.setName("yzbkaka");
-            commuityReply.setTime(String.valueOf(new Date()));
-            commuityReply.setContent("声音小的话，在视频界面右键选择视频音效，罢那个默认在中间的，调到最大，然后选择清澈人声，声音贼大，我也是昨天才发现的");
-            communityCommentList.add(commuityReply);
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
