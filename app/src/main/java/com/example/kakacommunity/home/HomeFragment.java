@@ -368,6 +368,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     class HomeBroadcastReceiver extends BroadcastReceiver {
+
         public HomeBroadcastReceiver() {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(HOME_TOP);

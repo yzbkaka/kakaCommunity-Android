@@ -49,6 +49,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     private String username;
 
+    public static String userId;
+
     private LinearLayout myArticle;
 
     private LinearLayout web;
@@ -127,6 +129,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.e("mine",responseData);
                 parseUserMessageJSON(responseData);
             }
         });
@@ -136,9 +139,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
             JSONObject jsonUser = jsonObject.getJSONObject("user");
-            Log.e("mine",jsonUser.getString("headerUrl"));
             headerUrl = jsonUser.getString("headerUrl");
             username = jsonUser.getString("username");
+            userId = jsonUser.getString("id");
         }catch (Exception e) {
             e.printStackTrace();
         }

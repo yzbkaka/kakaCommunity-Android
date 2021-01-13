@@ -64,7 +64,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private CommunityDetailAdapter adapter;
 
-    private List<CommuityReply> communityReplyList = new ArrayList<>();
+    private List<CommuityReply> communityCommentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,25 +77,25 @@ public class CommunityDetailActivity extends AppCompatActivity {
     private void initView() {
         Intent intent = getIntent();
         String discussPostId = intent.getStringExtra("discussPostId");
-        toolbar = (Toolbar)findViewById(R.id.community_detail_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.community_detail_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        communityTitle = (TextView)findViewById(R.id.community_detail_title);
+        communityTitle = (TextView) findViewById(R.id.community_detail_title);
         authorImage = (CircleImageView) findViewById(R.id.community_detail_author_image);
-        authorName = (TextView)findViewById(R.id.community_detail_author);
-        communityTime = (TextView)findViewById(R.id.community_detail_time);
-        communityContent = (TextView)findViewById(R.id.community_detail_content);
-        floatingActionButton = (FloatingActionButton)findViewById(R.id.community_detail_floating_actionbar);
+        authorName = (TextView) findViewById(R.id.community_detail_author);
+        communityTime = (TextView) findViewById(R.id.community_detail_time);
+        communityContent = (TextView) findViewById(R.id.community_detail_content);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.community_detail_floating_actionbar);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-        recyclerView = (RecyclerView)findViewById(R.id.community_detail_recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
         initRecyclerView();
         getDetailJSON(discussPostId);
         getReplyJSON();
@@ -103,7 +103,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
-        adapter = new CommunityDetailAdapter(communityReplyList);
+        adapter = new CommunityDetailAdapter(communityCommentList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
     }
@@ -122,7 +122,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
                     parseDetailJSON(responseData);
                 }
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +137,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
             JSONObject user = jsonObject.getJSONObject("user");
             username = user.getString("username");
             headerUrl = user.getString("headerUrl");
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         runOnUiThread(new Thread(new Runnable() {
@@ -155,18 +155,18 @@ public class CommunityDetailActivity extends AppCompatActivity {
     }
 
     private void getReplyJSON() {
-        for(int i = 0;i < 15;i++) {
+        for (int i = 0; i < 15; i++) {
             CommuityReply commuityReply = new CommuityReply();
             commuityReply.setName("yzbkaka");
             commuityReply.setTime(String.valueOf(new Date()));
             commuityReply.setContent("声音小的话，在视频界面右键选择视频音效，罢那个默认在中间的，调到最大，然后选择清澈人声，声音贼大，我也是昨天才发现的");
-            communityReplyList.add(commuityReply);
+            communityCommentList.add(commuityReply);
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:  //默认id
                 finish();
                 break;

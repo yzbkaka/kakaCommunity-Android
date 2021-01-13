@@ -1,7 +1,10 @@
 package com.example.kakacommunity.community;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -19,6 +22,7 @@ import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
@@ -36,8 +40,11 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 
 public class CommunityFragment extends BaseFragment {
+
+    private CommunityBroadcastReceiver communityBroadcastReceiver;
 
     private RefreshLayout refreshLayout;
 
@@ -62,6 +69,7 @@ public class CommunityFragment extends BaseFragment {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
+        communityBroadcastReceiver = new CommunityBroadcastReceiver();
         errorImage = (ImageView) view.findViewById(R.id.community_error);
         refreshLayout = (RefreshLayout) view.findViewById(R.id.community_swipe_refresh_layout);
         initRefreshView();
@@ -183,6 +191,21 @@ public class CommunityFragment extends BaseFragment {
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    class CommunityBroadcastReceiver extends BroadcastReceiver {
+
+        public CommunityBroadcastReceiver() {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(COMMUNITY_ADD);
+            getActivity().registerReceiver(this,intentFilter);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intent1 = new Intent(MyApplication.getContext(),AddCommunityActivity.class);
+            startActivity(intent1);
         }
     }
 }
