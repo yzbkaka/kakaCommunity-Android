@@ -62,10 +62,10 @@ public class CommunityFragment extends BaseFragment {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
-        errorImage = (ImageView)view.findViewById(R.id.community_error);
-        refreshLayout = (RefreshLayout)view.findViewById(R.id.community_swipe_refresh_layout);
+        errorImage = (ImageView) view.findViewById(R.id.community_error);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.community_swipe_refresh_layout);
         initRefreshView();
-        recyclerView = (RecyclerView)view.findViewById(R.id.community_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.community_recycler_view);
         initRecyclerView();
 
         showProgressDialog();
@@ -73,11 +73,11 @@ public class CommunityFragment extends BaseFragment {
         communityAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String link = communityArticleList.get(position).getLink();
+                String discussPostId = communityArticleList.get(position).getDiscussPostId();
                 String title = communityArticleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
                 intent.putExtra("title", title);
-                intent.putExtra("url", link);
+                intent.putExtra("discussPostId", discussPostId);
                 startActivity(intent);
             }
         });
@@ -97,17 +97,17 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 communityArticleList.clear();
-                getCommunityArticleJSON(0);
+                getCommunityArticleJSON(1);
+                curPage = 1;
                 refreshlayout.finishRefresh();
-
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                //getCommunityArticleJSON(curPage);
+                curPage++;
+                getCommunityArticleJSON(curPage);
                 refreshlayout.finishLoadMore();
-
             }
         });
     }
@@ -156,10 +156,11 @@ public class CommunityFragment extends BaseFragment {
         try {
             JSONObject jsonData = new JSONObject(responseData);
             JSONArray discussPosts = jsonData.getJSONArray("discussPosts");
-            for(int i = 0;i < discussPosts.length();i++) {
+            for (int i = 0; i < discussPosts.length(); i++) {
                 JSONObject jsonObject = discussPosts.getJSONObject(i);
                 JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析文章数据
                 HomeArticle homeArticle = new HomeArticle();
+                homeArticle.setDiscussPostId(discussPost.getString("id"));
                 homeArticle.setTitle(discussPost.getString("title"));
                 homeArticle.setContent(discussPost.getString("content"));
                 homeArticle.setNiceDate(discussPost.getString("createTime"));
@@ -167,7 +168,7 @@ public class CommunityFragment extends BaseFragment {
                 homeArticle.setAuthor(user.getString("username"));
                 communityArticleList.add(homeArticle);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

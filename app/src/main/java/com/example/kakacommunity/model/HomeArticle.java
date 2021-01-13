@@ -49,6 +49,20 @@ public class HomeArticle {
      */
     private String tag;
 
+    /**
+     * 讨论贴的id
+     */
+    private String discussPostId;
+
+
+    public String getDiscussPostId() {
+        return discussPostId;
+    }
+
+    public void setDiscussPostId(String discussPostId) {
+        this.discussPostId = discussPostId;
+    }
+
     public String getContent() {
         return content;
     }
