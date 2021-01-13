@@ -74,9 +74,7 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void onItemClick(int position) {
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();
-                String title = communityArticleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
-                intent.putExtra("title", title);
                 intent.putExtra("discussPostId", discussPostId);
                 startActivity(intent);
             }
