@@ -20,6 +20,7 @@
         android:label="kakaCommunity"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".community.AddCommunityActivity"></activity>
         <activity android:name=".community.CommunityDetailActivity" />

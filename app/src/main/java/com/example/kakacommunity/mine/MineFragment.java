@@ -37,6 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 
@@ -121,7 +122,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void getUserMessageJSON() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user_message", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences("user_message", MODE_PRIVATE);
         String ticket = preferences.getString("ticket", "");
         HttpUtil.OkHttpGET(BASE_ADDRESS + "/user" + "/" + ticket, new okhttp3.Callback() {
             @Override
@@ -187,6 +188,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 startActivity(intent6);
             case R.id.exit:
                 Intent intent7 = new Intent(MyApplication.getContext(), LoginActivity.class);
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message", MODE_PRIVATE).edit();
+                editor.putString("ticket", "");
+                editor.apply();
                 startActivity(intent7);
                 getActivity().finish();
                 break;
