@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,8 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
 
     private TextView loginRegisterText;
-
-    public static String ticket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                 String responseData = response.body().string();
                 Log.e("login", responseData);
                 if (responseData.contains("ticket")) {
-                    Log.e("login", "请求登录成功");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -117,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Log.e("login", "请求登录失败");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -135,9 +132,11 @@ public class LoginActivity extends AppCompatActivity {
     private void saveTicket(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
-            ticket = jsonObject.getString("ticket");
-            Log.e("login",ticket);
-        }catch (Exception e) {
+            String ticket = jsonObject.getString("ticket");
+            SharedPreferences.Editor editor = getSharedPreferences("user_message", MODE_PRIVATE).edit();
+            editor.putString("ticket", ticket);
+            editor.apply();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

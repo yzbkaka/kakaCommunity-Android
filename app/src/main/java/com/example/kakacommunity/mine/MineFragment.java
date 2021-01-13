@@ -1,6 +1,8 @@
 package com.example.kakacommunity.mine;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
 
-import static com.example.kakacommunity.LoginActivity.ticket;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 
@@ -100,8 +101,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
-        userImage = (CircleImageView)view.findViewById(R.id.user_image);
-        userName = (TextView)view.findViewById(R.id.user_name);
+        userImage = (CircleImageView) view.findViewById(R.id.user_image);
+        userName = (TextView) view.findViewById(R.id.user_name);
         myArticle = (LinearLayout) view.findViewById(R.id.my_article);
         myArticle.setOnClickListener(this);
         web = (LinearLayout) view.findViewById(R.id.web);
@@ -120,7 +121,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void getUserMessageJSON() {
-        HttpUtil.OkHttpGET(BASE_ADDRESS + "/user"  + "/" + ticket, new okhttp3.Callback() {
+        SharedPreferences preferences = getActivity().getSharedPreferences("user_message", Context.MODE_PRIVATE);
+        String ticket = preferences.getString("ticket", "");
+        HttpUtil.OkHttpGET(BASE_ADDRESS + "/user" + "/" + ticket, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -129,7 +132,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("mine",responseData);
+                Log.e("mine", responseData);
                 parseUserMessageJSON(responseData);
             }
         });
@@ -142,7 +145,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             headerUrl = jsonUser.getString("headerUrl");
             username = jsonUser.getString("username");
             userId = jsonUser.getString("id");
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         getActivity().runOnUiThread(new Thread(new Runnable() {
