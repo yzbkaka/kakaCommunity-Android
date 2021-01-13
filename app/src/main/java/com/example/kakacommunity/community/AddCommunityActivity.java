@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -98,6 +99,9 @@ public class AddCommunityActivity extends AppCompatActivity {
                                 Toast.makeText(AddCommunityActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
                             }
                         }));
+                        Intent intent = new Intent();
+                        intent.putExtra("add","refresh");
+                        setResult(RESULT_OK,intent);
                         finish();
                     }
                 }

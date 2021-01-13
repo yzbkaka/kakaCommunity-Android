@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 
@@ -59,6 +61,8 @@ public class CommunityFragment extends BaseFragment {
     private ProgressDialog progressDialog;
 
     private int curPage = 1;
+
+    public static final int COMMUNITY_FRAGMENT_CODE = 1;
 
 
     @Override
@@ -194,18 +198,31 @@ public class CommunityFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case COMMUNITY_FRAGMENT_CODE:
+                if (resultCode == RESULT_OK) {
+                    communityArticleList.clear();
+                    getCommunityArticleJSON(1);
+                }
+                break;
+            default:
+        }
+    }
+
     class CommunityBroadcastReceiver extends BroadcastReceiver {
 
         public CommunityBroadcastReceiver() {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(COMMUNITY_ADD);
-            getActivity().registerReceiver(this,intentFilter);
+            getActivity().registerReceiver(this, intentFilter);
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Intent intent1 = new Intent(MyApplication.getContext(),AddCommunityActivity.class);
-            startActivity(intent1);
+            Intent intent1 = new Intent(MyApplication.getContext(), AddCommunityActivity.class);
+            startActivityForResult(intent1, COMMUNITY_FRAGMENT_CODE);
         }
     }
 }
