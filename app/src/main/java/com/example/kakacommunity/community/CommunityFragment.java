@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,15 +17,25 @@ import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
+import com.example.kakacommunity.utils.ActivityUtil;
+import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Response;
+
+import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 public class CommunityFragment extends BaseFragment {
 
@@ -40,7 +51,7 @@ public class CommunityFragment extends BaseFragment {
 
     private ProgressDialog progressDialog;
 
-    private int curPage = 0;
+    private int curPage = 1;
 
 
     @Override
@@ -58,7 +69,7 @@ public class CommunityFragment extends BaseFragment {
         initRecyclerView();
 
         showProgressDialog();
-        getCommunityArticleJSON(0);
+        getCommunityArticleJSON(1);
         communityAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -73,7 +84,7 @@ public class CommunityFragment extends BaseFragment {
         errorImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getCommunityArticleJSON(0);
+                getCommunityArticleJSON(1);
             }
         });
     }
@@ -109,16 +120,56 @@ public class CommunityFragment extends BaseFragment {
     }
 
     private void getCommunityArticleJSON(int page) {
-        for(int i = 0;i < 20;i++) {
-            HomeArticle homeArticle = new HomeArticle();
-            homeArticle.setAuthor("yzbkaka");
-            homeArticle.setTitle("双非的秋招总结-已拿offer");
-            homeArticle.setContent("在未对抖音内存进行专项治理之前我们梳理了一下整体内存指标的绝对值和相对崩溃，发现占比都很高。另外，内存相关指标在去年春节活动时又再次激增达到历史新高，所以整体来看内存问题相当严峻，必须要对其进行专项治理。");
-            homeArticle.setNiceDate(new Date().toString());
-            homeArticle.setTag("讨论区");
-            communityArticleList.add(homeArticle);
+        HttpUtil.OkHttpGET(BASE_ADDRESS + "/index" + "/" + page, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        errorImage.setVisibility(View.VISIBLE);
+                        Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                parseCommunityArticleJSON(responseData);
+                if (!ActivityUtil.isDestroy(getActivity())) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeProgressDialog();
+                            errorImage.setVisibility(View.GONE);
+                            communityAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void parseCommunityArticleJSON(String responseData) {
+        try {
+            JSONObject jsonData = new JSONObject(responseData);
+            JSONArray discussPosts = jsonData.getJSONArray("discussPosts");
+            for(int i = 0;i < discussPosts.length();i++) {
+                JSONObject jsonObject = discussPosts.getJSONObject(i);
+                JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析文章数据
+                HomeArticle homeArticle = new HomeArticle();
+                homeArticle.setTitle(discussPost.getString("title"));
+                homeArticle.setContent(discussPost.getString("content"));
+                homeArticle.setNiceDate(discussPost.getString("createTime"));
+                JSONObject user = jsonObject.getJSONObject("user");
+                homeArticle.setAuthor(user.getString("username"));
+                communityArticleList.add(homeArticle);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        closeProgressDialog();
     }
 
     private void showProgressDialog() {
