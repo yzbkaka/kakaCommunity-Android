@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.FontResourcesParserCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -121,6 +122,21 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         getUserMessageJSON();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isLoad) {
+            SharedPreferences preferences = getActivity().getSharedPreferences("user_message",MODE_PRIVATE);
+            headerUrl = preferences.getString("headerUrl","");
+            username = preferences.getString("username","");
+            Glide.with(MyApplication.getContext())
+                    .load(headerUrl)
+                    .into(userImage);
+            userName.setText(username);
+        }
+
+    }
+
     private void getUserMessageJSON() {
         SharedPreferences preferences = getActivity().getSharedPreferences("user_message", MODE_PRIVATE);
         String ticket = preferences.getString("ticket", "");
@@ -148,10 +164,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             userId = jsonUser.getString("id");
             SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message",MODE_PRIVATE).edit();
             editor.putString("userId",userId);
+            editor.putString("username",username);
+            editor.putString("headerUrl",headerUrl);
             editor.apply();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         getActivity().runOnUiThread(new Thread(new Runnable() {
             @Override
             public void run() {
