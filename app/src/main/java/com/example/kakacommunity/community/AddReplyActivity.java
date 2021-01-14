@@ -27,64 +27,59 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_POST;
 
-public class AddCommunityActivity extends AppCompatActivity {
+public class AddReplyActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private EditText addTitle;
+    private EditText replyText;
 
-    private EditText addContent;
-
-    private FloatingActionButton addFinish;
+    private FloatingActionButton replyFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_community);
+        setContentView(R.layout.activity_add_reply);
         initView();
     }
 
     private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.add_community_toolbar);
+        Intent intent = getIntent();
+        String discussPostId = intent.getStringExtra("discussPostId");
+        toolbar = (Toolbar) findViewById(R.id.add_reply_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        addTitle = (EditText) findViewById(R.id.add_community_title);
-        addContent = (EditText) findViewById(R.id.add_community_content);
-        addFinish = (FloatingActionButton) findViewById(R.id.add_community_finish);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        addFinish.setOnClickListener(new View.OnClickListener() {
+        replyText = (EditText) findViewById(R.id.add_reply_content);
+        replyFinish = (FloatingActionButton) findViewById(R.id.add_reply_finish);
+        replyFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addCommunity();
+                addComment(discussPostId);
             }
         });
     }
 
-    private void addCommunity() {
-        String title = addTitle.getText().toString();
-        String content = addContent.getText().toString();
-        SharedPreferences preferences = getSharedPreferences("user_message", MODE_PRIVATE);
-        String userId = preferences.getString("userId", "");
-        if (StringUtil.isBlank(title)) {
-            Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT).show();
-        } else if (StringUtil.isBlank(content)) {
-            Toast.makeText(this, "内容不能为空", Toast.LENGTH_SHORT).show();
+    /**
+     * 添加评论
+     */
+    private void addComment(String discussPostId) {
+        String content = replyText.getText().toString();
+        SharedPreferences preferences = getSharedPreferences("user_message",MODE_PRIVATE);
+        String userId = preferences.getString("userId","");
+        if (StringUtil.isBlank(content)) {
+            Toast.makeText(this, "评论不能为空", Toast.LENGTH_SHORT).show();
         } else {
-
             RequestBody requestBody = new FormBody.Builder()
-                    .add("title", title)
-                    .add("content", content)
                     .add("userId", userId)
+                    .add("content",content)
+                    .add("entityId",discussPostId)
+                    .add("entityType", String.valueOf(ENTITY_TYPE_POST))
                     .build();
-            HttpUtil.OkHttpPOST(BASE_ADDRESS + "/discuss" + "/add", requestBody, new okhttp3.Callback() {
+            HttpUtil.OkHttpPOST(BASE_ADDRESS + "/comment" + "/add" + "/" + discussPostId,requestBody, new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
@@ -93,16 +88,16 @@ public class AddCommunityActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseData = response.body().string();
-                    Log.e("addCommunity", responseData);
-                    if (responseData.contains("成功")) {
+                    Log.e("addComment", responseData);
+                    if(responseData.contains("成功")) {
                         runOnUiThread(new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(AddCommunityActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddReplyActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
                             }
                         }));
                         Intent intent = new Intent();
-                        intent.putExtra("add", "refresh");
+                        intent.putExtra("addReply", "refresh");
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -113,10 +108,9 @@ public class AddCommunityActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
+            case android.R.id.home:  //默认id
+                finish();
                 break;
         }
         return true;

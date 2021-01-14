@@ -1,5 +1,7 @@
 package com.example.kakacommunity.community;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,10 +20,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
+import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.model.CommuityReply;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,9 +45,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static com.example.kakacommunity.community.CommunityFragment.COMMUNITY_FRAGMENT_CODE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 public class CommunityDetailActivity extends AppCompatActivity {
+
+    private RefreshLayout refreshLayout;
 
     private Toolbar toolbar;
 
@@ -60,13 +74,19 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private String content;
 
-    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton addReply;
 
     private RecyclerView recyclerView;
 
     private CommunityDetailAdapter adapter;
 
     private List<CommuityReply> communityReplyList = new ArrayList<>();
+
+    private String discussPostId;
+
+    public static final int COMMUNITY_REPLY_CODE = 10;
+
+    private int curPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +98,9 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private void initView() {
         Intent intent = getIntent();
-        String discussPostId = intent.getStringExtra("discussPostId");
+        discussPostId = intent.getStringExtra("discussPostId");
+        refreshLayout = (RefreshLayout)findViewById(R.id.community_detail_refresh_layout);
+        initRefreshView();
         toolbar = (Toolbar) findViewById(R.id.community_detail_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -90,16 +112,33 @@ public class CommunityDetailActivity extends AppCompatActivity {
         authorName = (TextView) findViewById(R.id.community_detail_author);
         communityTime = (TextView) findViewById(R.id.community_detail_time);
         communityContent = (TextView) findViewById(R.id.community_detail_content);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.community_detail_floating_actionbar);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        addReply = (FloatingActionButton) findViewById(R.id.community_detail_floating_actionbar);
+        addReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent1 = new Intent(CommunityDetailActivity.this,AddReplyActivity.class);
+                intent1.putExtra("discussPostId",discussPostId);
+                startActivityForResult(intent1,COMMUNITY_REPLY_CODE);
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
         initRecyclerView();
-        getDetailJSON(discussPostId);
+        getDetailJSON(1);
+    }
+
+    private void initRefreshView() {
+        refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
+        refreshLayout.setEnableRefresh(false);
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                curPage++;
+                getDetailJSON(curPage);
+                refreshLayout.finishLoadMore();
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -109,8 +148,8 @@ public class CommunityDetailActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void getDetailJSON(String discussPostId) {
-        HttpUtil.OkHttpGET(BASE_ADDRESS + "/discuss" + "/detail" + "/" + discussPostId, new okhttp3.Callback() {
+    private void getDetailJSON(int page) {
+        HttpUtil.OkHttpGET(BASE_ADDRESS + "/discuss" + "/detail" + "/" + discussPostId + "/" + page, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -120,6 +159,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseDetailJSON(responseData);
+                Log.e("communityDetail",responseData);
                 if(!ActivityUtil.isDestroy(CommunityDetailActivity.this)) {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
@@ -169,6 +209,20 @@ public class CommunityDetailActivity extends AppCompatActivity {
                         .into(authorImage);
             }
         }));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case COMMUNITY_FRAGMENT_CODE:
+                if (resultCode == RESULT_OK) {
+                    communityReplyList.clear();
+                    getDetailJSON(1);
+                }
+                break;
+            default:
+        }
     }
 
 

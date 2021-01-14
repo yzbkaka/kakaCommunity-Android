@@ -19,4 +19,14 @@ public class kakaCommunityConstant {
 
     public static boolean isReadHistory = false;
 
+    /**
+     * 评论
+     */
+    public static final int ENTITY_TYPE_POST = 1;
+
+    /**
+     * 回复
+     */
+    public static final int ENTITY_TYPE_COMMENT = 2;
+
 }

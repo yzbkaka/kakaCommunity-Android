@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
-import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.model.CommuityReply;
 
 import java.util.ArrayList;
@@ -32,10 +31,10 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = (ImageView)itemView.findViewById(R.id.community_reply_author_image);
-            replyName = (TextView)itemView.findViewById(R.id.community_reply_author);
-            replyTime = (TextView)itemView.findViewById(R.id.community_reply_time);
-            replyContent = (TextView)itemView.findViewById(R.id.community_reply_content);
+            imageView = (ImageView) itemView.findViewById(R.id.community_reply_author_image);
+            replyName = (TextView) itemView.findViewById(R.id.community_reply_author);
+            replyTime = (TextView) itemView.findViewById(R.id.community_reply_time);
+            replyContent = (TextView) itemView.findViewById(R.id.community_reply_content);
         }
     }
 
@@ -65,7 +64,6 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
     public int getItemCount() {
         return communityReplyList.size();
     }
-
 
 
     public interface OnItemClickListener {
