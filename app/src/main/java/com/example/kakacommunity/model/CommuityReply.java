@@ -3,7 +3,14 @@ package com.example.kakacommunity.model;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CommuityReply {
+import com.example.kakacommunity.utils.StringUtil;
+
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommuityReply implements Serializable {
 
     private int id;
 
@@ -14,6 +21,26 @@ public class CommuityReply {
     private String time;
 
     private String content;
+
+    private String replyCount;
+
+    private List<CommentReply> commentReplyList = new ArrayList<>();
+
+    public List<CommentReply> getCommentReplyList() {
+        return commentReplyList;
+    }
+
+    public void setCommentReplyList(List<CommentReply> commentReplyList) {
+        this.commentReplyList = commentReplyList;
+    }
+
+    public String getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(String replyCount) {
+        this.replyCount = replyCount;
+    }
 
     public int getId() {
         return id;

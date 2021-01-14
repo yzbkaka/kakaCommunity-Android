@@ -18,9 +18,11 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.kakacommunity.LoginActivity;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.header.PhoenixHeader;
+import com.example.kakacommunity.model.CommentReply;
 import com.example.kakacommunity.model.CommuityReply;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -99,7 +101,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
     private void initView() {
         Intent intent = getIntent();
         discussPostId = intent.getStringExtra("discussPostId");
-        refreshLayout = (RefreshLayout)findViewById(R.id.community_detail_refresh_layout);
+        refreshLayout = (RefreshLayout) findViewById(R.id.community_detail_refresh_layout);
         initRefreshView();
         toolbar = (Toolbar) findViewById(R.id.community_detail_toolbar);
         setSupportActionBar(toolbar);
@@ -116,21 +118,30 @@ public class CommunityDetailActivity extends AppCompatActivity {
         addReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(CommunityDetailActivity.this,AddReplyActivity.class);
-                intent1.putExtra("discussPostId",discussPostId);
-                startActivityForResult(intent1,COMMUNITY_REPLY_CODE);
+                Intent intent1 = new Intent(CommunityDetailActivity.this, AddReplyActivity.class);
+                intent1.putExtra("discussPostId", discussPostId);
+                startActivityForResult(intent1, COMMUNITY_REPLY_CODE);
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
         initRecyclerView();
         getDetailJSON(1);
+        adapter.setOnItemCLickListener(new CommunityDetailAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                CommuityReply communityReply = communityReplyList.get(position);
+                Intent intent1 = new Intent(CommunityDetailActivity.this, ReplyDetailActivity.class);
+                intent1.putExtra("communityReply", communityReply);
+                startActivity(intent1);
+            }
+        });
     }
 
     private void initRefreshView() {
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
-        refreshLayout.setEnableRefresh(false);
+        refreshLayout.setEnableRefresh(false);  //禁止下拉刷新
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
@@ -159,8 +170,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 parseDetailJSON(responseData);
-                Log.e("communityDetail",responseData);
-                if(!ActivityUtil.isDestroy(CommunityDetailActivity.this)) {
+                if (!ActivityUtil.isDestroy(CommunityDetailActivity.this)) {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -183,15 +193,35 @@ public class CommunityDetailActivity extends AppCompatActivity {
             username = user.getString("username");
             headerUrl = user.getString("headerUrl");
             JSONArray comments = jsonObject.getJSONArray("comments");  //解析帖子回复
-            for(int i = 0;i < comments.length();i++) {
+            for (int i = 0; i < comments.length(); i++) {
                 CommuityReply commuityReply = new CommuityReply();
                 JSONObject item = comments.getJSONObject(i);
-                JSONObject comment = item.getJSONObject("comment");
+
+                commuityReply.setReplyCount(item.getString("replyCount"));  //解析评论的回复
+                Log.e("commentReply", item.getString("replyCount"));
+                JSONArray replys = item.getJSONArray("replys");
+                List<CommentReply> commentReplyList = new ArrayList<>();
+                if (replys.length() != 0) {
+                    for (int j = 0; j < replys.length(); j++) {
+                        CommentReply commentReply = new CommentReply();
+                        JSONObject replyItem = replys.getJSONObject(j);
+                        JSONObject reply = replyItem.getJSONObject("reply");
+                        commentReply.setContent(reply.getString("content"));
+                        commentReply.setTime(reply.getString("createTime"));
+                        JSONObject replyUser = replyItem.getJSONObject("user");
+                        commentReply.setImageUrl(replyUser.getString("headerUrl"));
+                        commentReply.setName(replyUser.getString("username"));
+                        commentReplyList.add(commentReply);
+                    }
+                }
+
+                JSONObject comment = item.getJSONObject("comment");  //解析评论
                 commuityReply.setContent(comment.getString("content"));
                 commuityReply.setTime(comment.getString("createTime"));
                 JSONObject replyUser = item.getJSONObject("user");
                 commuityReply.setName(replyUser.getString("username"));
                 commuityReply.setImageUrl(replyUser.getString("headerUrl"));
+                commuityReply.setCommentReplyList(commentReplyList);
                 communityReplyList.add(commuityReply);
             }
         } catch (Exception e) {
@@ -224,7 +254,6 @@ public class CommunityDetailActivity extends AppCompatActivity {
             default:
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

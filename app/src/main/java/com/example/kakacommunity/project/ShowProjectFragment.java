@@ -28,6 +28,7 @@ import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.Project;
+import com.example.kakacommunity.search.ShowSearchActivity;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
@@ -73,6 +74,8 @@ public class ShowProjectFragment extends BaseFragment {
     private ImageView errorImage;
 
     private ProgressDialog progressDialog;
+
+    public ShowProjectFragment(){}
 
     public ShowProjectFragment(String id) {
         this.id = id;

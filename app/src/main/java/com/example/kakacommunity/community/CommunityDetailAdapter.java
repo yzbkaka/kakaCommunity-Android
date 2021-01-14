@@ -28,6 +28,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
         TextView replyName;
         TextView replyTime;
         TextView replyContent;
+        TextView replyCount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -35,6 +36,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
             replyName = (TextView) itemView.findViewById(R.id.community_reply_author);
             replyTime = (TextView) itemView.findViewById(R.id.community_reply_time);
             replyContent = (TextView) itemView.findViewById(R.id.community_reply_content);
+            replyCount = (TextView)itemView.findViewById(R.id.community_reply_comment_count);
         }
     }
 
@@ -58,6 +60,16 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
         Glide.with(MyApplication.getContext())
                 .load(commuityReply.getImageUrl())
                 .into(holder.imageView);
+        if(commuityReply.getCommentReplyList().size() != 0) {
+            holder.replyCount.setVisibility(View.VISIBLE);
+            holder.replyCount.setText("查看" + commuityReply.getReplyCount() + "条回复");
+        }
+        holder.replyCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
     }
 
     @Override

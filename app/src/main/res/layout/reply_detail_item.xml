@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/community_reply_author_image"
+            android:id="@+id/comment_reply_detail_author_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_launcher_background"/>
@@ -21,14 +21,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:id="@+id/community_reply_author"
+                android:id="@+id/comment_reply_detail_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/time"
                 android:text="yzbkaka"/>
             <TextView
-                android:id="@+id/community_reply_time"
+                android:id="@+id/comment_reply_detail_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
@@ -38,7 +38,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/community_reply_content"
+        android:id="@+id/comment_reply_detail_content"
         android:layout_marginLeft="35dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="12dp"
@@ -46,16 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="声音小的话，在视频界面右键选择视频音效，罢那个默认在中间的，调到最大，然后选择清澈人声，声音贼大，我也是昨天才发现的"/>
-
-    <TextView
-        android:id="@+id/community_reply_comment_count"
-        android:visibility="gone"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="25dp"
-        android:textColor="@color/colorPrimary"
-        android:text="查看5条回复"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
     <TextView
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
