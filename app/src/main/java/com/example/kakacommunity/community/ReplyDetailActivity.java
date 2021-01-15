@@ -78,6 +78,7 @@ public class ReplyDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ReplyDetailActivity.this, AddReplyActivity.class);
                 intent.putExtra("commentId", commentId);
+                intent.putExtra("targetId","0");
                 startActivityForResult(intent,REPLY_DETAIL_CODE);
             }
         });
