@@ -12,6 +12,16 @@ public class CommunityReply implements Serializable {
 
     private String content;
 
+    private String targetUser;
+
+    public String getTargetUser() {
+        return targetUser;
+    }
+
+    public void setTargetUser(String targetUser) {
+        this.targetUser = targetUser;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

@@ -8,6 +8,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:paddingTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -37,15 +38,35 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/comment_reply_target_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="回复"/>
+        <TextView
+            android:id="@+id/comment_reply_target_user"
+            android:layout_marginRight="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorPrimary"
+            android:text="yzbkaka："/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/comment_reply_detail_content"
         android:layout_marginLeft="35dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="声音小的话，在视频界面右键选择视频音效，罢那个默认在中间的，调到最大，然后选择清澈人声，声音贼大，我也是昨天才发现的"/>
+        android:text="兄弟顶你！"/>
     <TextView
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
     private OnItemClickListener onItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout layout;
         ImageView imageView;
         TextView replyName;
         TextView replyTime;
@@ -32,6 +34,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            layout = (LinearLayout)itemView.findViewById(R.id.community_reply_layout);
             imageView = (ImageView) itemView.findViewById(R.id.community_reply_author_image);
             replyName = (TextView) itemView.findViewById(R.id.community_reply_author);
             replyTime = (TextView) itemView.findViewById(R.id.community_reply_time);
@@ -64,7 +67,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
             holder.replyCount.setVisibility(View.VISIBLE);
             holder.replyCount.setText("查看" + communityComment.getReplyCount() + "条回复");
         }
-        holder.replyCount.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClickListener.onItemClick(position);

@@ -200,9 +200,14 @@ public class CommunityDetailActivity extends AppCompatActivity {
                         JSONObject reply = replyItem.getJSONObject("reply");
                         commentReply.setContent(reply.getString("content"));
                         commentReply.setTime(reply.getString("createTime"));
+                        int targetId = reply.getInt("targetId");
                         JSONObject replyUser = replyItem.getJSONObject("user");
                         commentReply.setImageUrl(replyUser.getString("headerUrl"));
                         commentReply.setName(replyUser.getString("username"));
+                        if(targetId != 0) {
+                            JSONObject target = replyItem.getJSONObject("target");
+                            commentReply.setTargetUser(target.getString("username"));
+                        }
                         commentReplyList.add(commentReply);
                     }
                 }

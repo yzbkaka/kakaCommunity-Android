@@ -1,101 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/community_detail_refresh_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".community.CommunityDetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/community_detail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:background="@color/colorPrimary"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/community_detail_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:background="@color/colorPrimary"/>
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_marginTop="?attr/actionBarSize"
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/community_detail_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/community_detail_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/title"
-                    android:textSize="20sp"
-                    android:text="双非的秋招总结~"/>
-
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/community_detail_author_image"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_launcher_background"/>
-                    <LinearLayout
-                        android:layout_marginLeft="7dp"
-                        android:orientation="vertical"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/community_detail_title"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/community_detail_author"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/title"
+                        android:textSize="20sp"
+                        android:text="双非的秋招总结~"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/community_detail_author_image"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_launcher_background"/>
+                        <LinearLayout
+                            android:layout_marginLeft="7dp"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/time"
-                            android:text="yzbkaka"/>
-                        <TextView
-                            android:id="@+id/community_detail_time"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:textColor="@color/time"
-                            android:text="2020-12-25"/>
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:id="@+id/community_detail_author"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:textColor="@color/time"
+                                android:text="yzbkaka"/>
+                            <TextView
+                                android:id="@+id/community_detail_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="11sp"
+                                android:textColor="@color/time"
+                                android:text="2020-12-25"/>
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/community_detail_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:textSize="16sp"
+                        android:lineSpacingMultiplier="1.2"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@color/time"
+                        android:gravity="center_vertical" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/community_detail_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/community_detail_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:textSize="16sp"
-                    android:lineSpacingMultiplier="1.2"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="3dp"
-                    android:background="@color/time"
-                    android:gravity="center_vertical" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/community_detail_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-
+            </androidx.core.widget.NestedScrollView>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/community_detail_floating_actionbar"
             android:src="@drawable/add"
@@ -106,5 +108,4 @@
             android:layout_marginBottom="30dp"/>
     </FrameLayout>
 
-
-</com.scwang.smart.refresh.layout.SmartRefreshLayout>
+</LinearLayout>
