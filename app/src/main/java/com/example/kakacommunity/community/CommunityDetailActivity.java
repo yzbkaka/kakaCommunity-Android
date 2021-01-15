@@ -13,12 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
-import com.example.kakacommunity.LoginActivity;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.header.PhoenixHeader;
@@ -27,20 +25,15 @@ import com.example.kakacommunity.model.CommuityReply;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,7 +69,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private String content;
 
-    private FloatingActionButton addReply;
+    private FloatingActionButton addComment;
 
     private RecyclerView recyclerView;
 
@@ -86,7 +79,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private String discussPostId;
 
-    public static final int COMMUNITY_REPLY_CODE = 10;
+    public static final int COMMUNITY_COMMENT_CODE = 10;
 
     private int curPage = 1;
 
@@ -114,13 +107,13 @@ public class CommunityDetailActivity extends AppCompatActivity {
         authorName = (TextView) findViewById(R.id.community_detail_author);
         communityTime = (TextView) findViewById(R.id.community_detail_time);
         communityContent = (TextView) findViewById(R.id.community_detail_content);
-        addReply = (FloatingActionButton) findViewById(R.id.community_detail_floating_actionbar);
-        addReply.setOnClickListener(new View.OnClickListener() {
+        addComment = (FloatingActionButton) findViewById(R.id.community_detail_floating_actionbar);
+        addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(CommunityDetailActivity.this, AddReplyActivity.class);
+                Intent intent1 = new Intent(CommunityDetailActivity.this, AddCommentActivity.class);
                 intent1.putExtra("discussPostId", discussPostId);
-                startActivityForResult(intent1, COMMUNITY_REPLY_CODE);
+                startActivityForResult(intent1, COMMUNITY_COMMENT_CODE);
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
@@ -132,7 +125,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
                 CommuityReply communityReply = communityReplyList.get(position);
                 Intent intent1 = new Intent(CommunityDetailActivity.this, ReplyDetailActivity.class);
                 intent1.putExtra("communityReply", communityReply);
-                startActivity(intent1);
+                startActivityForResult(intent1,COMMUNITY_COMMENT_CODE);
             }
         });
     }
@@ -216,6 +209,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
                 }
 
                 JSONObject comment = item.getJSONObject("comment");  //解析评论
+                commuityReply.setId(comment.getString("id"));
                 commuityReply.setContent(comment.getString("content"));
                 commuityReply.setTime(comment.getString("createTime"));
                 JSONObject replyUser = item.getJSONObject("user");
@@ -245,10 +239,11 @@ public class CommunityDetailActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case COMMUNITY_FRAGMENT_CODE:
+            case COMMUNITY_COMMENT_CODE:
                 if (resultCode == RESULT_OK) {
                     communityReplyList.clear();
                     getDetailJSON(1);
+                    curPage = 1;
                 }
                 break;
             default:

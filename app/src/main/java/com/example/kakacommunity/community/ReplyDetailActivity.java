@@ -1,5 +1,6 @@
 package com.example.kakacommunity.community;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +19,7 @@ import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.model.CommentReply;
 import com.example.kakacommunity.model.CommuityReply;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +32,23 @@ public class ReplyDetailActivity extends AppCompatActivity {
 
     private CircleImageView commentImage;
 
-    private String headerUrl;
-
     private TextView commentName;
-
-    private String username;
 
     private TextView commentTime;
 
-    private String createTime;
-
     private TextView commentContent;
 
-    private String content;
-
     private RecyclerView recyclerView;
+
+    private FloatingActionButton addReply;
 
     private ReplyDetailAdapter adapter;
 
     private List<CommentReply> commentReplyList = new ArrayList<>();
+
+    private String commentId;
+
+    public static final int REPLY_DETAIL_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,28 +58,30 @@ public class ReplyDetailActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        toolbar = (Toolbar)findViewById(R.id.reply_detail_toolbar);
+        Intent intent = getIntent();
+        CommuityReply communityReply = (CommuityReply) intent.getSerializableExtra("communityReply");
+        commentId = communityReply.getId();
+        toolbar = (Toolbar) findViewById(R.id.reply_detail_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        commentImage = (CircleImageView)findViewById(R.id.reply_detail_author_image);
-        commentName = (TextView)findViewById(R.id.reply_detail_author);
-        commentTime = (TextView)findViewById(R.id.reply_detail_time);
-        commentContent = (TextView)findViewById(R.id.reply_detail_content);
-        recyclerView = (RecyclerView)findViewById(R.id.reply_detail_recycler_view);
-        //initRecyclerView();
-        Intent intent = getIntent();
-        CommuityReply communityReply = (CommuityReply) intent.getSerializableExtra("communityReply");
+        commentImage = (CircleImageView) findViewById(R.id.reply_detail_author_image);
+        commentName = (TextView) findViewById(R.id.reply_detail_author);
+        commentTime = (TextView) findViewById(R.id.reply_detail_time);
+        commentContent = (TextView) findViewById(R.id.reply_detail_content);
+        recyclerView = (RecyclerView) findViewById(R.id.reply_detail_recycler_view);
+        addReply = (FloatingActionButton) findViewById(R.id.reply_detail_floating_actionbar);
+        addReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReplyDetailActivity.this, AddReplyActivity.class);
+                intent.putExtra("commentId", commentId);
+                startActivityForResult(intent,REPLY_DETAIL_CODE);
+            }
+        });
         setView(communityReply);
-    }
-
-    private void initRecyclerView() {
-        LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
-        adapter = new ReplyDetailAdapter(commentReplyList);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
     }
 
     /**
@@ -96,6 +99,20 @@ public class ReplyDetailActivity extends AppCompatActivity {
         adapter = new ReplyDetailAdapter(commentReplyList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REPLY_DETAIL_CODE:
+                Intent intent = new Intent();
+                intent.putExtra("addReply", "refresh");
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            default:
+        }
     }
 
     @Override

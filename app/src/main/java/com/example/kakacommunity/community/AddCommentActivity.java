@@ -8,10 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -26,50 +27,47 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
-import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_COMMENT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_POST;
 
-public class AddReplyActivity extends AppCompatActivity {
+public class AddCommentActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private EditText replyText;
+    private EditText commentText;
 
-    private FloatingActionButton replyFinish;
-
-    private String commentId;
+    private FloatingActionButton commentFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_reply);
+        setContentView(R.layout.activity_add_comment);
         initView();
     }
 
     private void initView() {
         Intent intent = getIntent();
-        commentId = intent.getStringExtra("commentId");
-        toolbar = (Toolbar) findViewById(R.id.add_reply_toolbar);
+        String discussPostId = intent.getStringExtra("discussPostId");
+        toolbar = (Toolbar) findViewById(R.id.add_comment_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        replyText = (EditText) findViewById(R.id.add_reply_content);
-        replyFinish = (FloatingActionButton) findViewById(R.id.add_reply_finish);
-        replyFinish.setOnClickListener(new View.OnClickListener() {
+        commentText = (EditText) findViewById(R.id.add_comment_content);
+        commentFinish = (FloatingActionButton) findViewById(R.id.add_comment_finish);
+        commentFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addReply(commentId);
+                addComment(discussPostId);
             }
         });
     }
 
     /**
-     * 添加回复
+     * 添加评论
      */
-    private void addReply(String commentId) {
-        String content = replyText.getText().toString();
+    private void addComment(String discussPostId) {
+        String content = commentText.getText().toString();
         SharedPreferences preferences = getSharedPreferences("user_message", MODE_PRIVATE);
         String userId = preferences.getString("userId", "");
         if (StringUtil.isBlank(content)) {
@@ -78,10 +76,10 @@ public class AddReplyActivity extends AppCompatActivity {
             RequestBody requestBody = new FormBody.Builder()
                     .add("userId", userId)
                     .add("content", content)
-                    .add("entityId", commentId)
-                    .add("entityType", String.valueOf(ENTITY_TYPE_COMMENT))
+                    .add("entityId", discussPostId)
+                    .add("entityType", String.valueOf(ENTITY_TYPE_POST))
                     .build();
-            HttpUtil.OkHttpPOST(BASE_ADDRESS + "/comment" + "/add" + "/" + commentId,
+            HttpUtil.OkHttpPOST(BASE_ADDRESS + "/comment" + "/add" + "/" + discussPostId,
                     requestBody, new okhttp3.Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
@@ -91,12 +89,11 @@ public class AddReplyActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String responseData = response.body().string();
-                            Log.e("addReply",responseData);
                             if (responseData.contains("成功")) {
                                 runOnUiThread(new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(AddReplyActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddCommentActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
                                     }
                                 }));
                                 Intent intent = new Intent();
@@ -104,9 +101,18 @@ public class AddReplyActivity extends AppCompatActivity {
                                 setResult(RESULT_OK, intent);
                                 finish();
                             }
-
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:  //默认id
+                finish();
+                break;
+        }
+        return true;
     }
 }

@@ -22,8 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".community.ReplyDetailActivity"></activity>
-        <activity android:name=".community.AddReplyActivity" />
+        <activity android:name=".community.AddReplyActivity"></activity>
+        <activity android:name=".community.ReplyDetailActivity" />
+        <activity android:name=".community.AddCommentActivity" />
         <activity android:name=".community.AddCommunityActivity" />
         <activity android:name=".community.CommunityDetailActivity" />
         <activity android:name=".StartActivity">

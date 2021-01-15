@@ -12,7 +12,6 @@ public class CommentReply implements Serializable {
 
     private String content;
 
-
     public String getImageUrl() {
         return imageUrl;
     }

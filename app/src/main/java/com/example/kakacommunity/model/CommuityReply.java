@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CommuityReply implements Serializable {
 
-    private int id;
+    private String id;
 
     private String imageUrl;
 
@@ -42,7 +42,7 @@ public class CommuityReply implements Serializable {
         this.replyCount = replyCount;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,7 +54,7 @@ public class CommuityReply implements Serializable {
         this.time = time;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
