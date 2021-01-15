@@ -20,8 +20,8 @@ import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.header.PhoenixHeader;
-import com.example.kakacommunity.model.CommentReply;
-import com.example.kakacommunity.model.CommuityReply;
+import com.example.kakacommunity.model.CommunityReply;
+import com.example.kakacommunity.model.CommunityComment;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,7 +40,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
 
-import static com.example.kakacommunity.community.CommunityFragment.COMMUNITY_FRAGMENT_CODE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
 public class CommunityDetailActivity extends AppCompatActivity {
@@ -75,7 +74,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private CommunityDetailAdapter adapter;
 
-    private List<CommuityReply> communityReplyList = new ArrayList<>();
+    private List<CommunityComment> communityCommentList = new ArrayList<>();
 
     private String discussPostId;
 
@@ -118,13 +117,13 @@ public class CommunityDetailActivity extends AppCompatActivity {
         });
         recyclerView = (RecyclerView) findViewById(R.id.community_detail_recycler_view);
         initRecyclerView();
-        getDetailJSON(1);
+        getCommunityDetailJSON(1);
         adapter.setOnItemCLickListener(new CommunityDetailAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                CommuityReply communityReply = communityReplyList.get(position);
+                CommunityComment communityComment = communityCommentList.get(position);
                 Intent intent1 = new Intent(CommunityDetailActivity.this, ReplyDetailActivity.class);
-                intent1.putExtra("communityReply", communityReply);
+                intent1.putExtra("communityReply", communityComment);
                 startActivityForResult(intent1,COMMUNITY_COMMENT_CODE);
             }
         });
@@ -139,7 +138,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 curPage++;
-                getDetailJSON(curPage);
+                getCommunityDetailJSON(curPage);
                 refreshLayout.finishLoadMore();
             }
         });
@@ -147,12 +146,12 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         LinearLayoutManager manager = new LinearLayoutManager(MyApplication.getContext());
-        adapter = new CommunityDetailAdapter(communityReplyList);
+        adapter = new CommunityDetailAdapter(communityCommentList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
     }
 
-    private void getDetailJSON(int page) {
+    private void getCommunityDetailJSON(int page) {
         HttpUtil.OkHttpGET(BASE_ADDRESS + "/discuss" + "/detail" + "/" + discussPostId + "/" + page, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -162,7 +161,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                parseDetailJSON(responseData);
+                parseCommunityDetailJSON(responseData);
                 if (!ActivityUtil.isDestroy(CommunityDetailActivity.this)) {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
@@ -175,7 +174,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void parseDetailJSON(String responseData) {
+    private void parseCommunityDetailJSON(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
             JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析帖子标题&内容
@@ -187,16 +186,16 @@ public class CommunityDetailActivity extends AppCompatActivity {
             headerUrl = user.getString("headerUrl");
             JSONArray comments = jsonObject.getJSONArray("comments");  //解析帖子回复
             for (int i = 0; i < comments.length(); i++) {
-                CommuityReply commuityReply = new CommuityReply();
+                CommunityComment communityComment = new CommunityComment();
                 JSONObject item = comments.getJSONObject(i);
 
-                commuityReply.setReplyCount(item.getString("replyCount"));  //解析评论的回复
+                communityComment.setReplyCount(item.getString("replyCount"));  //解析评论的回复
                 Log.e("commentReply", item.getString("replyCount"));
                 JSONArray replys = item.getJSONArray("replys");
-                List<CommentReply> commentReplyList = new ArrayList<>();
+                List<CommunityReply> commentReplyList = new ArrayList<>();
                 if (replys.length() != 0) {
                     for (int j = 0; j < replys.length(); j++) {
-                        CommentReply commentReply = new CommentReply();
+                        CommunityReply commentReply = new CommunityReply();
                         JSONObject replyItem = replys.getJSONObject(j);
                         JSONObject reply = replyItem.getJSONObject("reply");
                         commentReply.setContent(reply.getString("content"));
@@ -209,14 +208,14 @@ public class CommunityDetailActivity extends AppCompatActivity {
                 }
 
                 JSONObject comment = item.getJSONObject("comment");  //解析评论
-                commuityReply.setId(comment.getString("id"));
-                commuityReply.setContent(comment.getString("content"));
-                commuityReply.setTime(comment.getString("createTime"));
+                communityComment.setId(comment.getString("id"));
+                communityComment.setContent(comment.getString("content"));
+                communityComment.setTime(comment.getString("createTime"));
                 JSONObject replyUser = item.getJSONObject("user");
-                commuityReply.setName(replyUser.getString("username"));
-                commuityReply.setImageUrl(replyUser.getString("headerUrl"));
-                commuityReply.setCommentReplyList(commentReplyList);
-                communityReplyList.add(commuityReply);
+                communityComment.setName(replyUser.getString("username"));
+                communityComment.setImageUrl(replyUser.getString("headerUrl"));
+                communityComment.setCommentReplyList(commentReplyList);
+                communityCommentList.add(communityComment);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,8 +240,8 @@ public class CommunityDetailActivity extends AppCompatActivity {
         switch (requestCode) {
             case COMMUNITY_COMMENT_CODE:
                 if (resultCode == RESULT_OK) {
-                    communityReplyList.clear();
-                    getDetailJSON(1);
+                    communityCommentList.clear();
+                    getCommunityDetailJSON(1);
                     curPage = 1;
                 }
                 break;

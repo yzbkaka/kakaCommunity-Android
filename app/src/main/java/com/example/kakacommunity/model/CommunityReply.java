@@ -2,7 +2,7 @@ package com.example.kakacommunity.model;
 
 import java.io.Serializable;
 
-public class CommentReply implements Serializable {
+public class CommunityReply implements Serializable {
 
     private String imageUrl;
 

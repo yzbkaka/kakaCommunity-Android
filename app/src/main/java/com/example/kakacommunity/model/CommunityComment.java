@@ -1,16 +1,11 @@
 package com.example.kakacommunity.model;
 
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.kakacommunity.utils.StringUtil;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommuityReply implements Serializable {
+public class CommunityComment implements Serializable {
 
     private String id;
 
@@ -24,13 +19,13 @@ public class CommuityReply implements Serializable {
 
     private String replyCount;
 
-    private List<CommentReply> commentReplyList = new ArrayList<>();
+    private List<CommunityReply> commentReplyList = new ArrayList<>();
 
-    public List<CommentReply> getCommentReplyList() {
+    public List<CommunityReply> getCommentReplyList() {
         return commentReplyList;
     }
 
-    public void setCommentReplyList(List<CommentReply> commentReplyList) {
+    public void setCommentReplyList(List<CommunityReply> commentReplyList) {
         this.commentReplyList = commentReplyList;
     }
 

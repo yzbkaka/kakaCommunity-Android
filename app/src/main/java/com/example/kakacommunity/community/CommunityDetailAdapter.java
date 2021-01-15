@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
-import com.example.kakacommunity.model.CommuityReply;
+import com.example.kakacommunity.model.CommunityComment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetailAdapter.ViewHolder> {
 
-    private List<CommuityReply> communityReplyList = new ArrayList<>();
+    private List<CommunityComment> communityCommentList = new ArrayList<>();
 
     private OnItemClickListener onItemClickListener;
 
@@ -40,8 +40,8 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
         }
     }
 
-    public CommunityDetailAdapter(List<CommuityReply> communityReplyList) {
-        this.communityReplyList = communityReplyList;
+    public CommunityDetailAdapter(List<CommunityComment> communityCommentList) {
+        this.communityCommentList = communityCommentList;
     }
 
     @Override
@@ -53,16 +53,16 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CommuityReply commuityReply = communityReplyList.get(position);
-        holder.replyName.setText(commuityReply.getName());
-        holder.replyTime.setText(commuityReply.getTime());
-        holder.replyContent.setText(commuityReply.getContent());
+        CommunityComment communityComment = communityCommentList.get(position);
+        holder.replyName.setText(communityComment.getName());
+        holder.replyTime.setText(communityComment.getTime());
+        holder.replyContent.setText(communityComment.getContent());
         Glide.with(MyApplication.getContext())
-                .load(commuityReply.getImageUrl())
+                .load(communityComment.getImageUrl())
                 .into(holder.imageView);
-        if(commuityReply.getCommentReplyList().size() != 0) {
+        if(communityComment.getCommentReplyList().size() != 0) {
             holder.replyCount.setVisibility(View.VISIBLE);
-            holder.replyCount.setText("查看" + commuityReply.getReplyCount() + "条回复");
+            holder.replyCount.setText("查看" + communityComment.getReplyCount() + "条回复");
         }
         holder.replyCount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetail
 
     @Override
     public int getItemCount() {
-        return communityReplyList.size();
+        return communityCommentList.size();
     }
 
 

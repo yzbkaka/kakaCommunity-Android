@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
-import com.example.kakacommunity.model.CommentReply;
+import com.example.kakacommunity.model.CommunityReply;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.ViewHolder> {
 
-    private List<CommentReply> communityReplyList = new ArrayList<>();
+    private List<CommunityReply> communityReplyList = new ArrayList<>();
 
     private OnItemClickListener onItemClickListener;
 
@@ -38,7 +38,7 @@ public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.
         }
     }
 
-    public ReplyDetailAdapter(List<CommentReply> communityReplyList) {
+    public ReplyDetailAdapter(List<CommunityReply> communityReplyList) {
         this.communityReplyList = communityReplyList;
     }
 
@@ -52,7 +52,7 @@ public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CommentReply commentReply = communityReplyList.get(position);
+        CommunityReply commentReply = communityReplyList.get(position);
         holder.replyName.setText(commentReply.getName());
         holder.replyTime.setText(commentReply.getTime());
         holder.replyContent.setText(commentReply.getContent());

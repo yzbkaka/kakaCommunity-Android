@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -17,8 +16,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
-import com.example.kakacommunity.model.CommentReply;
-import com.example.kakacommunity.model.CommuityReply;
+import com.example.kakacommunity.model.CommunityReply;
+import com.example.kakacommunity.model.CommunityComment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class ReplyDetailActivity extends AppCompatActivity {
 
     private ReplyDetailAdapter adapter;
 
-    private List<CommentReply> commentReplyList = new ArrayList<>();
+    private List<CommunityReply> commentReplyList = new ArrayList<>();
 
     private String commentId;
 
@@ -59,7 +58,7 @@ public class ReplyDetailActivity extends AppCompatActivity {
 
     private void initView() {
         Intent intent = getIntent();
-        CommuityReply communityReply = (CommuityReply) intent.getSerializableExtra("communityReply");
+        CommunityComment communityReply = (CommunityComment) intent.getSerializableExtra("communityReply");
         commentId = communityReply.getId();
         toolbar = (Toolbar) findViewById(R.id.reply_detail_toolbar);
         setSupportActionBar(toolbar);
@@ -87,7 +86,7 @@ public class ReplyDetailActivity extends AppCompatActivity {
     /**
      * 将数据进行显示
      */
-    private void setView(CommuityReply communityReply) {
+    private void setView(CommunityComment communityReply) {
         Glide.with(MyApplication.getContext())
                 .load(communityReply.getImageUrl())
                 .into(commentImage);
