@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -98,6 +99,15 @@ public class ReplyDetailActivity extends AppCompatActivity {
         adapter = new ReplyDetailAdapter(commentReplyList);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemCLickListener(new ReplyDetailAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent = new Intent(ReplyDetailActivity.this, AddReplyActivity.class);
+                intent.putExtra("commentId", commentId);
+                intent.putExtra("targetId",commentReplyList.get(position).getUserId());
+                startActivityForResult(intent,REPLY_DETAIL_CODE);
+            }
+        });
     }
 
     @Override

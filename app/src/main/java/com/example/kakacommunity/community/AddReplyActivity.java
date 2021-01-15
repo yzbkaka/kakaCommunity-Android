@@ -39,6 +39,8 @@ public class AddReplyActivity extends AppCompatActivity {
 
     private String commentId;
 
+    private String targetId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,7 @@ public class AddReplyActivity extends AppCompatActivity {
     private void initView() {
         Intent intent = getIntent();
         commentId = intent.getStringExtra("commentId");
+        targetId = intent.getStringExtra("targetId");
         toolbar = (Toolbar) findViewById(R.id.add_reply_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -60,7 +63,7 @@ public class AddReplyActivity extends AppCompatActivity {
         replyFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addReply(commentId);
+                addReply();
             }
         });
     }
@@ -68,7 +71,7 @@ public class AddReplyActivity extends AppCompatActivity {
     /**
      * 添加回复
      */
-    private void addReply(String commentId) {
+    private void addReply() {
         String content = replyText.getText().toString();
         SharedPreferences preferences = getSharedPreferences("user_message", MODE_PRIVATE);
         String userId = preferences.getString("userId", "");
@@ -79,6 +82,7 @@ public class AddReplyActivity extends AppCompatActivity {
                     .add("userId", userId)
                     .add("content", content)
                     .add("entityId", commentId)
+                    .add("targetId",targetId)
                     .add("entityType", String.valueOf(ENTITY_TYPE_COMMENT))
                     .build();
             HttpUtil.OkHttpPOST(BASE_ADDRESS + "/comment" + "/add" + "/" + commentId,
@@ -104,7 +108,6 @@ public class AddReplyActivity extends AppCompatActivity {
                                 setResult(RESULT_OK, intent);
                                 finish();
                             }
-
                         }
                     });
         }

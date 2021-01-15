@@ -201,12 +201,13 @@ public class CommunityDetailActivity extends AppCompatActivity {
                         commentReply.setContent(reply.getString("content"));
                         commentReply.setTime(reply.getString("createTime"));
                         int targetId = reply.getInt("targetId");
+                        commentReply.setUserId(reply.getString("userId"));
                         JSONObject replyUser = replyItem.getJSONObject("user");
                         commentReply.setImageUrl(replyUser.getString("headerUrl"));
                         commentReply.setName(replyUser.getString("username"));
                         if(targetId != 0) {
                             JSONObject target = replyItem.getJSONObject("target");
-                            commentReply.setTargetUser(target.getString("username"));
+                            commentReply.setTargetUserName(target.getString("username"));
                         }
                         commentReplyList.add(commentReply);
                     }

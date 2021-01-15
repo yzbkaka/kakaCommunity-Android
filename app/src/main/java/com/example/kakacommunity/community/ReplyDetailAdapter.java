@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.model.CommunityReply;
-import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.
     private OnItemClickListener onItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout replyLayout;
         LinearLayout replyTargetLayout;
         ImageView imageView;
         TextView replyName;
@@ -36,6 +36,7 @@ public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            replyLayout = (LinearLayout)itemView.findViewById(R.id.comment_reply_layout);
             replyTargetLayout = (LinearLayout) itemView.findViewById(R.id.comment_reply_target_layout);
             imageView = (ImageView) itemView.findViewById(R.id.comment_reply_detail_author_image);
             replyName = (TextView) itemView.findViewById(R.id.comment_reply_detail_author);
@@ -66,13 +67,16 @@ public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.
         Glide.with(MyApplication.getContext())
                 .load(commentReply.getImageUrl())
                 .into(holder.imageView);
-
-        if(commentReply.getTargetUser() != null) {
-        }
-        if (commentReply.getTargetUser() != null) {
+        if (commentReply.getTargetUserName() != null) {
             holder.replyTargetLayout.setVisibility(View.VISIBLE);
-            holder.replyTargetUser.setText(commentReply.getTargetUser());
+            holder.replyTargetUser.setText(commentReply.getTargetUserName());
         }
+        holder.replyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
     }
 
     @Override
