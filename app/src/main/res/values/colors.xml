@@ -10,4 +10,5 @@
     <color name="time">#999999</color>
     <color name="red">#f44336</color>
     <color name="green">#02AE7C</color>
+    <color name="transparent">#50CACACA</color>
 </resources>

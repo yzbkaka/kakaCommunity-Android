@@ -30,8 +30,6 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -40,6 +38,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         android:textColor="@color/title"
                         android:textSize="20sp"
                         android:text="双非的秋招总结~"/>
@@ -47,6 +47,8 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_marginTop="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <de.hdodenhof.circleimageview.CircleImageView
@@ -81,14 +83,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         android:textSize="16sp"
                         android:lineSpacingMultiplier="1.2"/>
+
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="3dp"
-                        android:background="@color/time"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/transparent"
+                        android:paddingLeft="10dp"
+                        android:text="评论"
                         android:gravity="center_vertical" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -98,6 +105,7 @@
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/community_detail_floating_actionbar"
             android:src="@drawable/add"
@@ -107,5 +115,4 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="30dp"/>
     </FrameLayout>
-
 </LinearLayout>

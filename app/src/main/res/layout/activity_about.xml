@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/time"
+            android:background="@color/transparent"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:text="关于作者" />
@@ -64,7 +64,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/time"></View>
+            android:background="@color/transparent"></View>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -91,7 +91,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/time"
+            android:background="@color/transparent"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:text="其他" />
@@ -123,11 +123,11 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/time"></View>
+            android:background="@color/transparent"></View>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/time"></View>
+            android:background="@color/transparent"></View>
     </LinearLayout>
 </ScrollView>

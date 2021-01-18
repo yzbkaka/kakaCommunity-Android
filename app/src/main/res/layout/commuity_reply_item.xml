@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/community_reply_layout"
     android:orientation="vertical"
+    android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
-        android:paddingTop="10dp"
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -32,6 +34,7 @@
                 android:id="@+id/community_reply_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:textSize="11sp"
                 android:textColor="@color/time"
                 android:text="2020-12-25"/>
@@ -40,10 +43,10 @@
 
     <TextView
         android:id="@+id/community_reply_content"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="声音小的话，在视频界面右键选择视频音效，罢那个默认在中间的，调到最大，然后选择清澈人声，声音贼大，我也是昨天才发现的"/>
@@ -51,15 +54,16 @@
     <TextView
         android:id="@+id/community_reply_comment_count"
         android:visibility="gone"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="35dp"
         android:textColor="@color/colorPrimary"
         android:text="查看5条回复"
         android:layout_width="match_parent"
         android:layout_height="20dp"/>
-    <TextView
-        android:layout_marginTop="10dp"
+
+    <View
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/time"/>
+        android:background="@color/transparent"/>
 </LinearLayout>
