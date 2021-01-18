@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -17,6 +18,7 @@ import com.example.kakacommunity.model.HomeArticle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 public class MyArticleActivity extends AppCompatActivity {
 
@@ -28,6 +30,8 @@ public class MyArticleActivity extends AppCompatActivity {
 
     private List<HomeArticle> myArticleList = new ArrayList<>();
 
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,8 @@ public class MyArticleActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        SharedPreferences preferences = getSharedPreferences("user_message",MODE_PRIVATE);
+        userId = preferences.getString("userId","");
         toolbar = (Toolbar)findViewById(R.id.my_article_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

@@ -2,28 +2,27 @@ package com.example.kakacommunity.community;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.base.MyApplication;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
-import com.example.kakacommunity.home.HomeAdapter;
-import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
@@ -34,7 +33,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -43,8 +44,11 @@ import okhttp3.Response;
 import static android.app.Activity.RESULT_OK;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
 public class CommunityFragment extends BaseFragment {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private CommunityBroadcastReceiver communityBroadcastReceiver;
 
@@ -73,6 +77,7 @@ public class CommunityFragment extends BaseFragment {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         communityBroadcastReceiver = new CommunityBroadcastReceiver();
         errorImage = (ImageView) view.findViewById(R.id.community_error);
         refreshLayout = (RefreshLayout) view.findViewById(R.id.community_swipe_refresh_layout);
@@ -81,10 +86,11 @@ public class CommunityFragment extends BaseFragment {
         initRecyclerView();
 
         showProgressDialog();
-        getCommunityArticleJSON(1);
+        getCommunityJSON(1);
         communityAdapter.setOnItemCLickListener(new CommunityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(communityArticleList.get(position));
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
                 intent.putExtra("discussPostId", discussPostId);
@@ -94,7 +100,7 @@ public class CommunityFragment extends BaseFragment {
         errorImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getCommunityArticleJSON(1);
+                getCommunityJSON(1);
             }
         });
     }
@@ -107,7 +113,7 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 communityArticleList.clear();
-                getCommunityArticleJSON(1);
+                getCommunityJSON(1);
                 curPage = 1;
                 refreshlayout.finishRefresh();
             }
@@ -116,7 +122,7 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
                 curPage++;
-                getCommunityArticleJSON(curPage);
+                getCommunityJSON(curPage);
                 refreshlayout.finishLoadMore();
             }
         });
@@ -129,7 +135,7 @@ public class CommunityFragment extends BaseFragment {
         recyclerView.setAdapter(communityAdapter);
     }
 
-    private void getCommunityArticleJSON(int page) {
+    private void getCommunityJSON(int page) {
         HttpUtil.OkHttpGET(BASE_ADDRESS + "/index" + "/" + page, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -147,7 +153,7 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                parseCommunityArticleJSON(responseData);
+                parseCommunityJSON(responseData);
                 if (!ActivityUtil.isDestroy(getActivity())) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -162,7 +168,7 @@ public class CommunityFragment extends BaseFragment {
         });
     }
 
-    private void parseCommunityArticleJSON(String responseData) {
+    private void parseCommunityJSON(String responseData) {
         try {
             JSONObject jsonData = new JSONObject(responseData);
             JSONArray discussPosts = jsonData.getJSONArray("discussPosts");
@@ -181,6 +187,20 @@ public class CommunityFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type", TYPE_COMMUNITY);
+        contentValues.put("author", homeArticle.getAuthor());
+        contentValues.put("title", homeArticle.getTitle());
+        contentValues.put("link", homeArticle.getDiscussPostId());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", homeArticle.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     private void showProgressDialog() {
@@ -204,7 +224,7 @@ public class CommunityFragment extends BaseFragment {
             case COMMUNITY_FRAGMENT_CODE:
                 if (resultCode == RESULT_OK) {
                     communityArticleList.clear();
-                    getCommunityArticleJSON(1);
+                    getCommunityJSON(1);
                 }
                 break;
             default:

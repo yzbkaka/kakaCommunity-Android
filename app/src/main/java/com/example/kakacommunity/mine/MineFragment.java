@@ -162,7 +162,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             headerUrl = jsonUser.getString("headerUrl");
             username = jsonUser.getString("username");
             userId = jsonUser.getString("id");
-            SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message",MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message",MODE_PRIVATE).edit();  //存储登录用户的信息
             editor.putString("userId",userId);
             editor.putString("username",username);
             editor.putString("headerUrl",headerUrl);

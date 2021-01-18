@@ -1,8 +1,11 @@
 package com.example.kakacommunity.search;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.example.kakacommunity.R;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.community.CommunityAdapter;
 import com.example.kakacommunity.community.CommunityDetailActivity;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
@@ -34,7 +38,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -43,8 +49,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
 public class ShowSearchCommunityFragment extends Fragment {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private SmartRefreshLayout refreshLayout;
 
@@ -73,6 +83,7 @@ public class ShowSearchCommunityFragment extends Fragment {
     }
 
     private void initView(View view) {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         errorImage = (ImageView)view.findViewById(R.id.show_search_community_error);
         refreshLayout = (SmartRefreshLayout)view.findViewById(R.id.show_search_community_refresh_layout);
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
@@ -171,6 +182,7 @@ public class ShowSearchCommunityFragment extends Fragment {
         communityAdapter.setOnItemCLickListener(new CommunityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(communityArticleList.get(position));
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
                 intent.putExtra("discussPostId", discussPostId);
@@ -183,6 +195,20 @@ public class ShowSearchCommunityFragment extends Fragment {
                 getSearchCommunityJSON();
             }
         });
+    }
+
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type", TYPE_COMMUNITY);
+        contentValues.put("author", homeArticle.getAuthor());
+        contentValues.put("title", homeArticle.getTitle());
+        contentValues.put("link", homeArticle.getDiscussPostId());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", homeArticle.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     private void showProgressDialog() {
