@@ -3,6 +3,7 @@ package com.example.kakacommunity.mine;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.kakacommunity.LoginActivity;
 import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.mine.about.AboutActivity;
 import com.example.kakacommunity.mine.collect.CollectActivity;
 import com.example.kakacommunity.mine.history.HistoryActivity;
@@ -43,6 +45,8 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDR
 
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private CircleImageView userImage;
 
@@ -91,7 +95,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e("mine", "create");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -103,6 +106,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     protected void lazyLoad() {
         View view = getContentView();
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         userImage = (CircleImageView) view.findViewById(R.id.user_image);
         userName = (TextView) view.findViewById(R.id.user_name);
         myArticle = (LinearLayout) view.findViewById(R.id.my_article);
@@ -208,15 +212,25 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case R.id.about:
                 Intent intent6 = new Intent(MyApplication.getContext(), AboutActivity.class);
                 startActivity(intent6);
+                 break;
             case R.id.exit:
                 Intent intent7 = new Intent(MyApplication.getContext(), LoginActivity.class);
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message", MODE_PRIVATE).edit();
                 editor.putString("ticket", "");
                 editor.apply();
+                deleteReadHistory();
                 startActivity(intent7);
                 getActivity().finish();
                 break;
         }
+    }
+
+    /**
+     * 删除所有阅读历史
+     */
+    private void deleteReadHistory() {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        db.delete("History",null,null);
     }
 
 }

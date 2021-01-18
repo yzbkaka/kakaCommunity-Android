@@ -84,8 +84,8 @@ public class ShowSearchCommunityFragment extends Fragment {
 
     private void initView(View view) {
         dataBaseHelper = MyDataBaseHelper.getInstance();
-        errorImage = (ImageView)view.findViewById(R.id.show_search_community_error);
-        refreshLayout = (SmartRefreshLayout)view.findViewById(R.id.show_search_community_refresh_layout);
+        errorImage = (ImageView) view.findViewById(R.id.show_search_community_error);
+        refreshLayout = (SmartRefreshLayout) view.findViewById(R.id.show_search_community_refresh_layout);
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
         refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
@@ -107,7 +107,7 @@ public class ShowSearchCommunityFragment extends Fragment {
 
             }
         });
-        recyclerView = (RecyclerView)view.findViewById(R.id.show_search_community_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.show_search_community_recycler_view);
         initRecyclerView();
     }
 
@@ -158,7 +158,7 @@ public class ShowSearchCommunityFragment extends Fragment {
     private void parseSearchCommunityJSON(String responseData) {
         try {
             JSONArray jsonArray = new JSONArray(responseData);
-            for(int i = 0;i < jsonArray.length();i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 HomeArticle homeArticle = new HomeArticle();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONObject post = jsonObject.getJSONObject("post");
@@ -170,8 +170,7 @@ public class ShowSearchCommunityFragment extends Fragment {
                 homeArticle.setAuthor(user.getString("username"));
                 communityArticleList.add(homeArticle);
             }
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
