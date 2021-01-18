@@ -82,7 +82,7 @@ public class CommunityFragment extends BaseFragment {
 
         showProgressDialog();
         getCommunityArticleJSON(1);
-        communityAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
+        communityAdapter.setOnItemCLickListener(new CommunityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();

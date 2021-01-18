@@ -19,7 +19,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
 
     private List<HomeArticle> communityArticleList;
 
-    private HomeAdapter.OnItemClickListener onItemClickListener;
+    private OnItemClickListener onItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
@@ -93,7 +93,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         void onItemClick(int position);
     }
 
-    public void setOnItemCLickListener(HomeAdapter.OnItemClickListener onItemCLickListener) {
+    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {
         this.onItemClickListener = onItemCLickListener;
     }
 }

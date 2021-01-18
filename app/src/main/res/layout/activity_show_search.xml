@@ -7,63 +7,30 @@
     android:orientation="vertical"
     tools:context=".search.ShowSearchActivity">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/show_search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal" >
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="15sp">
-                <ImageView
-                    android:id="@+id/query_back"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/back"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginRight="5dp"/>
-            </RelativeLayout>
-            <TextView
-                android:id="@+id/query_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="17sp"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:background="@color/colorPrimary"/>
 
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
-            android:id="@+id/query_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/show_search_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:tabIndicatorColor="@color/white"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/white"
+        app:tabIndicatorHeight="3dp"
+        app:tabMode="fixed" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/show_search_tab_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/query_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
 
-                <ImageView
-                    android:id="@+id/search_error"
-                    android:layout_marginTop="180dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:src="@drawable/error"
-                    android:visibility="gone"
-                    android:gravity="center"/>
-            </LinearLayout>
-
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-    </LinearLayout>
 </LinearLayout>
