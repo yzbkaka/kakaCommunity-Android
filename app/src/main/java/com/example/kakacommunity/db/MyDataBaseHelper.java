@@ -46,6 +46,16 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
             + "image_link text,"
             + "chapter_name text)";
 
+    public static final String CREATE_COLLECT = "create table Collect("
+            + "id Integer primary key autoincrement,"
+            + "type text,"
+            + "author text,"
+            + "title text,"
+            + "link text,"
+            + "save_date text,"
+            + "image_link text,"
+            + "chapter_name text)";
+
     private Context context;
 
     public MyDataBaseHelper(@Nullable Context context, @Nullable String name,
@@ -69,6 +79,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_USEWEB);
         db.execSQL(CREATE_TREE);
         db.execSQL(CREATE_HISTORY);
+        db.execSQL(CREATE_COLLECT);
         Toast.makeText(context, "create succeeded", Toast.LENGTH_SHORT).show();
     }
 
@@ -80,6 +91,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists UseWeb");
         db.execSQL("drop table if exists Tree");
         db.execSQL("drop table if exists History");
+        db.execSQL("drop table if exists Collect");
         onCreate(db);
     }
 }

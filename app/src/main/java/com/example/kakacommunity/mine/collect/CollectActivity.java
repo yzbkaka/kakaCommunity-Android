@@ -46,14 +46,17 @@ public class CollectActivity extends AppCompatActivity {
         List<String> titleList = new ArrayList<>();
         titleList.add("文章");
         titleList.add("项目");
+        titleList.add("帖子");
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new CollectArticleFragment());
         fragmentList.add(new CollectProjectFragment());
+        fragmentList.add(new CollectCommunityFragment());
         for(int i = 0;i < titleList.size();i++) {
             tabLayout.addTab(tabLayout.newTab().setText(titleList.get(i)));
         }
         CollectTabFragmentAdapter adapter = new CollectTabFragmentAdapter(getSupportFragmentManager(), fragmentList,titleList);
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
 

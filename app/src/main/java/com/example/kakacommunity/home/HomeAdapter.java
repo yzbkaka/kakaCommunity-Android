@@ -1,21 +1,34 @@
 package com.example.kakacommunity.home;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.base.MyApplication;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.HomeArticle;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
+
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private List<HomeArticle> homeArticleList;
 
@@ -29,6 +42,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView title;
         TextView chapter;
         TextView tag;
+        ImageView collect;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -39,10 +53,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             title = (TextView) itemView.findViewById(R.id.home_item_title);
             chapter = (TextView) itemView.findViewById(R.id.home_item_chapter);
             tag = (TextView) itemView.findViewById(R.id.home_item_tag);
+            collect = (ImageView)itemView.findViewById(R.id.home_item_collect);
         }
     }
 
     public HomeAdapter(List<HomeArticle> homeArticleList) {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         this.homeArticleList = homeArticleList;
     }
 
@@ -73,6 +89,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         }else{
             holder.tag.setVisibility(View.GONE);
         }
+        holder.collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("type", TYPE_ARTICLE);
+                contentValues.put("author", homeArticle.getAuthor());
+                contentValues.put("title", homeArticle.getTitle());
+                contentValues.put("link", homeArticle.getLink());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                Date date = new Date();
+                contentValues.put("save_date", dateFormat.format(date));
+                contentValues.put("chapter_name", homeArticle.getChapterName());
+                db.insert("Collect", null, contentValues);
+                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

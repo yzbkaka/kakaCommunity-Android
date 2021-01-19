@@ -1,10 +1,13 @@
 package com.example.kakacommunity.project;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,13 +17,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.Project;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private List<Project> projectList;
 
@@ -33,6 +42,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         TextView time;
         TextView title;
         TextView chapter;
+        ImageView collect;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -42,10 +52,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             time = (TextView) itemView.findViewById(R.id.project_item_date);
             title = (TextView) itemView.findViewById(R.id.project_item_title);
             chapter = (TextView) itemView.findViewById(R.id.project_item_chapter);
+            collect = (ImageView)itemView.findViewById(R.id.project_item_collect);
         }
     }
 
     public ProjectAdapter(List<Project> projectList) {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         this.projectList = projectList;
     }
 
@@ -76,6 +88,24 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         }
         holder.title.setText(project.getTitle());
         holder.chapter.setText(project.getChapterName());
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("type",TYPE_PROJECT);
+                contentValues.put("author", project.getAuthor());
+                contentValues.put("image_link",project.getImageLink());
+                contentValues.put("title", project.getTitle());
+                contentValues.put("link", project.getLink());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                Date date = new Date();
+                contentValues.put("save_date", dateFormat.format(date));
+                contentValues.put("chapter_name", project.getChapterName());
+                db.insert("Collect", null, contentValues);
+                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

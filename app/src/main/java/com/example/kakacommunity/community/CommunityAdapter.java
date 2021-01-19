@@ -1,21 +1,33 @@
 package com.example.kakacommunity.community;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.base.MyApplication;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.model.HomeArticle;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
+
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.ViewHolder> {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private List<HomeArticle> communityArticleList;
 
@@ -30,6 +42,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         TextView content;
         TextView chapter;
         TextView tag;
+        ImageView collect;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -41,10 +54,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
             content = (TextView)itemView.findViewById(R.id.community_item_content);
             chapter = (TextView) itemView.findViewById(R.id.community_item_chapter);
             tag = (TextView) itemView.findViewById(R.id.community_item_tag);
+            collect = (ImageView)itemView.findViewById(R.id.community_item_collect);
         }
     }
 
     public CommunityAdapter(List<HomeArticle> communityArticleList) {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         this.communityArticleList = communityArticleList;
     }
 
@@ -61,7 +76,13 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         holder.author.setText(homeArticle.getAuthor());
         holder.time.setText(homeArticle.getNiceDate());
         holder.title.setText(homeArticle.getTitle());
-        holder.content.setText(homeArticle.getContent());
+        if(homeArticle.getContent() != null) {
+            holder.content.setVisibility(View.VISIBLE);
+            holder.content.setText(homeArticle.getContent());
+        }else {
+            holder.content.setVisibility(View.GONE);
+            holder.content.setText(homeArticle.getContent());
+        }
         holder.chapter.setText(homeArticle.getChapterName());
         boolean fresh = homeArticle.isFresh();
         if (fresh) {
@@ -76,6 +97,23 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         }else{
             holder.tag.setVisibility(View.GONE);
         }
+        holder.collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("type", TYPE_COMMUNITY);
+                contentValues.put("author", homeArticle.getAuthor());
+                contentValues.put("title", homeArticle.getTitle());
+                contentValues.put("link", homeArticle.getDiscussPostId());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                Date date = new Date();
+                contentValues.put("save_date", dateFormat.format(date));
+                contentValues.put("chapter_name", homeArticle.getChapterName());
+                db.insert("Collect", null, contentValues);
+                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
