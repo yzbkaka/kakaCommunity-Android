@@ -1,6 +1,7 @@
 package com.example.kakacommunity.community;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,21 +98,33 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         }else{
             holder.tag.setVisibility(View.GONE);
         }
+        if(homeArticle.isCollect()) {
+            holder.collect.setImageResource(R.drawable.iscollect);
+        }
         holder.collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("type", TYPE_COMMUNITY);
-                contentValues.put("author", homeArticle.getAuthor());
-                contentValues.put("title", homeArticle.getTitle());
-                contentValues.put("link", homeArticle.getDiscussPostId());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                Date date = new Date();
-                contentValues.put("save_date", dateFormat.format(date));
-                contentValues.put("chapter_name", homeArticle.getChapterName());
-                db.insert("Collect", null, contentValues);
-                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                if(!homeArticle.isCollect()) {
+                    String only = homeArticle.getDiscussPostId();
+                    if(queryOnly(only)) {
+                        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("type", TYPE_COMMUNITY);
+                        contentValues.put("author", homeArticle.getAuthor());
+                        contentValues.put("title", homeArticle.getTitle());
+                        contentValues.put("link", homeArticle.getDiscussPostId());
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        Date date = new Date();
+                        contentValues.put("save_date", dateFormat.format(date));
+                        contentValues.put("chapter_name", homeArticle.getChapterName());
+                        db.insert("Collect", null, contentValues);
+                        Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MyApplication.getContext(), "已经收藏过啦", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    onItemClickListener.onItemCollectClick(position);
+                }
             }
         });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -127,8 +140,21 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         return communityArticleList.size();
     }
 
+    private boolean queryOnly(String only) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        Cursor cursor = db.query("Collect", null, "link = ?", new String[]{only}, null, null, null);
+        if (cursor.getCount() == 0) {  //没有收藏过
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;  //收藏过
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
+        void onItemCollectClick(int position);
     }
 
     public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {

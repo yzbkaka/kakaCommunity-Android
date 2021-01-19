@@ -89,6 +89,9 @@ public class HistoryArticleFragment extends Fragment {
                 intent.putExtra("url", link);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {}
         });
     }
 }

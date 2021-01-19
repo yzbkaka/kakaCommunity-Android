@@ -133,6 +133,9 @@ public class HomeFragment extends BaseFragment {
                 intent.putExtra("url", link);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {}
         });
         errorImage.setOnClickListener(new View.OnClickListener() {
             @Override

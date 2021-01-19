@@ -1,6 +1,7 @@
 package com.example.kakacommunity.project;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,22 +89,34 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         }
         holder.title.setText(project.getTitle());
         holder.chapter.setText(project.getChapterName());
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+        if(project.isCollect()) {
+            holder.collect.setImageResource(R.drawable.iscollect);
+        }
+        holder.collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("type",TYPE_PROJECT);
-                contentValues.put("author", project.getAuthor());
-                contentValues.put("image_link",project.getImageLink());
-                contentValues.put("title", project.getTitle());
-                contentValues.put("link", project.getLink());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                Date date = new Date();
-                contentValues.put("save_date", dateFormat.format(date));
-                contentValues.put("chapter_name", project.getChapterName());
-                db.insert("Collect", null, contentValues);
-                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                if(!project.isCollect()) {
+                    String only = project.getLink();
+                    if(queryOnly(only)) {
+                        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("type",TYPE_PROJECT);
+                        contentValues.put("author", project.getAuthor());
+                        contentValues.put("image_link",project.getImageLink());
+                        contentValues.put("title", project.getTitle());
+                        contentValues.put("link", project.getLink());
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        Date date = new Date();
+                        contentValues.put("save_date", dateFormat.format(date));
+                        contentValues.put("chapter_name", project.getChapterName());
+                        db.insert("Collect", null, contentValues);
+                        Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MyApplication.getContext(), "已经收藏过啦", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    onItemClickListener.onItemCollectClick(position);
+                }
             }
         });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -119,8 +132,21 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         return projectList.size();
     }
 
+    private boolean queryOnly(String only) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        Cursor cursor = db.query("Collect", null, "link = ?", new String[]{only}, null, null, null);
+        if (cursor.getCount() == 0) {  //没有收藏过
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;  //收藏过
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
+        void onItemCollectClick(int position);
     }
 
     public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {

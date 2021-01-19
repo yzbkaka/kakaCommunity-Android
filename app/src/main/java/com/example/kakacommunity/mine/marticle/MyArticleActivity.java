@@ -68,6 +68,11 @@ public class MyArticleActivity extends AppCompatActivity {
             public void onItemClick(int position) {
 
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+
+            }
         });
     }
 

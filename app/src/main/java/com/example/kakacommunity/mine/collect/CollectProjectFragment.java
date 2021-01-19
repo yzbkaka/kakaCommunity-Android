@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,6 +65,7 @@ public class CollectProjectFragment extends Fragment {
                 project.setDate(niceDate);
                 String chapterName = cursor.getString(cursor.getColumnIndex("chapter_name"));
                 project.setChapterName(chapterName);
+                project.setCollect(true);
                 collectProjectList.add(project);
             } while (cursor.moveToNext());
         }
@@ -91,6 +93,20 @@ public class CollectProjectFragment extends Fragment {
                 intent.putExtra("url", link);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+                String only = collectProjectList.get(position).getLink();
+                collectProjectList.remove(position);
+                collectProjectAdapter.notifyDataSetChanged();
+                Toast.makeText(MyApplication.getContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                deleteCollectProject(only);
+            }
         });
+    }
+
+    private void deleteCollectProject(String only) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        db.delete("Collect", "link = ?", new String[]{only});
     }
 }

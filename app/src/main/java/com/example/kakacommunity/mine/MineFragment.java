@@ -232,5 +232,4 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.delete("History",null,null);
     }
-
 }

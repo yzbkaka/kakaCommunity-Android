@@ -16,6 +16,16 @@ public class Project {
 
     private String date;
 
+    private boolean collect;
+
+    public boolean isCollect() {
+        return collect;
+    }
+
+    public void setCollect(boolean collect) {
+        this.collect = collect;
+    }
+
     public int getId() {
         return id;
     }

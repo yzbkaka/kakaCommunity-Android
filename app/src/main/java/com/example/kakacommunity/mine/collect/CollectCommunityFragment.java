@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,6 +64,7 @@ public class CollectCommunityFragment extends Fragment {
                 homeArticle.setNiceDate(niceDate);
                 String chapterName = cursor.getString(cursor.getColumnIndex("chapter_name"));
                 homeArticle.setChapterName(chapterName);
+                homeArticle.setCollect(true);
                 collectCommunityList.add(homeArticle);
             } while (cursor.moveToNext());
         }
@@ -87,6 +89,20 @@ public class CollectCommunityFragment extends Fragment {
                 intent.putExtra("discussPostId", discussPostId);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+                String only = collectCommunityList.get(position).getDiscussPostId();
+                collectCommunityList.remove(position);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(MyApplication.getContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                deleteCollectCommunity(only);
+            }
         });
+    }
+
+    private void deleteCollectCommunity(String only) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        db.delete("Collect", "link = ?", new String[]{only});
     }
 }

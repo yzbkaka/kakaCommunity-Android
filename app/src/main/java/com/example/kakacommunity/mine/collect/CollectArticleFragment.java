@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +42,7 @@ public class CollectArticleFragment extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collect_article, container, false);
         dataBaseHelper = MyDataBaseHelper.getInstance();
-        recyclerView = (RecyclerView)view.findViewById(R.id.collect_article_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.collect_article_recycler_view);
         queryCollectArticle();
         initRecyclerView();
         return view;
@@ -63,6 +64,7 @@ public class CollectArticleFragment extends Fragment {
                 homeArticle.setNiceDate(niceDate);
                 String chapterName = cursor.getString(cursor.getColumnIndex("chapter_name"));
                 homeArticle.setChapterName(chapterName);
+                homeArticle.setCollect(true);
                 collectArticleList.add(homeArticle);
             } while (cursor.moveToNext());
         }
@@ -89,6 +91,20 @@ public class CollectArticleFragment extends Fragment {
                 intent.putExtra("url", link);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+                String only = collectArticleList.get(position).getLink();
+                collectArticleList.remove(position);
+                collectArticleAdapter.notifyDataSetChanged();
+                Toast.makeText(MyApplication.getContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                deleteCollectArticle(only);
+            }
         });
+    }
+
+    private void deleteCollectArticle(String only) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        db.delete("Collect", "link = ?", new String[]{only});
     }
 }

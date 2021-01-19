@@ -54,6 +54,18 @@ public class HomeArticle {
      */
     private String discussPostId;
 
+    /**
+     * 是否收藏
+     */
+    private boolean isCollect;
+
+    public boolean isCollect() {
+        return isCollect;
+    }
+
+    public void setCollect(boolean collect) {
+        isCollect = collect;
+    }
 
     public String getDiscussPostId() {
         return discussPostId;

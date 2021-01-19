@@ -180,6 +180,9 @@ public class TreeArticleActivity extends AppCompatActivity {
                 intent.putExtra("url", link);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {}
         });
     }
 

@@ -96,6 +96,11 @@ public class CommunityFragment extends BaseFragment {
                 intent.putExtra("discussPostId", discussPostId);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+
+            }
         });
         errorImage.setOnClickListener(new View.OnClickListener() {
             @Override

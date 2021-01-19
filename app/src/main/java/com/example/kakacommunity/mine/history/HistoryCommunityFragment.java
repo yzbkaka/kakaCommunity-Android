@@ -91,6 +91,11 @@ public class HistoryCommunityFragment extends Fragment {
                 intent.putExtra("discussPostId", discussPostId);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemCollectClick(int position) {
+
+            }
         });
     }
 }
