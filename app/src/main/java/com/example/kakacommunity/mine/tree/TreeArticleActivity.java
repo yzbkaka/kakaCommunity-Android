@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -15,10 +17,12 @@ import android.view.MenuItem;
 
 import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
+import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.header.PhoenixHeader;
 import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.home.WebActivity;
 import com.example.kakacommunity.model.HomeArticle;
+import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -31,15 +35,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
 public class TreeArticleActivity extends AppCompatActivity {
+
+    private MyDataBaseHelper dataBaseHelper;
 
     private Toolbar toolbar;
 
@@ -61,10 +70,11 @@ public class TreeArticleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tree_article);
         initView();
         showProgressDialog();
-        getTreeArticleJSON();
+        getTreeArticleJSON(0);
     }
 
     private void initView() {
+        dataBaseHelper = MyDataBaseHelper.getInstance();
         toolbar = (Toolbar) findViewById(R.id.tree_article_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -78,13 +88,17 @@ public class TreeArticleActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-
+                articleList.clear();
+                getTreeArticleJSON(0);
+                curPage = 0;
+                refreshlayout.finishRefresh();
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                getTreeArticleJSON();
+                curPage++;
+                getTreeArticleJSON(curPage);
                 refreshlayout.finishLoadMore();
             }
         });
@@ -99,14 +113,12 @@ public class TreeArticleActivity extends AppCompatActivity {
         recyclerView.setAdapter(homeAdapter);
     }
 
-    private void getTreeArticleJSON() {
+    private void getTreeArticleJSON(int page) {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String id = intent.getStringExtra("id");
-        Log.e("name", name);
         toolbar.setTitle(name);
-        Log.e("url", ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage + "/json?" + "cid=" + id);
-        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + curPage + "/json?" + "cid=" + id,
+        HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + page + "/json?" + "cid=" + id,
                 new okhttp3.Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
@@ -122,15 +134,16 @@ public class TreeArticleActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseData = response.body().string();
-                        Log.e("json", responseData);
                         parseTreeArticleJSON(responseData);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                closeProgressDialog();
-                                homeAdapter.notifyDataSetChanged();
-                            }
-                        });
+                        if(!ActivityUtil.isDestroy(TreeArticleActivity.this)){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    closeProgressDialog();
+                                    homeAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
                     }
                 });
     }
@@ -173,6 +186,7 @@ public class TreeArticleActivity extends AppCompatActivity {
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                saveReadHistory(articleList.get(position));
                 String link = articleList.get(position).getLink();
                 String title = articleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
@@ -186,10 +200,21 @@ public class TreeArticleActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        curPage = 0;
+    /**
+     * 存储阅读历史
+     */
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("type", TYPE_ARTICLE);
+        contentValues.put("author", homeArticle.getAuthor());
+        contentValues.put("title", homeArticle.getTitle());
+        contentValues.put("link", homeArticle.getLink());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        contentValues.put("read_date", dateFormat.format(date));
+        contentValues.put("chapter_name", homeArticle.getChapterName());
+        db.insert("History", null, contentValues);
     }
 
     private void showProgressDialog() {

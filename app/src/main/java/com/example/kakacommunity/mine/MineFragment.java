@@ -218,7 +218,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("user_message", MODE_PRIVATE).edit();
                 editor.putString("ticket", "");
                 editor.apply();
-                deleteReadHistory();
+                deleteReadHistoryAndCollect();
                 startActivity(intent7);
                 getActivity().finish();
                 break;
@@ -226,10 +226,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     /**
-     * 删除所有阅读历史
+     * 删除所有阅读历史和收藏
      */
-    private void deleteReadHistory() {
+    private void deleteReadHistoryAndCollect() {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.delete("History",null,null);
+        db.delete("Collect",null,null);
     }
 }

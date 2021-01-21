@@ -22,6 +22,7 @@ import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.project.ProjectAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
@@ -69,6 +70,7 @@ public class HistoryProjectFragment extends Fragment {
                 historyProjectList.add(project);
             } while (cursor.moveToNext());
         }
+        Collections.reverse(historyProjectList);
         cursor.close();
     }
 

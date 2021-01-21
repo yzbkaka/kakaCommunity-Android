@@ -24,6 +24,7 @@ import com.example.kakacommunity.home.HomeAdapter;
 import com.example.kakacommunity.model.HomeArticle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
@@ -69,6 +70,7 @@ public class HistoryCommunityFragment extends Fragment {
                 historyCommunityList.add(homeArticle);
             } while (cursor.moveToNext());
         }
+        Collections.reverse(historyCommunityList);
         cursor.close();
     }
 

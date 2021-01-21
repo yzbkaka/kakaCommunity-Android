@@ -103,8 +103,9 @@
 
         <ImageView
             android:id="@+id/community_item_collect"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginRight="1dp"
             android:src="@drawable/item_collect"
             android:layout_below="@+id/community_item_content"
             android:layout_alignParentRight="true"/>

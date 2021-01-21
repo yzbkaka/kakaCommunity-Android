@@ -69,7 +69,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp">
 
                 <TextView
                     android:id="@+id/project_item_author"
@@ -82,10 +83,9 @@
 
                 <ImageView
                     android:id="@+id/project_item_collect"
-                    android:layout_width="19dp"
-                    android:layout_height="19dp"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
                     android:layout_marginRight="4dp"
-                    android:layout_marginBottom="2dp"
                     android:src="@drawable/item_collect"
                     android:layout_alignParentEnd="true"/>
             </RelativeLayout>
