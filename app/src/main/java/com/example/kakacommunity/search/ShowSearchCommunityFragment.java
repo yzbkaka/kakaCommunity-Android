@@ -66,7 +66,6 @@ public class ShowSearchCommunityFragment extends Fragment {
 
     private List<HomeArticle> communityArticleList = new ArrayList<>();
 
-    private int curPage = 0;
 
     private ImageView errorImage;
 
@@ -87,24 +86,15 @@ public class ShowSearchCommunityFragment extends Fragment {
         errorImage = (ImageView) view.findViewById(R.id.show_search_community_error);
         refreshLayout = (SmartRefreshLayout) view.findViewById(R.id.show_search_community_refresh_layout);
         refreshLayout.setPrimaryColorsId(R.color.colorPrimary);
+        refreshLayout.setEnableLoadMore(false);
         refreshLayout.setRefreshHeader(new PhoenixHeader(MyApplication.getContext()));
         refreshLayout.setRefreshFooter(new BallPulseFooter(MyApplication.getContext()).setSpinnerStyle(SpinnerStyle.Scale));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 communityArticleList.clear();
                 getSearchCommunityJSON();
-                curPage = 0;
-                refreshlayout.finishRefresh();
-            }
-        });
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(RefreshLayout refreshlayout) {
-                curPage++;
-                getSearchCommunityJSON();
-                refreshlayout.finishLoadMore();
-
+                refreshLayout.finishRefresh();
             }
         });
         recyclerView = (RecyclerView) view.findViewById(R.id.show_search_community_recycler_view);
