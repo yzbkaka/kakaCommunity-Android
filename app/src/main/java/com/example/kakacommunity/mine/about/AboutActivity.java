@@ -49,7 +49,7 @@ public class AboutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);
-                intent.putExtra("link", "https://github.com/yzbkaka");
+                intent.putExtra("url", "https://github.com/yzbkaka");
                 intent.putExtra("title", "yzbkaka");
                 startActivity(intent);
             }
