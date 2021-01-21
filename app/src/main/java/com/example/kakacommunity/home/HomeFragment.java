@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -305,7 +306,7 @@ public class HomeFragment extends BaseFragment {
                     author = jsonObject.getString("shareUser");
                 }
                 homeArticle.setAuthor(author);
-                homeArticle.setTitle(jsonObject.getString("title"));
+                homeArticle.setTitle(String.valueOf(Html.fromHtml(jsonObject.getString("title"))));
                 homeArticle.setLink(jsonObject.getString("link"));
                 homeArticle.setNiceDate(jsonObject.getString("niceDate"));
                 homeArticle.setChapterName(jsonObject.getString("chapterName"));

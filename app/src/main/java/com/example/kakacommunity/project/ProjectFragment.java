@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -153,7 +154,8 @@ public class ProjectFragment extends Fragment {
                 ProjectTree projectTree = new ProjectTree();
                 JSONObject jsonObject = datas.getJSONObject(i);
                 String id = jsonObject.getString("id");
-                String name = jsonObject.getString("name");
+                //String name = jsonObject.getString("name");
+                String name = String.valueOf(Html.fromHtml(jsonObject.getString("name")));
                 contentValues.put("id", id);
                 contentValues.put("name", name);
                 projectTree.setId(id);
