@@ -116,7 +116,7 @@ public class ShowProjectFragment extends BaseFragment {
         projectAdapter.setOnItemCLickListener(new ProjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                saveReadHistory(projectList.get(position));
+                //saveReadHistory(projectList.get(position));
                 String link = projectList.get(position).getLink();
                 String title = projectList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);

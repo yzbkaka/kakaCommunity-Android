@@ -3,6 +3,7 @@ package com.example.kakacommunity.project;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             time = (TextView) itemView.findViewById(R.id.project_item_date);
             title = (TextView) itemView.findViewById(R.id.project_item_title);
             chapter = (TextView) itemView.findViewById(R.id.project_item_chapter);
-            collect = (ImageView)itemView.findViewById(R.id.project_item_collect);
+            collect = (ImageView) itemView.findViewById(R.id.project_item_collect);
         }
     }
 
@@ -87,22 +88,22 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         } else {
             holder.time.setVisibility(View.GONE);
         }
-        holder.title.setText(project.getTitle());
+        holder.title.setText(String.valueOf(Html.fromHtml(project.getTitle())));
         holder.chapter.setText(project.getChapterName());
-        if(project.isCollect()) {
+        if (project.isCollect()) {
             holder.collect.setImageResource(R.drawable.iscollect);
         }
         holder.collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!project.isCollect()) {
+                if (!project.isCollect()) {
                     String only = project.getLink();
-                    if(queryOnly(only)) {
+                    if (queryOnly(only)) {
                         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put("type",TYPE_PROJECT);
+                        contentValues.put("type", TYPE_PROJECT);
                         contentValues.put("author", project.getAuthor());
-                        contentValues.put("image_link",project.getImageLink());
+                        contentValues.put("image_link", project.getImageLink());
                         contentValues.put("title", project.getTitle());
                         contentValues.put("link", project.getLink());
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -111,10 +112,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
                         contentValues.put("chapter_name", project.getChapterName());
                         db.insert("Collect", null, contentValues);
                         Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(MyApplication.getContext(), "已经收藏过啦", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     onItemClickListener.onItemCollectClick(position);
                 }
             }
@@ -122,6 +123,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveReadHistory(projectList.get(position));
                 onItemClickListener.onItemClick(position);
             }
         });
@@ -144,8 +146,33 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         }
     }
 
+    private void saveReadHistory(Project project) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String link = project.getLink();
+        Cursor cursor = db.query("History", null, "link = ?", new String[]{link}, null, null, null);
+        if (cursor.getCount() == 0) {
+            contentValues.put("type", TYPE_PROJECT);
+            contentValues.put("author", project.getAuthor());
+            contentValues.put("image_link", project.getImageLink());
+            contentValues.put("title", project.getTitle());
+            contentValues.put("link", project.getLink());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = new Date();
+            contentValues.put("read_date", dateFormat.format(date));
+            contentValues.put("chapter_name", project.getChapterName());
+            db.insert("History", null, contentValues);
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = new Date();
+            contentValues.put("read_date", dateFormat.format(date));
+            db.update("History", contentValues, "link = ?", new String[]{link});
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
+
         void onItemCollectClick(int position);
     }
 

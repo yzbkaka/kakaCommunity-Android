@@ -186,7 +186,7 @@ public class TreeArticleActivity extends AppCompatActivity {
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                saveReadHistory(articleList.get(position));
+                //saveReadHistory(articleList.get(position));
                 String link = articleList.get(position).getLink();
                 String title = articleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);

@@ -90,7 +90,7 @@ public class CommunityFragment extends BaseFragment {
         communityAdapter.setOnItemCLickListener(new CommunityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                saveReadHistory(communityArticleList.get(position));
+                //saveReadHistory(communityArticleList.get(position));
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
                 intent.putExtra("discussPostId", discussPostId);

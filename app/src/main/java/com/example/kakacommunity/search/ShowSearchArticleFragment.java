@@ -194,7 +194,7 @@ public class ShowSearchArticleFragment extends Fragment {
         homeAdapter.setOnItemCLickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                saveReadHistory(homeArticleList.get(position));
+                //saveReadHistory(homeArticleList.get(position));
                 String link = homeArticleList.get(position).getLink();
                 String title = homeArticleList.get(position).getTitle();
                 Intent intent = new Intent(MyApplication.getContext(), WebActivity.class);

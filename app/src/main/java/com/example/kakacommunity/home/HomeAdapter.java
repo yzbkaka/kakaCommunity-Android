@@ -3,6 +3,7 @@ package com.example.kakacommunity.home;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         HomeArticle homeArticle = homeArticleList.get(position);
         holder.author.setText(homeArticle.getAuthor());
         holder.time.setText(homeArticle.getNiceDate());
-        holder.title.setText(homeArticle.getTitle());
+        holder.title.setText(String.valueOf(Html.fromHtml(homeArticle.getTitle())));
         holder.chapter.setText(homeArticle.getChapterName());
         boolean fresh = homeArticle.isFresh();
         if (fresh) {
@@ -122,6 +123,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveReadHistory(homeArticleList.get(position));
                 onItemClickListener.onItemClick(position);
             }
         });
@@ -142,6 +144,30 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             cursor.close();
             return false;  //收藏过
         }
+    }
+
+    private void saveReadHistory(HomeArticle homeArticle) {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String link = homeArticle.getLink();
+        Cursor cursor = db.query("History", null, "link = ?", new String[]{link}, null, null, null);
+        if (cursor.getCount() == 0) {
+            contentValues.put("type", TYPE_ARTICLE);
+            contentValues.put("author", homeArticle.getAuthor());
+            contentValues.put("title", homeArticle.getTitle());
+            contentValues.put("link", homeArticle.getLink());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = new Date();
+            contentValues.put("read_date", dateFormat.format(date));
+            contentValues.put("chapter_name", homeArticle.getChapterName());
+            db.insert("History", null, contentValues);
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = new Date();
+            contentValues.put("read_date", dateFormat.format(date));
+            db.update("History", contentValues, "link = ?", new String[]{link});
+        }
+
     }
 
     public interface OnItemClickListener {
