@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
@@ -39,9 +41,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
+import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 
 public class CommunityDetailActivity extends AppCompatActivity {
 
@@ -50,6 +55,8 @@ public class CommunityDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     private TextView communityTitle;
+
+    private String communityId;
 
     private String title;
 
@@ -60,6 +67,8 @@ public class CommunityDetailActivity extends AppCompatActivity {
     private TextView authorName;
 
     private String username;
+
+    private String communityUserId;
 
     private TextView communityTime;
 
@@ -125,7 +134,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
                 CommunityComment communityComment = communityCommentList.get(position);
                 Intent intent1 = new Intent(CommunityDetailActivity.this, ReplyDetailActivity.class);
                 intent1.putExtra("communityReply", communityComment);
-                startActivityForResult(intent1,COMMUNITY_COMMENT_CODE);
+                startActivityForResult(intent1, COMMUNITY_COMMENT_CODE);
             }
         });
     }
@@ -178,11 +187,13 @@ public class CommunityDetailActivity extends AppCompatActivity {
     private void parseCommunityDetailJSON(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析帖子标题&内容
+            JSONObject discussPost = jsonObject.getJSONObject("discussPost");  //解析帖子id&标题&内容
+            communityId = discussPost.getString("id");
             title = discussPost.getString("title");
             content = discussPost.getString("content");
             createTime = discussPost.getString("createTime");
             JSONObject user = jsonObject.getJSONObject("user");  //解析帖子作者
+            communityUserId = user.getString("id");
             username = user.getString("username");
             headerUrl = user.getString("headerUrl");
             JSONArray comments = jsonObject.getJSONArray("comments");  //解析帖子回复
@@ -206,7 +217,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
                         JSONObject replyUser = replyItem.getJSONObject("user");
                         commentReply.setImageUrl(replyUser.getString("headerUrl"));
                         commentReply.setName(replyUser.getString("username"));
-                        if(targetId != 0) {
+                        if (targetId != 0) {
                             JSONObject target = replyItem.getJSONObject("target");
                             commentReply.setTargetUserName(target.getString("username"));
                         }
@@ -258,7 +269,7 @@ public class CommunityDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.delete_menu,menu);
+        getMenuInflater().inflate(R.menu.delete_menu, menu);
         return true;
     }
 
@@ -269,9 +280,51 @@ public class CommunityDetailActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.toolbar_delete:
+                deleteCommunity();
                 break;
         }
         return true;
+    }
+
+
+    public void deleteCommunity() {
+        SharedPreferences preferences = getSharedPreferences("user_message", MODE_PRIVATE);
+        String userId = preferences.getString("userId", "");
+        if (userId.equals(communityUserId)) {
+            sendDeleteRequest();
+            //Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "无操作权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendDeleteRequest() {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", communityId)
+                .build();
+        HttpUtil.OkHttpPOST(BASE_ADDRESS + "/discuss" + "/delete", requestBody, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                if (responseData.contains("0")) {
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CommunityDetailActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }));
+                    Intent intent = new Intent();
+                    intent.putExtra("delete", "refresh");
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }
+        });
     }
 
 }

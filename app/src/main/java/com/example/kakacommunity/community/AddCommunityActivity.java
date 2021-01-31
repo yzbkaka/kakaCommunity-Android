@@ -93,7 +93,6 @@ public class AddCommunityActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseData = response.body().string();
-                    Log.e("addCommunity", responseData);
                     if (responseData.contains("成功")) {
                         runOnUiThread(new Thread(new Runnable() {
                             @Override

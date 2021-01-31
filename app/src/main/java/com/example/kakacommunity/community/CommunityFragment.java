@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.CAMERA_SERVICE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
@@ -68,6 +70,8 @@ public class CommunityFragment extends BaseFragment {
 
     public static final int COMMUNITY_FRAGMENT_CODE = 1;
 
+    public static final int COMMUNITY_FRAGMENT_NOTIFY = 2;
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_community;
@@ -93,7 +97,7 @@ public class CommunityFragment extends BaseFragment {
                 String discussPostId = communityArticleList.get(position).getDiscussPostId();
                 Intent intent = new Intent(MyApplication.getContext(), CommunityDetailActivity.class);
                 intent.putExtra("discussPostId", discussPostId);
-                startActivity(intent);
+                startActivityForResult(intent,COMMUNITY_FRAGMENT_NOTIFY);
             }
 
             @Override
@@ -230,6 +234,10 @@ public class CommunityFragment extends BaseFragment {
                     communityArticleList.clear();
                     getCommunityJSON(1);
                 }
+                break;
+            case COMMUNITY_FRAGMENT_NOTIFY:
+                communityArticleList.clear();
+                getCommunityJSON(1);
                 break;
             default:
         }
