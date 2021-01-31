@@ -68,7 +68,6 @@ public class CommunityFragment extends BaseFragment {
 
     public static final int COMMUNITY_FRAGMENT_CODE = 1;
 
-
     @Override
     protected int setContentView() {
         return R.layout.fragment_community;
