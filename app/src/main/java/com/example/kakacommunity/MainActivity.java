@@ -26,6 +26,7 @@ import com.example.kakacommunity.mine.MineFragment;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.example.kakacommunity.search.SearchActivity;
 import com.example.kakacommunity.service.FDWatchService;
+import com.example.kakacommunity.utils.NativeMethodHelper;
 import com.example.kakacommunity.utils.PermissionsUtil;
 import com.example.kakacommunity.view.NoScrollViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -61,11 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
     private MineFragment mineFragment;
 
+    private NativeMethodHelper nativeMethodHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getPermissions();
+        initHook();
         initView();
 
     }
@@ -96,6 +100,25 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionsUtil.getInstance().onRequestPermissionResult(this, requestCode, permissions, grantResults);
+    }
+
+    /**
+     * 初始化hook操作
+     */
+    private void initHook() {
+        nativeMethodHelper = NativeMethodHelper.getInstance();
+        nativeMethodHelper.init();
+        nativeMethodHelper.getEnv();
+        nativeMethodHelper.startHook();
+        initService();
+    }
+
+    /**
+     * 启动监控服务
+     */
+    private void initService() {
+        Intent intent = new Intent(this, FDWatchService.class);
+        startService(intent);
     }
 
     /**

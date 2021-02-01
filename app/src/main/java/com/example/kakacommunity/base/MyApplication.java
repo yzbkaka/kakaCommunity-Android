@@ -36,21 +36,16 @@ public class MyApplication extends Application {
 
     }
 
+
     private void init() {
         context = getApplicationContext();  //全局获取Context
 
         //初始化数据库
         dataBaseHelper = MyDataBaseHelper.getInstance();
 
-        //初始化ndk hook
-        nativeMethodHelper = NativeMethodHelper.getInstance();
-        //nativeMethodHelper.init();
-        //nativeMethodHelper.getEnv();
-        //nativeMethodHelper.startHook();
-
         //启动监控
-        Intent intent = new Intent(this, FDWatchService.class);
-        startService(intent);
+        /*Intent intent = new Intent(this, FDWatchService.class);
+        startService(intent);*/
 
     }
 
@@ -58,5 +53,5 @@ public class MyApplication extends Application {
         return context;
     }
 
-    
+
 }
