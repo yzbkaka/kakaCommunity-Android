@@ -56,29 +56,18 @@
         <activity android:name=".search.ShowSearchActivity" />
         <activity android:name=".home.WebActivity" />
         <activity android:name=".search.SearchActivity" />
-        <activity android:name=".MainActivity">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity
             android:name=".RegisterActivity"
             android:label="注册" />
         <activity
             android:name=".LoginActivity"
             android:label="登录">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
         </activity>
+        <service
+            android:name=".service.FDWatchService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

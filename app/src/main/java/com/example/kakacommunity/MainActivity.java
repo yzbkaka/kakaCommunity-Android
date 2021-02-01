@@ -7,11 +7,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +25,8 @@ import com.example.kakacommunity.home.HomeFragment;
 import com.example.kakacommunity.mine.MineFragment;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.example.kakacommunity.search.SearchActivity;
+import com.example.kakacommunity.service.FDWatchService;
+import com.example.kakacommunity.utils.PermissionsUtil;
 import com.example.kakacommunity.view.NoScrollViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -60,8 +65,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getPermissions();
         initView();
 
+    }
+
+    /**
+     * 动态申请权限
+     */
+    private void getPermissions() {
+        PermissionsUtil.getInstance().checkPermissions(this,
+                new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
+                new PermissionsUtil.IPermissionsResult() {
+                    @Override
+                    public void passPermissions() {
+                        Log.e("yzbkaka", "get all permissions successful!");
+                    }
+
+                    @Override
+                    public void forbidPermissions() {
+                        Log.e("yzbkaka", "failed to get all permissions!");
+                    }
+                });
+    }
+
+    /**
+     * 权限回调
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionsUtil.getInstance().onRequestPermissionResult(this, requestCode, permissions, grantResults);
     }
 
     /**

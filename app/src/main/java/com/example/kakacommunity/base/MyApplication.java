@@ -1,10 +1,20 @@
 package com.example.kakacommunity.base;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.kakacommunity.db.MyDataBaseHelper;
+import com.example.kakacommunity.service.FDWatchService;
+import com.example.kakacommunity.utils.NativeMethodHelper;
+import com.example.kakacommunity.utils.PermissionsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -16,6 +26,9 @@ public class MyApplication extends Application {
 
     private MyDataBaseHelper dataBaseHelper;
 
+    private NativeMethodHelper nativeMethodHelper;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -25,17 +38,25 @@ public class MyApplication extends Application {
 
     private void init() {
         context = getApplicationContext();  //全局获取Context
-        dataBaseHelper = MyDataBaseHelper.getInstance();  //初始化数据库
+
+        //初始化数据库
+        dataBaseHelper = MyDataBaseHelper.getInstance();
+
+        //初始化ndk hook
+        nativeMethodHelper = NativeMethodHelper.getInstance();
+        //nativeMethodHelper.init();
+        //nativeMethodHelper.getEnv();
+        //nativeMethodHelper.startHook();
+
+        //启动监控
+        Intent intent = new Intent(this, FDWatchService.class);
+        startService(intent);
+
     }
 
     public static Context getContext() {
         return context;
     }
 
-    static {
-        System.loadLibrary("native-lib");  //加载NDK
-    }
-
-
-    public native String StringFromJNI();
+    
 }
