@@ -2,6 +2,7 @@ package com.example.kakacommunity.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.kakacommunity.db.MyDataBaseHelper;
 
@@ -30,4 +31,11 @@ public class MyApplication extends Application {
     public static Context getContext() {
         return context;
     }
+
+    static {
+        System.loadLibrary("native-lib");  //加载NDK
+    }
+
+
+    public native String StringFromJNI();
 }
