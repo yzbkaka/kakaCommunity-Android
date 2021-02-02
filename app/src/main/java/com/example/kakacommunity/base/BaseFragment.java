@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 /**
+ * 懒加载，fragment父类
  * https://github.com/linglongxin24/ViewPagerFragmentLazyLoad
  */
 public abstract class BaseFragment extends Fragment {
+
+    private static final String TAG = "BaseFragment";
     /**
      * 视图是否已经初初始化
      */

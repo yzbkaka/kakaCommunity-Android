@@ -1,6 +1,8 @@
 package com.example.kakacommunity.constant;
 
-
+/**
+ * 全局数据类
+ */
 public class kakaCommunityConstant {
 
     public static final String BASE_ADDRESS = "http://192.168.100.17:8070";

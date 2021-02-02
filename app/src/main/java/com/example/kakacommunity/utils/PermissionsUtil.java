@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 权限操作工具
+ */
 public class PermissionsUtil {
 
     public static boolean showSystemSetting = true;
@@ -44,8 +47,6 @@ public class PermissionsUtil {
 
     /**
      * 单例模式获取该封装对象
-     *
-     * @return PermissionsUtils单例对象
      */
     public static PermissionsUtil getInstance() {
         if (permissionsUtils == null) {
@@ -60,10 +61,6 @@ public class PermissionsUtil {
 
     /**
      * 检查权限
-     *
-     * @param context           Activity上下文
-     * @param permissions       权限列表
-     * @param permissionsResult 权限结果
      */
     public void checkPermissions(Activity context, String[] permissions, IPermissionsResult permissionsResult) {
         mPermissionsResult = permissionsResult;
@@ -94,11 +91,6 @@ public class PermissionsUtil {
 
     /**
      * 请求权限后回调的方法
-     *
-     * @param context      上下文Context
-     * @param requestCode  自定义的权限请求码
-     * @param permissions  请求的权限名称数组
-     * @param grantResults 在弹出页面后是否允许权限的标识数组，数组的长度对应的是权限名称数组的长度，数组的数据0表示允许权限，-1表示我们点击了禁止权限
      */
     public void onRequestPermissionResult(Activity context, int requestCode, String[] permissions, int[] grantResults) {
         // 有权限没有通过
@@ -126,8 +118,6 @@ public class PermissionsUtil {
 
     /**
      * 展示系统权限的对话框
-     *
-     * @param context 上下文
      */
     private void showSystemPermissionsSettingDialog(final Activity context) {
         final String mPackName = context.getPackageName();

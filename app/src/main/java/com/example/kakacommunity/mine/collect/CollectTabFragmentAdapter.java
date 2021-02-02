@@ -8,6 +8,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 选项卡适配器
+ */
 public class CollectTabFragmentAdapter extends FragmentStatePagerAdapter {
 
     private List<Fragment> fragmentList = new ArrayList<>();

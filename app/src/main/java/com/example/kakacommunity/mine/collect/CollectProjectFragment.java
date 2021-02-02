@@ -27,6 +27,9 @@ import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 
+/**
+ * 收藏项目
+ */
 public class CollectProjectFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

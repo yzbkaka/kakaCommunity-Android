@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 社区评论
+ */
 public class CommunityComment implements Serializable {
 
     private String id;

@@ -1,5 +1,8 @@
 package com.example.kakacommunity.model;
 
+/**
+ * 项目
+ */
 public class Project {
 
     private int id;

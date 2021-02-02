@@ -29,6 +29,10 @@ import java.util.List;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
 
+
+/**
+ * 项目显示适配器
+ */
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
 
     private MyDataBaseHelper dataBaseHelper;

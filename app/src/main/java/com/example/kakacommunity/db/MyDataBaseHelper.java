@@ -8,10 +8,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.kakacommunity.base.MyApplication;
+import com.example.kakacommunity.utils.LogUtil;
 
-
-
+/**
+ * 数据库
+ */
 public class MyDataBaseHelper extends SQLiteOpenHelper {
+
+    private static final String TAG = "MyDataBaseHelper";
 
     private static MyDataBaseHelper dataBaseHelper;
 
@@ -80,7 +84,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TREE);
         db.execSQL(CREATE_HISTORY);
         db.execSQL(CREATE_COLLECT);
-        Toast.makeText(context, "create succeeded", Toast.LENGTH_SHORT).show();
+        LogUtil.d(TAG,"数据库创建成功");
     }
 
     @Override

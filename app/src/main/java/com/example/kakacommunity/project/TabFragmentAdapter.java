@@ -9,6 +9,9 @@ import com.example.kakacommunity.model.ProjectTree;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 选项卡适配器
+ */
 public class TabFragmentAdapter  extends FragmentStatePagerAdapter {
 
     private List<Fragment> fragmentList = new ArrayList<>();

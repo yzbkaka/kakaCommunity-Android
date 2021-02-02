@@ -5,6 +5,9 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+/**
+ * JNI相关操作的真正执行者，采用单例模式
+ */
 public class NativeMethodHelper {
 
     private static volatile NativeMethodHelper nativeMethodHelper = null;

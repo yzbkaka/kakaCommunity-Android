@@ -26,6 +26,9 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * 回复详情
+ */
 public class ReplyDetailActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

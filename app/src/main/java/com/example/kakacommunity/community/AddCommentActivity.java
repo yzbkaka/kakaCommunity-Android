@@ -29,6 +29,9 @@ import okhttp3.Response;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_POST;
 
+/**
+ * 添加评论
+ */
 public class AddCommentActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

@@ -17,6 +17,10 @@ import com.youth.banner.adapter.BannerAdapter;
 
 import java.util.List;
 
+
+/**
+ * 图片滚动适配器
+ */
 public class ImageAdapter extends BannerAdapter<Banner, ImageAdapter.ViewHolder> {
 
     private List<Banner> bannerList;
@@ -29,8 +33,8 @@ public class ImageAdapter extends BannerAdapter<Banner, ImageAdapter.ViewHolder>
 
         public ViewHolder(@NonNull View view) {
             super(view);
-            imageView = (ImageView)view.findViewById(R.id.banner_image);
-            textView = (TextView)view.findViewById(R.id.banner_title);
+            imageView = (ImageView) view.findViewById(R.id.banner_image);
+            textView = (TextView) view.findViewById(R.id.banner_title);
 
         }
     }
@@ -61,11 +65,11 @@ public class ImageAdapter extends BannerAdapter<Banner, ImageAdapter.ViewHolder>
         });
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
-    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener){
+    public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {
         this.onItemClickListener = onItemCLickListener;
     }
 }

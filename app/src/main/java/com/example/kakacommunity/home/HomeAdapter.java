@@ -26,8 +26,11 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
-import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
+
+/**
+ * 首页和论坛显示适配器
+ */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private MyDataBaseHelper dataBaseHelper;

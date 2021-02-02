@@ -48,6 +48,9 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDR
 import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
+/**
+ * 社区
+ */
 public class CommunityFragment extends BaseFragment {
 
     private MyDataBaseHelper dataBaseHelper;

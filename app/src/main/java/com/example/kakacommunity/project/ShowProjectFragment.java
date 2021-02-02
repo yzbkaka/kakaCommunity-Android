@@ -31,6 +31,7 @@ import com.example.kakacommunity.model.Project;
 import com.example.kakacommunity.search.ShowSearchActivity;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.example.kakacommunity.utils.LogUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
@@ -53,7 +54,12 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 
+/**
+ * 项目每一项的展示界面
+ */
 public class ShowProjectFragment extends BaseFragment {
+
+    private static final String TAG = "ShowProjectFragment";
 
     private MyDataBaseHelper dataBaseHelper;
 
@@ -198,6 +204,7 @@ public class ShowProjectFragment extends BaseFragment {
                 new okhttp3.Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        LogUtil.d(TAG,"获取项目数据失败");
                         e.printStackTrace();
                         if(!ActivityUtil.isDestroy(getActivity())){
                             getActivity().runOnUiThread(new Runnable() {
@@ -214,6 +221,7 @@ public class ShowProjectFragment extends BaseFragment {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseData = response.body().string();
+                        LogUtil.d(TAG,"获取项目数据成功");
                         parseProjectJSON(responseData);
                         if(!ActivityUtil.isDestroy(getActivity())) {
                             getActivity().runOnUiThread(new Runnable() {

@@ -30,6 +30,9 @@ import java.util.List;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
+/**
+ * 阅读历史社区
+ */
 public class HistoryCommunityFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

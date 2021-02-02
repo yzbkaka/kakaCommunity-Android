@@ -6,12 +6,14 @@ import android.view.MotionEvent;
 
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * 自动义View
+ */
 public class NoScrollViewPager extends ViewPager {
     private boolean noScroll = false;
 
     public NoScrollViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // TODO Auto-generated constructor stub
     }
 
     public NoScrollViewPager(Context context) {
@@ -29,7 +31,6 @@ public class NoScrollViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent arg0) {
-        /* return false;//super.onTouchEvent(arg0); */
         switch (arg0.getAction()) {
         }
 

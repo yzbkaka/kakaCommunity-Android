@@ -1,5 +1,8 @@
 package com.example.kakacommunity.model;
 
+/**
+ * 项目选项卡
+ */
 public class ProjectTree {
 
     /**

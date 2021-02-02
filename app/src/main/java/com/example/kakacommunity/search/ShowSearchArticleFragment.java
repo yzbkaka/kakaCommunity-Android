@@ -51,6 +51,9 @@ import okhttp3.Response;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
+/**
+ * 展示搜索文章
+ */
 public class ShowSearchArticleFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

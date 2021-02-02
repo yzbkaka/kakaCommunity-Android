@@ -18,6 +18,9 @@ import com.example.kakacommunity.base.MyApplication;
 import com.example.kakacommunity.R;
 import com.example.kakacommunity.home.WebActivity;
 
+/**
+ * 关于项目
+ */
 public class AboutActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

@@ -4,6 +4,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+/**
+ * 网络请求工具类
+ */
 public class HttpUtil {
 
     /**

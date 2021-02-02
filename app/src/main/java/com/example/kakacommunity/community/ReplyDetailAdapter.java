@@ -19,6 +19,9 @@ import com.example.kakacommunity.model.CommunityReply;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 回复详情适配器
+ */
 public class ReplyDetailAdapter extends RecyclerView.Adapter<ReplyDetailAdapter.ViewHolder> {
 
     private List<CommunityReply> communityReplyList = new ArrayList<>();

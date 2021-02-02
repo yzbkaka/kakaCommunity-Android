@@ -32,6 +32,7 @@ import com.example.kakacommunity.model.Banner;
 import com.example.kakacommunity.model.HomeArticle;
 import com.example.kakacommunity.utils.ActivityUtil;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.example.kakacommunity.utils.LogUtil;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
@@ -55,7 +56,12 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_A
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
+/**
+ * 首页
+ */
 public class HomeFragment extends BaseFragment {
+
+    private static final String TAG = "HomeFragment";
 
     private MyDataBaseHelper dataBaseHelper;
 
@@ -234,6 +240,7 @@ public class HomeFragment extends BaseFragment {
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/article" + "/list" + "/" + page + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LogUtil.d(TAG,"获取首页数据失败");
                 e.printStackTrace();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -248,6 +255,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                LogUtil.d(TAG,"获取首页数据成功");
                 parseHomeArticleJSON(responseData);
                 if (!ActivityUtil.isDestroy(getActivity())) {
                     getActivity().runOnUiThread(new Runnable() {

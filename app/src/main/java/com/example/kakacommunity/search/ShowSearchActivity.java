@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * 展示搜索容器
+ */
 public class ShowSearchActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

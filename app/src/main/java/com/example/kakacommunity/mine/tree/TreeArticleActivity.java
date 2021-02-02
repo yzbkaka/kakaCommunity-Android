@@ -46,6 +46,9 @@ import okhttp3.Response;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
+/**
+ * 知识体系展示
+ */
 public class TreeArticleActivity extends AppCompatActivity {
 
     private MyDataBaseHelper dataBaseHelper;

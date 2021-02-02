@@ -3,6 +3,9 @@ package com.example.kakacommunity.utils;
 import android.app.Activity;
 import android.os.Build;
 
+/**
+ * Activity工具类
+ */
 public class ActivityUtil {
 
     /**

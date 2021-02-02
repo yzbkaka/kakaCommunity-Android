@@ -27,6 +27,9 @@ import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
+/**
+ * 社区适配器
+ */
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.ViewHolder> {
 
     private MyDataBaseHelper dataBaseHelper;

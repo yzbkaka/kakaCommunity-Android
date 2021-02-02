@@ -43,7 +43,9 @@ import okhttp3.Response;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
-
+/**
+ * 我的
+ */
 public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     private MyDataBaseHelper dataBaseHelper;

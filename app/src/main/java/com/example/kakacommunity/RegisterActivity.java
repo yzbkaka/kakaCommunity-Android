@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kakacommunity.utils.HttpUtil;
+import com.example.kakacommunity.utils.LogUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -27,7 +28,12 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
+/**
+ * 注册功能
+ */
 public class RegisterActivity extends AppCompatActivity {
+
+    private static final String TAG = "RegisterActivity";
 
     private Toolbar toolbar;
 
@@ -101,9 +107,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("register", responseData);
+                LogUtil.d(TAG,responseData);
                 if (responseData.contains("成功")) {
-                    Log.e("register", "请求注册成功");
+                    LogUtil.d(TAG,"注册成功");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -112,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }));
                     finish();
                 } else {
-                    Log.e("register", "请求注册失败");
+                    LogUtil.d(TAG,"注册失败");
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {

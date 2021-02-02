@@ -52,6 +52,9 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDR
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_COMMUNITY;
 
+/**
+ * 展示搜索论坛
+ */
 public class ShowSearchCommunityFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

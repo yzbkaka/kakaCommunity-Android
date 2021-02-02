@@ -29,6 +29,9 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDR
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_COMMENT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ENTITY_TYPE_POST;
 
+/**
+ * 添加回复
+ */
 public class AddReplyActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

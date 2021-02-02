@@ -27,6 +27,9 @@ import java.util.List;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_ARTICLE;
 
+/**
+ * 收藏文章
+ */
 public class CollectArticleFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

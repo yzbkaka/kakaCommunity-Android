@@ -1,5 +1,8 @@
 package com.example.kakacommunity.model;
 
+/**
+ * 滑动图像
+ */
 public class Banner {
 
     private int id;

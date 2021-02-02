@@ -26,6 +26,7 @@ import com.example.kakacommunity.mine.MineFragment;
 import com.example.kakacommunity.project.ProjectFragment;
 import com.example.kakacommunity.search.SearchActivity;
 import com.example.kakacommunity.service.FDWatchService;
+import com.example.kakacommunity.utils.LogUtil;
 import com.example.kakacommunity.utils.NativeMethodHelper;
 import com.example.kakacommunity.utils.PermissionsUtil;
 import com.example.kakacommunity.view.NoScrollViewPager;
@@ -42,7 +43,13 @@ import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY
 import static com.example.kakacommunity.constant.kakaCommunityConstant.HOME_TOP;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.PROJECT_TOP;
 
+
+/**
+ * 主界面容器
+ */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private ImageView search;
 
@@ -83,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
                 new PermissionsUtil.IPermissionsResult() {
                     @Override
                     public void passPermissions() {
-                        Log.e("yzbkaka", "get all permissions successful!");
+                        LogUtil.d(TAG,"获得所有权限");
                     }
 
                     @Override
                     public void forbidPermissions() {
-                        Log.e("yzbkaka", "failed to get all permissions!");
+                        LogUtil.d(TAG,"获得权限失败");
                     }
                 });
     }
@@ -263,33 +270,4 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-   /* *//**
-     * 利用反射，改变 item 中 mShiftingMode 的值 ,从而改变 BottomNavigationView 默认的效果
-     *//*
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @SuppressLint("RestrictedApi")
-    public void disableShiftMode(BottomNavigationView navigationView) {
-
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) navigationView.getChildAt(0);
-        try {
-            Field shiftingMode = menuView.getClass().getDeclaredField("mShiftingMode");
-            shiftingMode.setAccessible(true);
-            shiftingMode.setBoolean(menuView, false);
-            shiftingMode.setAccessible(false);
-
-            for (int i = 0; i < menuView.getChildCount(); i++) {
-                BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(i);
-                itemView.setShifting(false);
-                itemView.setChecked(itemView.getItemData().isChecked());
-            }
-
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }*/
 }

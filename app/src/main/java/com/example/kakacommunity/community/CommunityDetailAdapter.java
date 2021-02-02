@@ -18,6 +18,9 @@ import com.example.kakacommunity.model.CommunityComment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 详情适配器
+ */
 public class CommunityDetailAdapter extends RecyclerView.Adapter<CommunityDetailAdapter.ViewHolder> {
 
     private List<CommunityComment> communityCommentList = new ArrayList<>();

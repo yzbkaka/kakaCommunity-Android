@@ -48,6 +48,9 @@ import okhttp3.Response;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.COMMUNITY_ADD;
 
+/**
+ * 帖子详情
+ */
 public class CommunityDetailActivity extends AppCompatActivity {
 
     private RefreshLayout refreshLayout;

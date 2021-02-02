@@ -3,9 +3,6 @@ package com.example.kakacommunity.project;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -31,6 +28,7 @@ import com.example.kakacommunity.base.BaseFragment;
 import com.example.kakacommunity.db.MyDataBaseHelper;
 import com.example.kakacommunity.model.ProjectTree;
 import com.example.kakacommunity.utils.HttpUtil;
+import com.example.kakacommunity.utils.LogUtil;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
@@ -45,7 +43,13 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 
+
+/**
+ * 项目
+ */
 public class ProjectFragment extends Fragment {
+
+    private static final String TAG = "ProjectFragment";
 
     private TabLayout tabLayout;
 
@@ -127,12 +131,14 @@ public class ProjectFragment extends Fragment {
         HttpUtil.OkHttpGET(ANDROID_ADDRESS + "/project" + "/tree" + "/json", new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LogUtil.e(TAG,"请求项目数据失败");
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                LogUtil.d(TAG,"请求项目数据成功");
                 parseProjectTreeJSON(responseData);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

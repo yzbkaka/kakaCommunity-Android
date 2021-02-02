@@ -28,6 +28,9 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
+/**
+ * 发布帖子
+ */
 public class AddCommunityActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

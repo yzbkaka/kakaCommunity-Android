@@ -28,6 +28,9 @@ import java.util.List;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.TYPE_PROJECT;
 import static com.example.kakacommunity.constant.kakaCommunityConstant.isReadHistory;
 
+/**
+ * 阅读历史项目
+ */
 public class HistoryProjectFragment extends Fragment {
 
     private MyDataBaseHelper dataBaseHelper;

@@ -15,7 +15,12 @@ import com.example.kakacommunity.utils.StringUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+/**
+ * App启动
+ */
 public class StartActivity extends AppCompatActivity {
+
+    private static final String TAG = "StartActivity";
 
     private AlphaAnimation alphaAnimation;
 

@@ -2,6 +2,9 @@ package com.example.kakacommunity.model;
 
 import java.io.Serializable;
 
+/**
+ * 社区回复
+ */
 public class CommunityReply implements Serializable {
 
     private String imageUrl;

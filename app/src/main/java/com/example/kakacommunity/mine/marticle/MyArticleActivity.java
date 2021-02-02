@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.PrimitiveIterator;
 
+/**
+ * 我的帖子
+ */
 public class MyArticleActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

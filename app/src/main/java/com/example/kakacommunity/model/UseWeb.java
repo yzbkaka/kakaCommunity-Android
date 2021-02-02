@@ -1,5 +1,8 @@
 package com.example.kakacommunity.model;
 
+/**
+ * 常用网站
+ */
 public class UseWeb {
 
     private int id;

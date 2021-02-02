@@ -16,6 +16,9 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 阅读历史
+ */
 public class HistoryActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

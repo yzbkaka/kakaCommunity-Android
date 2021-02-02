@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kakacommunity.utils.HttpUtil;
+import com.example.kakacommunity.utils.LogUtil;
 import com.example.kakacommunity.utils.StringUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -29,7 +30,12 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.BASE_ADDRESS;
 
+/**
+ * 登录功能
+ */
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
 
     private Toolbar toolbar;
 
@@ -96,17 +102,19 @@ public class LoginActivity extends AppCompatActivity {
         HttpUtil.OkHttpPOST(BASE_ADDRESS + "/login", requestBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LogUtil.d(TAG,"请求失败");
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("login", responseData);
+                LogUtil.d(TAG, responseData);
                 if (responseData.contains("ticket")) {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            LogUtil.d(TAG,"登录成功");
                             Toast.makeText(LoginActivity.this, "请求登录成功", Toast.LENGTH_SHORT).show();
                         }
                     }));
@@ -118,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            LogUtil.d(TAG,"登录失败");
                             Toast.makeText(LoginActivity.this, "请求登录失败", Toast.LENGTH_SHORT).show();
                         }
                     }));
@@ -136,6 +145,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = getSharedPreferences("user_message", MODE_PRIVATE).edit();
             editor.putString("ticket", ticket);
             editor.apply();
+            LogUtil.d(TAG,"存储用户凭证成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.kakacommunity.utils.LogUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 监控服务
+ */
 public class FDWatchService extends Service {
+
+    private static final String TAG = "FDWatchService";
 
     /**
      * 开始读取的下标
@@ -26,8 +33,6 @@ public class FDWatchService extends Service {
      * 结束读取的下标
      */
     public static final int END_INDEX = 26;
-
-    private static final String TAG = "FDWatchService";
 
     /**
      * fd数量最大限制
@@ -40,9 +45,9 @@ public class FDWatchService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG,"CREATE");
+        LogUtil.d(TAG,"CREATE");
         mMaxOpenFiles = getMaxOpenFiles();
-        Log.e(TAG, "start FDWatchService:" + "current pid is " + getPid() + " ,max open files is " + mMaxOpenFiles);
+        LogUtil.d(TAG, "start FDWatchService:" + "current pid is " + getPid() + " ,max open files is " + mMaxOpenFiles);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class FDWatchService extends Service {
                                 // 统计所有堆栈信息，进行数据收集和分析（上报）
                                 stackTraceMessage.append(trace[i]);
                             }
-                            Log.e(TAG,stackTraceMessage.toString());
+                            LogUtil.d(TAG,stackTraceMessage.toString());
                         }
                     }
                 }
@@ -132,7 +137,7 @@ public class FDWatchService extends Service {
         if (isNumeric(numString)) {
             return Integer.parseInt(numString);
         }
-        Log.e(TAG, "failed to get max open files");
+        LogUtil.d(TAG, "failed to get max open files");
         return 0;
     }
 

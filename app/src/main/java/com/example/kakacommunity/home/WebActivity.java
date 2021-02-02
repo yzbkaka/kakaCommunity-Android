@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.example.kakacommunity.R;
 import com.just.agentweb.AgentWeb;
 
+/**
+ * 网页
+ */
 public class WebActivity extends AppCompatActivity {
 
     private LinearLayout linearLayout;
@@ -45,15 +48,15 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        back = (ImageView)findViewById(R.id.web_back);
+        back = (ImageView) findViewById(R.id.web_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        webTitle = (TextView)findViewById(R.id.web_title);
-        linearLayout = (LinearLayout)findViewById(R.id.web_layout);
+        webTitle = (TextView) findViewById(R.id.web_title);
+        linearLayout = (LinearLayout) findViewById(R.id.web_layout);
     }
 
 }

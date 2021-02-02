@@ -2,6 +2,9 @@ package com.example.kakacommunity.utils;
 
 import java.util.regex.Pattern;
 
+/**
+ * 字符串工具类
+ */
 public class StringUtil {
 
     /**

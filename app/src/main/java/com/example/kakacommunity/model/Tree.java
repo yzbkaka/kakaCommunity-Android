@@ -1,5 +1,8 @@
 package com.example.kakacommunity.model;
 
+/**
+ * 知识体系
+ */
 public class Tree {
 
     private String id;

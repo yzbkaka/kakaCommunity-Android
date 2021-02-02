@@ -15,6 +15,9 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 收藏
+ */
 public class CollectActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

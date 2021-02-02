@@ -2,6 +2,9 @@ package com.example.kakacommunity.model;
 
 import com.example.kakacommunity.utils.StringUtil;
 
+/**
+ * 首页和社区文章
+ */
 public class HomeArticle {
 
     private int id;

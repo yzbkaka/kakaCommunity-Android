@@ -35,7 +35,9 @@ import okhttp3.Response;
 
 import static com.example.kakacommunity.constant.kakaCommunityConstant.ANDROID_ADDRESS;
 
-
+/**
+ * 搜索
+ */
 public class SearchActivity extends AppCompatActivity {
 
     private MyDataBaseHelper dataBaseHelper = MyDataBaseHelper.getInstance();
